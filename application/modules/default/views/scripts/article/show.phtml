@@ -1,0 +1,23 @@
+<div class="article">
+<h2><?php echo $this->escape($this->article->title); ?></h2>
+
+<?php echo nl2br($this->article->content); ?>
+</div>
+
+<div class="comments">
+<h2>Commentaires</h2>
+
+<?php foreach($this->comments as $comment) : ?>
+<div class="comment">
+<p class="comment_author">Par
+<b><?php echo $this->escape($comment->author); ?></b>
+</p>
+<p>
+<?php  echo nl2br($this->escape($comment->content)); ?>
+</p>
+</div>
+<?php endforeach; ?>
+<br /><br />
+<h3>Poster un commentaire</h3>
+<?php echo $this->comment_form; ?>
+</div>

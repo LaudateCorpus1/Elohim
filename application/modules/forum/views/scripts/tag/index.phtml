@@ -1,0 +1,10 @@
+<?php foreach ($this->tags as $tag) : ?>
+    <a href="<?php
+    echo $this->url(array(
+        'controller' => 'topic',
+        'action' => 'tag',
+        'name' => $this->escape($tag->name)
+    )); ?>
+       "><?php echo $this->escape($tag->name); ?></a> x <?php echo $this->escape($tag->amount); ?>
+
+<?php endforeach; ?>

@@ -1,0 +1,132 @@
+<?php
+/**
+ * Default Layout
+ *
+ * @author
+ * @version
+ */
+echo $this->doctype() . PHP_EOL;
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
+        <meta name="robots" content="index,follow" />
+        <!--        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />-->
+
+        <?php
+        echo $this->headLink()
+                ->prependStylesheet('/css/style.css')
+                ->appendStylesheet('/css/main.css');
+        ?>
+    </head>
+    <body>
+        <div class="main">
+            <div class="header">
+                    <div class="logo">
+                        <h1><a href="<?php
+        echo $this->url(array(
+            'controller' => 'index',
+            'action' => 'index'
+        ),null, true);
+        ?>"><span>Islamine</span></a></h1>
+                    </div>
+                    <div class="menu_nav">
+<?php //echo $this->navigation()->menu() . PHP_EOL;  ?>
+                        
+                    </div>
+                    <div class="clr"></div>
+                    <div id="nav">
+                        <ul>
+                            <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'article',
+                                            'action' => 'index'
+                                        ), null, true) ?>">Articles</a></li>
+                            
+                            <li><a href="<?php echo $this->url(array(
+                                            'module' => 'forum',
+                                            'controller' => 'index',
+                                            'action' => 'index'
+                                        ), null, true) ?>">Forum</a></li>
+                            
+                            <li><a href="">Annonces</a></li>
+                            
+                            <li><a href="">Membres</a></li>
+                            
+                            <li><a href="">Contact</a></li>
+                        </ul>
+                    </div>
+            </div>
+            <div class="clr"></div>
+            <div class="content">
+                <div class="content_resize">
+                    <div class="mainbar">
+                        
+                        <?php
+                        echo $this->layout()->content . PHP_EOL;
+                        ?>
+                    </div>
+                    <div id="sidebar">
+                        
+                        <ul>
+                            <li>
+                                <div id="search" >
+                                    <form method="get" action="#">
+                                    <div>
+                                        <input type="text" name="s" id="search-text" value="" />
+					<input type="submit" id="search-submit" value="Go" />
+                                    </div>
+                                    </form>
+				</div>
+				<div style="clear: both;">&nbsp;</div>
+                            </li>
+                            <li>
+                                <?php foreach($this->layout()->sidebar as $category => $articles) : ?>
+                                
+                                <div class="category"><?php echo $category; ?></div>
+                                    <ul>
+                                    <?php foreach($articles as $article) : ?>
+                                        <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'article',
+                                            'action' => 'show',
+                                            'id' => $article->id
+                                        )) ?>"><?php echo $article->title ?></a></li>
+                                    <?php  endforeach; ?>
+                                    </ul>
+                               <?php endforeach;
+                                ?>
+                            </li>
+			</ul>
+                        
+                    </div>
+                    <div class="clr"></div>
+                </div>
+            </div>
+            <div class="fbg">
+                <!--<div class="fbg_resize">
+                    <div class="col c1">
+                      <h2><span>Image Gallery</span></h2>
+                      <a href="#"><img src="images/gallery_1.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_2.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_3.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_4.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_5.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_6.jpg" width="58" height="58" alt="" /></a> </div>
+                    <div class="col c2">
+                      <h2><span>Lorem Ipsum</span></h2>
+                      <p>Lorem ipsum dolor<br />
+                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero. Suspendisse bibendum. Cras id urna. <a href="#">Morbi tincidunt, orci ac convallis aliquam</a>, lectus turpis varius lorem, eu posuere nunc justo tempus leo. Donec mattis, purus nec placerat bibendum, dui pede condimentum odio, ac blandit ante orci ut diam.</p>
+                    </div>
+                    <div class="col c3">
+                      <h2><span>Contact</span></h2>
+                      <p>Nullam quam lorem, tristique non vestibulum nec, consectetur in risus. Aliquam a quam vel leo gravida gravida eu porttitor dui. Nulla pharetra, mauris vitae interdum dignissim, justo nunc suscipit ipsum. <a href="#">mail@example.com</a><br />
+                        <a href="#">+1 (123) 444-5677</a></p>
+                    </div>
+                    <div class="clr"></div>
+                </div>-->
+                <div class="footer">
+                    Contact
+                  <!--<p class="lf">&copy; Copyright <a href="#">MyWebSite</a>.</p>
+                  <p class="rf">Layout by Cool <a href="http://www.coolwebtemplates.net/">Website Templates</a></p>
+                  <div class="clr"></div>-->
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

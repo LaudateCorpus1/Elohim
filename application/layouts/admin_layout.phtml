@@ -1,0 +1,64 @@
+<?php
+/**
+ * Default Layout
+ *
+ * @author
+ * @version
+ */
+echo $this->doctype() . PHP_EOL;
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
+        <meta name="robots" content="index,follow" />
+        <!--        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />-->
+
+        <?php
+        echo $this->headLink()
+                ->prependStylesheet('/css/admin.css')
+                ->appendStylesheet('/css/main.css');
+        ?>
+    </head>
+    <body>
+        <div class="main">
+            <div class="header">
+                <div class="header_resize">
+                    <div class="logo">
+                        <h1><a href="<?php
+        echo $this->url(array(
+            'module' => 'administration',
+            'controller' => 'admin',
+            'action' => 'index'
+        ),null, true);
+        ?>"><span>Islamine administration</span></a></h1>
+                    </div>
+                    <div class="menu_nav">
+<?php //echo $this->navigation()->menu() . PHP_EOL;  ?>
+                        <ul>
+                            <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'index',
+                                            'action' => 'index'
+                                        )) ?>"><span>Index site</span></a></li>
+                            <?php if (Zend_Auth::getInstance()->hasIdentity()): ?>
+                            <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'admin',
+                                            'action' => 'logout'
+                                        )) ?>"><span>Déconnexion</span></a></li>
+                            <?php endif; ?>
+                        </ul>
+                        <div class="clr"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clr"></div>
+            <div id="content">
+               
+                        <?php
+                        echo $this->layout()->content . PHP_EOL;
+                        ?>
+            </div>
+        </div>
+    </body>
+</html>

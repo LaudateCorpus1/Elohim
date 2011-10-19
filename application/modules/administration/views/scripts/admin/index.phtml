@@ -1,0 +1,9 @@
+<h2>Bonjour <?= $this->escape($this->user->login); ?></h2>
+
+<a href="<?php echo $this->url(array('controller' => 'admin',
+                                     'action' => 'managearticles'
+                                )) ?>">Gérer les articles</a><br />
+
+<a href="<?php echo $this->url(array('controller' => 'admin',
+                                     'action' => 'managecategories'
+                                )) ?>">Gérer les catégories</a>

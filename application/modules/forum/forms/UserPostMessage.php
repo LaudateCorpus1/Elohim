@@ -1,0 +1,49 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of UserPostMessage
+ *
+ * @author jeremie
+ */
+class Forum_Form_UserPostMessage extends Zend_Form {
+
+    private $text;
+    private $submit;
+
+    public function init() {
+        $this->setAttrib('id', 'form_message')
+                ->setMethod('POST')
+                ->setName('form_message');
+
+        $this->addElementsMessageForm();
+    }
+
+    public function addElementsMessageForm() {
+        $this->text = new Zend_Form_Element_Textarea('content');
+        $this->text->setRequired(true)
+                   ->setLabel("Message")
+                   ->setAttribs(array('rows' => '7', 'cols' => '50'));
+
+        $this->submit = new Zend_Form_Element_Submit('post');
+
+        $this->addElements(array($this->text, $this->submit));
+
+//        $this->addElements(array(
+//            $this->createElement('textarea', 'content', array('rows' => '7', 'cols' => '50', 'value' => $messageValue))->setRequired(true)->setLabel("Message"),
+//            $this->createElement('submit', 'post')
+//        ));
+    }
+
+    public function setDefaultMessage($message)
+    {
+        $this->text->setValue($message);
+    }
+
+}
+
+?>

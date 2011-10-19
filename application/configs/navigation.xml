@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : navigation.xml
+    Created on : 6 décembre 2010, 17:12
+    Author     : jeremie
+    Description:
+        Purpose of the document follows.
+-->
+
+<configdata>
+<nav>
+    <home>
+        <label>Accueil</label>
+        <controller>index</controller>
+        <action>index</action>
+    </home>
+    <tags>
+        <label>Tags</label>
+        <controller>tag</controller>
+        <action>index</action>
+    </tags>
+    <users>
+        <label>Utilisateurs</label>
+        <controller>user</controller>
+        <action>index</action>
+    </users>
+    <ask>
+        <label>Nouveau Topic</label>
+        <module>forum</module>
+        <controller>topic</controller>
+        <action>add</action>
+    </ask>
+</nav>
+</configdata>

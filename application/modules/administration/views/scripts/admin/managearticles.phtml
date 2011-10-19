@@ -1,0 +1,61 @@
+<div id="sidebar">
+    <ul>
+        <li>
+            <?php foreach($this->sidebar as $category => $articles) : ?>
+
+            <div class="category"><?php echo $category; ?></div>
+                <ul>
+                <?php foreach($articles as $article) : ?>
+                    <li><a href="<?php echo $this->url(array(
+                        'controller' => 'admin',
+                        'action' => 'managearticles',
+                        'id' => $article->id
+                    )) ?>"><?php echo $this->escape($article->title) ?></a></li>
+                <?php  endforeach; ?>
+                </ul>
+           <?php endforeach;
+            ?>
+        </li>
+    </ul>
+</div>
+<a href="<?php echo $this->url(array(
+                        'module' => 'administration',
+                        'controller' => 'admin',
+                        'action' => 'addarticle'
+                    ),null, true) ?>">Ajouter un article</a>
+<?php if(isset($this->article)) : ?>
+<div id="article">
+    <a href="<?php echo $this->url(array(
+                        'controller' => 'admin',
+                        'action' => 'updatearticle',
+                        'id' => $this->article->id
+                    )) ?>">Modifier</a>
+    
+    <a href="<?php echo $this->url(array(
+                        'controller' => 'admin',
+                        'action' => 'deletearticle',
+                        'id' => $this->article->id
+                    )) ?>">Supprimer</a>
+    <div class="content">
+    <h2><?php echo $this->escape($this->article->title); ?></h2>
+
+    <?php echo nl2br($this->article->content); ?>
+    </div>
+
+    <div class="comments">
+        <h2>Commentaires</h2>
+
+        <?php foreach($this->comments as $comment) : ?>
+        <div class="comment">
+        <p class="comment_author">Par
+        <b><?php echo $this->escape($comment->author); ?></b>
+        </p>
+        <p><a href="#">Supprimer</a></p>
+        <p>
+        <?php  echo nl2br($this->escape($comment->content)); ?>
+        </p>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>

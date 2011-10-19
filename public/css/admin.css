@@ -1,0 +1,160 @@
+
+
+#content {
+	margin-left: 50px;
+}
+
+
+
+/* Sidebar */
+
+.category
+{
+    width:auto;
+    padding: 4px 0 4px 5px;
+    background: url(../images/degrade_vert.jpg) no-repeat;
+    color: #FFFFFF;
+   font-weight: bold;
+    
+}
+
+#sidebar 
+{
+        margin:0 0 20px 0;
+	padding-top:30px;
+	width:214px;
+	color: #787878;
+        float: left;
+}
+
+#sidebar ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#sidebar li {
+	margin: 0;
+	padding: 0;
+}
+
+#sidebar li ul {
+	margin: 0px 0px;
+	padding-bottom: 5px;
+}
+
+#sidebar li li {
+	border-bottom: 1px solid #1E1E1E;
+	background: #009900;/*#121212;*/
+	margin: 0px;
+	padding: 3px 0px;
+	border-left: none;
+}
+
+#sidebar li li a {
+	padding-left: 25px;
+	background: url(../images/img03.jpg) no-repeat 15px 4px;
+}
+
+#sidebar li li span {
+	display: block;
+	margin-top: -20px;
+	padding: 0;
+	font-size: 11px;
+	font-style: italic;
+}
+
+#sidebar h2 {
+	height: 38px;
+	padding-left: 30px;
+	letter-spacing: -.5px;
+	font-size: 1.8em;
+	color: #FFFFFF;
+}
+
+#sidebar p {
+	margin: 0 0px;
+	padding: 0px 30px 20px 30px;
+	text-align: justify;
+}
+
+#sidebar a {
+	border: none;
+	color: #FFFFFF/*#878787*/;
+}
+
+#sidebar a:hover {
+	text-decoration: underline;
+	color: #FFFFFF;
+}
+
+/* Search */
+
+#search {
+	margin: 0px;
+	padding: 20px 0px ;
+	background: url(images/img04.jpg) no-repeat 20px 28px;
+}
+
+#search form {
+	margin: 0;
+	padding: 10px 0 0 20px;
+}
+
+#search fieldset {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#search-text {
+	/*border: none;
+	background: none;*/
+	text-transform: lowercase;
+	font: normal 11px Arial, Helvetica, sans-serif;
+	color: #FFFFFF;
+}
+
+#search-submit {
+	/*border: none;
+	background: none;*/
+	color: #000000;
+}
+
+#article
+{
+    float: right;
+    width: 800px;
+    margin-right: 150px;
+    margin-top: 50px;
+}
+
+#article .content
+{
+    margin-bottom: 20px;
+}
+
+/* Religion */
+
+.sourate {
+    font: bold italic 12px calibri;
+}
+
+/* Comments */
+
+.comments {
+    border-top: solid black 1px;
+    margin:0 0 20px 0;
+    padding:30px 20px;
+    width:610px;
+}
+
+.comment {
+    background: grey;
+    padding: 0px 5px 0 5px;
+    -moz-border-radius: 5px;
+}
+
+.comment_author{
+    border-bottom: solid #999999 1px;
+}

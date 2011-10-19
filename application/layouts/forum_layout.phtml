@@ -1,0 +1,103 @@
+<?php
+/**
+ * Default Layout
+ *
+ * @author
+ * @version
+ */
+echo $this->doctype() . PHP_EOL;
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
+        <meta name="robots" content="index,follow" />
+
+        <?php
+        echo $this->headLink()
+                    ->prependStylesheet('/css/smoothness/jquery-ui-1.8.7.custom.css')
+                    ->appendStylesheet('/css/jquery.ui.autocomplete.custom.css')
+                    ->appendStylesheet('/css/main.css')
+                    ->appendStylesheet('/css/forum.css');
+        
+        $this->headScript()->appendFile('https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js');
+              $this->headScript()->appendFile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js");
+              $this->headScript()->appendFile($this->baseUrl().'/js/tag-it.js');
+              echo $this->headScript()->appendFile($this->baseUrl().'/js/script.js');
+        ?>
+    </head>
+    <body>
+        <div class="main">
+            <div class="header">
+                    <div class="logo">
+                        <h1><a href="<?php
+        echo $this->url(array(
+            'controller' => 'index',
+            'action' => 'index'
+        ),null, true);
+        ?>"><span>Islamine</span></a></h1>
+                    </div>
+                    <div class="menu_nav">
+<?php //echo $this->navigation()->menu() . PHP_EOL;  ?>
+                        <ul>
+                            <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'index',
+                                            'action' => 'index'
+                                        )) ?>"><span>Index site</span></a></li>
+                           
+                            <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'topic',
+                                            'action' => 'add'
+                                        )) ?>"><span>Nouveau Topic</span></a></li>
+                        </ul>
+                        
+                    </div>
+                     <div class="clr"></div>
+                <div id="nav">
+                        <ul>
+                            <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'article',
+                                            'action' => 'index'
+                                        ), null, true) ?>">Articles</a></li>
+                            
+                            <li><a href="<?php echo $this->url(array(
+                                            'module' => 'forum',
+                                            'controller' => 'index',
+                                            'action' => 'index'
+                                        ), null, true) ?>">Forum</a></li>
+                            
+                            <li><a href="">Annonces</a></li>
+                            
+                            <li><a href="">Membres</a></li>
+                            
+                            <li><a href="">Contact</a></li>
+                        </ul>
+                    </div>
+            </div>
+            
+            <div id="forum_nav">
+                <ul>
+                    <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'tag',
+                                        'action' => 'index'
+                                        )) ?>"><span>Tags</span></a></li>
+
+                    <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'topic',
+                                        'action' => 'add'
+                                        )) ?>"><span>Nouveau Topic</span></a></li>
+                </ul>
+
+            </div>
+            
+            <div class="clr"></div>
+            <div id="content">
+                
+                        <?php
+                        echo $this->layout()->content . PHP_EOL;
+                        ?>
+            </div>
+        </div>
+    </body>
+</html>

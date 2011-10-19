@@ -1,0 +1,33 @@
+<a href="<?php echo $this->url(array(       'module' => 'administration',
+                                            'controller' => 'admin',
+                                            'action' => 'index'
+                                        )) ?>">Admin</a>
+
+<?php  
+    foreach($this->news as $n) :
+?>
+        <div class="post">
+            <h2 class="title"><?php echo $this->escape($n->title); ?></h2>
+            <p class="meta"><span class="date">Le <?php echo $this->escape(date('d-m-Y', $n->date_posted)); ?> à <?php echo $this->escape(date('H:i:s', $n->date_posted)); ?></span></p>
+            <div class="entry">
+                <p><?php echo $this->escape($n->content); ?></p>
+                <p class="links"><a href="<?php echo $this->url(array(
+                                            'controller' => 'news',
+                                            'action' => 'index',
+                                            'id' => $n->id
+                                        )) ?>">Lire</a>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Commentaires</a></p>
+            </div>
+        </div>
+<?php 
+    endforeach; 
+?>
+
+<!--<div class="post">
+    <h2 class="title"><a href="#">Bienvenue</a></h2>
+    <p class="meta"><span class="date">May 10, 2011</span></p>
+    <div class="entry">
+        <p>Le site est ouvert !</p>
+        <p class="links"><a href="#">Lire</a>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Commentaires</a></p>
+    </div>
+</div>
+      -->

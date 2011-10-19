@@ -1,0 +1,160 @@
+<?php $this->headTitle($this->escape($this->topic['title'])); ?>
+
+<div id="show-topic">
+    <div id="topic-header">
+        <h1><?php echo $this->escape($this->topic['title']); ?></h1>
+    </div>
+    <?php 
+            if($this->edit == true)
+            {
+                echo '<div><a href="' . $this->url(array(
+                                'controller'=>'topic',
+                                'action'=>'edit',
+                                'topic'=>$this->escape($this->topic['topicId'])
+                            )) . '">Editer</a></div>';
+            }
+            ?>
+    
+    <div id="topic-main">
+        <table id="table-topic">
+            <tbody>
+                <tr>
+                    <td><div id="topic-date">Envoyé le <?php echo $this->escape($this->topic['date']); ?></div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="topic-content"><?php echo nl2br($this->escape($this->topic['message'])); ?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table id="table-vote-author">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="vote-t">
+                                            <input type="hidden" value="<?php echo $this->escape($this->topic['topicId']); ?>" />
+                                            <span class="vote-value"><?php echo $this->escape($this->topic['vote']); ?></span>
+                                            <a href="<?php echo $this->url(array(
+                                                                'controller'=>'topic',
+                                                                'action'=>'incrementvote'
+                                                            )); ?>" class="increment" title="Voter pour">+</a>
+                                            <a href="<?php echo $this->url(array(
+                                                                'controller'=>'topic',
+                                                                'action'=>'decrementvote'
+                                                            )); ?>" class="decrement" title="Voter contre">-</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        AUTEUR
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                         <div id="topic-tags">Tags
+                            <?php
+                                foreach($this->tags as $tag) : ?>
+                                <a href="<?php echo $this->url(array(
+                                                            'controller'=>'topic',
+                                                            'action'=>'tag',
+                                                            'name'=> $this->escape($tag->name),
+                                                            'topic' => null
+                                                        )); ?>
+                                   "><?php echo $this->escape($tag->name); ?></a>
+                                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),'1');
+                                endforeach; ?>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div id="messages">
+    <?php $i = 0;
+    foreach($this->messages as $mess) : ?>
+        <div id="message">
+            <table id="table-message">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div id="message-date">Envoyé le <?php echo $this->escape($mess->messages_date);?></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="message-content"><?php echo nl2br($this->escape($mess->content));?></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table id="table-vote-author">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="vote-m">
+                                                <input type="hidden" value="<?php echo $mess->messageId; ?>" />
+                                                <span class="vote-value"><?php echo $this->escape($mess->messages_vote);?></span>
+                                                <a href="<?php echo $this->url(array(
+                                                                    'controller'=>'message',
+                                                                    'action'=>'incrementvote',
+                                                                    'message' => $mess->messageId
+                                                                )); ?>" class="increment" title="Voter pour">+</a>
+                                                <a href="<?php echo $this->url(array(
+                                                                    'controller'=>'message',
+                                                                    'action'=>'decrementvote',
+                                                                    'message' => $mess->messageId
+                                                                )); ?>" class="decrement" title="Voter contre">-</a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            AUTEUR
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <a href="<?php echo $this->url(array(
+                                                    'controller'=>'message',
+                                                    'action'=>'comment',
+                                                    'message' => $mess->messageId,
+                                                    'topic' => $this->topic['topicId']
+                                                )); ?>" title="Commenter le message">Commenter
+                                </a>
+                                <div id="comment-form"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="comments">
+                                <?php
+                                    foreach($this->$i as $comment)
+                                    {
+                                        echo '<div class="comment">'.nl2br($this->escape($comment->content)).'</div>';
+                                    }
+                                ?>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> 
+        </div>
+    <?php $i++; endforeach; ?>
+    </div>
+</div>
+
+<a href="<?php echo $this->url(array(
+                                'controller'=>'topic',
+                                'action'=>'answer',
+                                'topic'=>$this->escape($this->topic['topicId'])
+                            )); ?>
+">R&eacute;pondre</a>
