@@ -50,23 +50,27 @@
 /******************************************/
 /***************** Topics *****************/
 /******************************************/
-.topic
+#topics
 {
     width: 800px;
-    padding : 10px 0 10px 0;
+}
+
+.topic
+{
+    padding : 6px 0 6px 0;
     border-bottom: solid grey 1px;
     margin-bottom: 2px;
     background-color: #F1F1F1; /*#e6e6e6;/*#dcdcdd;*/
-    font-size: 14px;
 }
 
-.topic a
+.subject a
 {
     color: #0033FF;
     font-weight: bold;
+    font-size: 13px;
 }
 
-.topic a:visited
+.subject a:visited
 {
     color: #5190bb;
 }
@@ -82,6 +86,22 @@
 .subject, .tags
 {
     margin-left: 15px;
+}
+
+.tags
+{
+	margin-bottom: 8px;
+	margin-top: 26px;
+}
+
+.tags a
+{
+	border-radius:5px 5px 5px 5px;
+    background-color: #EEEEEE;
+    border:1px solid #9999FF;
+    padding:2px 4px 3px;
+	color: #222222;
+    text-decoration:none;
 }
 
 .topic_vote, .topic_response_number
@@ -107,6 +127,11 @@
 /***************** Favoris ****************/
 /******************************************/
 
+#favtags
+{
+	width: 900px;
+}
+
 #favlist
 {
     float: right;
@@ -115,14 +140,14 @@
 
 ul#favlist li.favorited-style
 {
-    -moz-border-radius:5px 5px 5px 5px;
-    background-color:#DEE7F8;
-    border:1px solid #CAD8F3;
+    border-radius:5px 5px 5px 5px;
+    background-color: #EEEEEE; /*#DEE7F8;*/
+    border:1px solid #9999FF; /*#CAD8F3;*/
     padding:2px 4px 3px;
     margin-bottom: 4px;
 }
 
-ul#favlist li.favorited-style:hover 
+ul#favlist li.favorited-style:hover , .tags a:hover
 {
     background-color:#bbcef1;
     border-color:#6d95e0;
@@ -130,6 +155,7 @@ ul#favlist li.favorited-style:hover
 
 ul#favlist li.favorited-style a
 {
+	color: #222222;
     text-decoration:none;
 }
 
