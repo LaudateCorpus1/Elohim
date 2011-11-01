@@ -1,0 +1,42 @@
+Roles:
+Guest
+User
+Moderator
+Admin
+
+
+Accès:
+-Guest: Lire arcticles, lire forum, se connecter, s'inscrire
+-User: se déconnecter, lire articles, lire et écrire dans le forum, voir/modifier son profil, voir le profil des autres
+-Modérateur: se déconnecter, lire articles, lire, modifier et supprimer dans le forum, voir/modifier son profil, voir le profil des autres
+-Admin: tout
+
+
+
+Privilèges:
+Créer un topic: 1
+Répondre: 1
+Vote up : 15
+Vote down : 100
+Modifier tag : 300
+Proposer sujet en tant qu'article : 50 (passe par un admin)
+Avertir modérateur : 5
+Vote pour supprimer ou réouvrir un topic : 5000 (au bout de 7 votes, l'action est effectuée)
+Supprimer ses messages: 250
+Supprimer ses topics: 500
+Partager un topic/message par mail/FB/Twitter: 1
+
+
+Récompenses:
+Vote up reçu : +5
+Post modéré: -20
+Post sélectionné comme article: +100
+Meilleure réponse: +15 (+1 pour l'accepteur)
+Question vote down: -3
+Message vote down: -2 (-1 pour le voteur)
+
+Badges/médailles:
+Articlé sélectionné
+Editeur de tag
+Correcteur de tag
+Posteur efficace (beaucoup de vote up)

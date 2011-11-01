@@ -1,0 +1,276 @@
+/******************************************/
+/************ Menu Navigation *************/
+/******************************************/
+
+#forum_nav
+{
+    width: 970px;
+}
+
+#forum_nav ul
+{
+    margin: 70px auto;
+    padding-left: 100px;
+    list-style-type : none;
+    /*padding-bottom: 1px;*/
+}
+
+#forum_nav ul li
+{
+    float : left;
+    margin-left: 100px;
+}
+
+#forum_nav a
+{
+    font-family: Helvetica, Calibri, Tahoma;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1C1C1C;
+    padding: 3px;
+}
+
+#forum_nav a:hover
+{
+    color: #FEFEFE; /* D3D3D3 */
+    text-decoration: none;
+    background-color: #993300; /* 1C1C1C */
+}
+
+/******************************************/
+/***************** Content ****************/
+/******************************************/
+#content
+{
+	font-family: "Trebuchet MS", Arial;
+    margin-left: 150px;
+    margin-top: 15px;
+}
+
+/******************************************/
+/***************** Topics *****************/
+/******************************************/
+#topics
+{
+    width: 800px;
+}
+
+.topic
+{
+    padding : 6px 0 6px 0;
+    border-bottom: solid grey 1px;
+    margin-bottom: 2px;
+    background-color: #F1F1F1; /*#e6e6e6;/*#dcdcdd;*/
+}
+
+.topic_subject a
+{
+	color: #222222; /*#0033FF;*/
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.topic_subject a:hover, .topic_subject a:visited:hover
+{
+	color: #FF6600;
+	text-decoration: none;
+}
+
+.topic_subject a:visited
+{
+    color: #444444;
+}
+
+.topic_subject
+{
+    width: 540px;
+    float: left;
+    overflow: hidden;
+    /*word-wrap: break-word;*/
+}
+
+.subject, .tags
+{
+    margin-left: 15px;
+}
+
+.tags
+{
+    margin-bottom: 8px;
+    margin-top: 26px;
+}
+
+.tags a
+{
+    border-radius:5px 5px 5px 5px;
+    background-color: #FFCC66;
+    border:1px solid #FF6633;
+    padding:2px 4px 3px;
+    color: #333333;
+    text-decoration:none;
+}
+
+.topic_vote, .topic_response_number
+{
+    float: right;
+    width: 60px;
+    text-align: center;
+    margin-top: 0;
+}
+
+.topic_date
+{
+    float: right;
+    text-align: center;
+    width: 100px;
+    border-right: solid grey 1px;
+    border-left: solid grey 1px;
+}
+
+
+
+/******************************************/
+/***************** Favoris ****************/
+/******************************************/
+
+#favtags
+{
+	width: 900px;
+}
+
+#favlist
+{
+    float: right;
+    list-style-type : none;
+}
+
+ul#favlist li.favorited-style 
+{
+    border-radius:5px 5px 5px 5px;
+    background-color: #FFCC66;
+    border:1px solid #FF6633;
+    margin-top: 3px;
+}
+
+ul#favlist li.favorited-style:hover , .tags a:hover
+{
+    background-color:#FFFF99;
+    border-color:#CC6600;
+}
+
+ul#favlist li.favorited-style a
+{
+    color: #333333;
+    text-decoration:none;
+    padding:2px 4px 3px;
+}
+
+ul#favlist li.favorited-style a.close2
+{
+    color:#777777;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:bold;
+    outline:medium none;
+    /*padding:2px 0 2px 3px;*/
+    
+}
+
+/******************************************/
+/*************** Show Topic ***************/
+/******************************************/
+#show-topic, #table-topic, #table-message
+{
+    width: 750px;
+}
+
+#topic-header
+{  
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+#topic-header h1
+{
+    color: black;
+    font-size: 20px;
+    letter-spacing: 0px;
+    width: inherit;
+}
+
+#topic-main, #message
+{
+    border: solid  #D3D3D3 1px;
+    background-color: #F1F1F1;
+    margin-bottom: 20px;
+}
+
+#topic-date, #message-date
+{
+    font-size: 11px;
+    border-bottom: dotted grey 1px;
+}
+
+#topic-content, #message-content
+{
+    margin: 10px;
+    /*line-height: 13px;*/
+    font-size: 13.5px;
+}
+
+#table-vote-author
+{
+    background-color: #FFCC66;
+    float: right;
+    margin-right: 50px;
+}
+
+#table-vote-author td
+{
+    height: 50px;
+    padding: 10px;
+}
+
+#topic-tags, #topic-menu
+{
+    margin: 5px;
+}
+
+#topic-menu a
+{
+    font-size: 11.5px;
+    color: #555555;
+}
+
+.increment, .decrement
+{
+    cursor: pointer;
+}
+
+#table-message #comments
+{
+    margin: 20px;
+}
+
+#table-message .comment
+{
+    border-top: dashed grey 1px;
+    margin-bottom: 20px;
+    padding-top: 1px;
+}
+
+#topic-tags a
+{
+    border-radius:5px 5px 5px 5px;
+    background-color: #FFCC66;
+    border:1px solid #FF6633;
+    padding:2px 4px 3px;
+    color: #333333;
+    text-decoration:none;
+}
+
+#topic-tags a:hover
+{
+    background-color:#FFFF99;
+    border-color:#CC6600;
+}
