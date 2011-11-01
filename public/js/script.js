@@ -1,5 +1,8 @@
 $(function()
 {
+    var url = window.location.pathname;
+    var urlSplit = url.split('/');
+    
     // Code pour voter sur un topic/message
     $('.increment').removeAttr('href');
     $('.decrement').removeAttr('href');
@@ -32,7 +35,18 @@ $(function()
         
         $.post(url, {}, function(response)
         {
-            parent.find('span').first().text(response);
+            try
+            {
+                var obj = jQuery.parseJSON(response);
+                if(obj.error_message != null)
+                    alert(obj.error_message);
+                else
+                    parent.find('span').first().text(response);
+            }
+            catch(e)
+            {
+                
+            }
 
         });
     }
@@ -95,7 +109,9 @@ $(function()
 
     // Code pour l'autocomplete des tags lors d'un ajout de topic
     $('#tagsValues').hide();
+    var tags = $('#tagsValues').val();
+    
     $("#tags").tagit({
-            availableTags: "/forum/tag/autocomplete"
+            availableTags: "/forum/tag/autocomplete", populateTags: tags
     });
 });

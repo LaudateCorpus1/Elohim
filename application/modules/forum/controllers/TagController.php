@@ -58,6 +58,22 @@ class Forum_TagController extends Zend_Controller_Action
         $res = $t->search($this->_getParam('term'));
         $this->_helper->json(array_values($res));
     }
+    
+    public function retagAction()
+    {
+        $id = $this->_getParam('topic');
+        $topic = new Forum_Model_Topic();
+        $tags = $topic->getTagsFromTopic($id)->toArray();
+        $tags_string = "";
+        foreach ($tags as $tag)
+        {
+            $tags_string .= $tag['name']. " ";
+        }
+        $tags_string = substr($tags_string, 0, -1);
+        $form = new Forum_Form_UserRetagTopic();
+        $form->populate(array('tagsValues' => $tags_string));
+        $this->view->form = $form;
+    }
 }
 
 

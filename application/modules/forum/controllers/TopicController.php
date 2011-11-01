@@ -16,6 +16,7 @@ class Forum_TopicController extends Zend_Controller_Action {
     }
 
     public function showAction() {
+        
         $id = $this->_getParam('topic');
         if ($id > 0) {
             $i = 0;
@@ -56,6 +57,7 @@ class Forum_TopicController extends Zend_Controller_Action {
     }
 
     public function addAction() {
+        
         $topicForm = new Forum_Form_UserPostTopic();
 
         if ($this->getRequest()->isPost()) {
@@ -105,7 +107,7 @@ class Forum_TopicController extends Zend_Controller_Action {
         $this->view->topic = $topicId = $this->_getParam('topic');
         $vote = $incrementTopic->incrementVote($topicId);
         if ($this->_request->isXmlHttpRequest())
-                echo $vote;
+            echo $vote;
     }
 
     public function decrementvoteAction() {
@@ -113,7 +115,7 @@ class Forum_TopicController extends Zend_Controller_Action {
         $this->view->topic = $topicId = $this->_getParam('topic');
         $vote = $decrementTopic->decrementVote($topicId);
         if ($this->_request->isXmlHttpRequest())
-                echo $vote;
+            echo $vote;
     }
 
     public function editAction() {

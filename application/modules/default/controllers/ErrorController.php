@@ -2,6 +2,13 @@
 
 class ErrorController extends Zend_Controller_Action
 {
+    public function init()
+    {
+        if ($this->_request->isXmlHttpRequest()) {
+            $this->_helper->viewRenderer->setNoRender();
+            $this->_helper->layout->disableLayout();    //disable layout for ajax
+        }
+    }
 
     public function errorAction()
     {

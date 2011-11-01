@@ -11,12 +11,12 @@ class Forum_Model_FavoriteTags extends Zend_Db_Table_Abstract
     protected $_referenceMap = array(
         'User' => array(
                 'columns'       => array('userId'),
-                'refTableClass' => 'Model_Topic',
+                'refTableClass' => 'Forum_Model_Topic',
                 'refColumns'    => array('userId')
         ),
         'Tag'   => array(
                 'columns'       => array('tagId'),
-                'refTableClass' => 'Model_Tag',
+                'refTableClass' => 'Forum_Model_Tag',
                 'refColumns'    => array('tagId')
         ));
 

@@ -55,7 +55,7 @@
                 </tr>
                 <tr>
                     <td>
-                         <div id="topic-tags">Tags
+                         <div id="topic-tags">
                             <?php
                                 foreach($this->tags as $tag) : ?>
                                 <a href="<?php echo $this->url(array(
@@ -67,6 +67,14 @@
                                    "><?php echo $this->escape($tag->name); ?></a>
                                 <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),'1');
                                 endforeach; ?>
+                        </div>
+                        <div id="topic-menu">
+                            <a href="<?php echo $this->url(array(
+                                                            'controller'=>'tag',
+                                                            'action'=>'retag',
+                                                            'topic'=> $this->escape($this->topic['topicId'])
+                                                        )); ?>
+                                   ">Modifier tags</a>
                         </div>
                     </td>
                 </tr>

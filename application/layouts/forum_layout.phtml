@@ -19,7 +19,7 @@ echo $this->doctype() . PHP_EOL;
                     ->prependStylesheet('/css/smoothness/jquery-ui-1.8.7.custom.css')
                     ->appendStylesheet('/css/jquery.ui.autocomplete.custom.css')
                     ->appendStylesheet('/css/main.css')
-                    ->appendStylesheet('/css/forum.css');
+                    ->appendStylesheet('/css/forum_orange.css');
         
         $this->headScript()->appendFile('https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js');
               $this->headScript()->appendFile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js");
@@ -36,20 +36,22 @@ echo $this->doctype() . PHP_EOL;
             'controller' => 'index',
             'action' => 'index'
         ),null, true);
-        ?>"><span>Islamine</span></a></h1>
+        ?>"><img src="/images/logo.png" /></a></h1>
                     </div>
                     <div class="menu_nav">
 <?php //echo $this->navigation()->menu() . PHP_EOL;  ?>
                         <ul>
                             <li><a href="<?php echo $this->url(array(
-                                            'controller' => 'index',
-                                            'action' => 'index'
-                                        )) ?>"><span>Index site</span></a></li>
+                                            'module' => 'default',
+                                            'controller' => 'user',
+                                            'action' => 'register'
+                                        )) ?>"><span>S'inscrire</span></a></li>
                            
                             <li><a href="<?php echo $this->url(array(
-                                            'controller' => 'topic',
-                                            'action' => 'add'
-                                        )) ?>"><span>Nouveau Topic</span></a></li>
+                                            'module' => 'default',
+                                            'controller' => 'user',
+                                            'action' => 'login'
+                                        )) ?>"><span>Login</span></a></li>
                         </ul>
                         
                     </div>
@@ -79,14 +81,16 @@ echo $this->doctype() . PHP_EOL;
             <div id="forum_nav">
                 <ul>
                     <li><a href="<?php echo $this->url(array(
+                                        'module' => 'forum',
                                         'controller' => 'tag',
                                         'action' => 'index'
-                                        )) ?>"><span>Tags</span></a></li>
+                                        ), null, true) ?>"><span>Tags</span></a></li>
 
                     <li><a href="<?php echo $this->url(array(
+                                        'module' => 'forum',
                                         'controller' => 'topic',
                                         'action' => 'add'
-                                        )) ?>"><span>Nouveau Topic</span></a></li>
+                                        ), null, true) ?>"><span>Nouveau Topic</span></a></li>
                 </ul>
 
             </div>

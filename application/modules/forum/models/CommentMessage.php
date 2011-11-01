@@ -16,12 +16,12 @@ class Forum_Model_CommentMessage extends Zend_Db_Table_Abstract
     protected $_referenceMap = array(
         'Comment' => array(
                 'columns'       => array('commentId'),
-                'refTableClass' => 'Model_Comment',
+                'refTableClass' => 'Forum_Model_Comment',
                 'refColumns'    => array('commentId')
         ),
         'Message'   => array(
                 'columns'       => array('messageId'),
-                'refTableClass' => 'Message_Tag',
+                'refTableClass' => 'Forum_Message_Tag',
                 'refColumns'    => array('messageId')
         ));
 

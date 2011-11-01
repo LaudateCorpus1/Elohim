@@ -9,7 +9,7 @@ body {
 html, .main {
 	padding:0;
 	margin:0;
-	background:#fefefe url(../images/bg3.gif) top repeat-x;
+	background:#fefefe url(../images/bg_orange.png) top repeat-x;
 }
 .clr {
 	clear:both;
@@ -19,6 +19,11 @@ html, .main {
 	font-size:0;
 	line-height:0;
 }
+
+img{
+    border: none;
+}
+
 .logo {
 	padding:15px 0 20px 0;
 	margin:0 auto;
@@ -50,7 +55,7 @@ h1 a:hover span {
 	color:#fff;
 }
 h1 span {
-	color: /*#33CC33;*/#78bbe6;
+	color: /*#33CC33;*/#FFCC66;
 }
 h1 small {
 	color:#fff;

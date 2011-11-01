@@ -12,12 +12,12 @@ class Forum_Model_TopicTag extends Zend_Db_Table_Abstract
     protected $_referenceMap = array(
         'Topic' => array(
                 'columns'       => array('topicId'),
-                'refTableClass' => 'Model_Topic',
+                'refTableClass' => 'Forum_Model_Topic',
                 'refColumns'    => array('topicId')
         ),
         'Tag'   => array(
                 'columns'       => array('tagId'),
-                'refTableClass' => 'Model_Tag',
+                'refTableClass' => 'Forum_Model_Tag',
                 'refColumns'    => array('tagId')
         ));
 

@@ -7,11 +7,11 @@ class Administration_AdminController extends Zend_Controller_Action
     {
         $auth = Zend_Auth::getInstance();
         
-                if (!$auth->hasIdentity()) 
-                {
-                    if($this->_request->getActionName() != 'login')
-                        $this->_redirect('/administration/admin/login');
-                }
+        if (!$auth->hasIdentity()) 
+        {
+            if($this->_request->getActionName() != 'login')
+                $this->_redirect('/administration/admin/login');
+        }
     }
 
     public function init()
@@ -23,14 +23,14 @@ class Administration_AdminController extends Zend_Controller_Action
     {
         $auth = Zend_Auth::getInstance();
                 
-                if (!$auth->hasIdentity()) {
-                        $this->_redirect('/administration/admin/login');
-                }
-                else
-                {
-                    $user = $auth->getIdentity();
-                    $this->view->user = $user;
-                }
+        if (!$auth->hasIdentity()) {
+                $this->_redirect('/administration/admin/login');
+        }
+        else
+        {
+            $user = $auth->getIdentity();
+            $this->view->user = $user;
+        }
     }
 
     public function loginAction()

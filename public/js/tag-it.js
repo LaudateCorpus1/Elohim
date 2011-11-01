@@ -18,6 +18,15 @@
 
 		tag_input		= el.children(".tagit-new").children(".tagit-input");
 
+                if (typeof options.populateTags != 'undefined' && options.populateTags != '')
+                {
+                    var tagsSplit = options.populateTags.split(' ');
+                    $.each(tagsSplit, function(i, l)
+                    {
+                        create_choice(l);
+                    });
+                }
+ 
                 if($('#tagsValues').val() != "")
                     $('#tagsValues').val("");
 
