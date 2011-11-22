@@ -1,0 +1,16 @@
+Motif des autres votants
+
+<?php
+if(isset($this->close_motif)):
+?>
+<div>
+    <ol>
+    <?php
+    foreach($this->close_motif as $motif)
+    {
+        echo '<li>'.$this->escape($motif['motif']).' par <strong>'.$this->escape($motif['login']).'</strong></li>';
+    }
+    ?>
+    </ol>
+</div>
+<?php endif; ?>

@@ -1,0 +1,42 @@
+<h3>Avertir un modérateur</h3>
+
+<?php
+if(isset($this->message)) :
+        echo $this->escape($this->message);
+?>
+<a href="#" onclick="window.close();return false;">Fermer</a>
+
+<?php
+else :
+    echo $this->form; 
+?>
+<div id="topic-main">
+    <table id="table-topic">
+        <tbody>
+            <tr>
+                <td><div id="topic-date">Envoyé le <?php echo $this->escape($this->topic['date']); ?></div></td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="topic-content"><?php echo nl2br($this->escape($this->topic['message'])); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table id="table-vote-author">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    AUTEUR
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<?php
+endif;
