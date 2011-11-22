@@ -21,7 +21,7 @@ class Forum_Model_CommentMessage extends Zend_Db_Table_Abstract
         ),
         'Message'   => array(
                 'columns'       => array('messageId'),
-                'refTableClass' => 'Forum_Message_Tag',
+                'refTableClass' => 'Forum_Model_Message',
                 'refColumns'    => array('messageId')
         ));
 

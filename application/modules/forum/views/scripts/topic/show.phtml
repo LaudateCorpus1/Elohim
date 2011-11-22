@@ -1,8 +1,33 @@
-<?php $this->headTitle($this->escape($this->topic['title'])); ?>
+<?php 
+    $this->headTitle($this->escape($this->topic['title'])); 
+    $style_reopen_modal_confirm = 'style="display: none;"';
+    $style_close_modal_form = 'style="display: none;"';
+    $style_nb_reopen_votes = 'style="display: none;"';
+    $style_close_motif = 'style="display: none;"';
+
+    if($this->escape($this->topic['status']) == 'closed')
+    {
+        $style_reopen_modal_confirm = '';
+        if($this->escape($this->nb_reopen_votes) > 0)
+                $style_nb_reopen_votes = '';
+    }
+    else
+    {
+        $style_close_modal_form = '';
+        if($this->escape($this->nb_close_votes) > 0)
+                $style_close_motif = '';
+    }
+?>
 
 <div id="show-topic">
     <div id="topic-header">
-        <h1><?php echo $this->escape($this->topic['title']); ?></h1>
+        <h1>
+            <?php 
+                if($this->escape($this->topic['status']) == 'closed')
+                    echo '<span class="topic-status">[fermé]</span>';
+                echo $this->escape($this->topic['title']);
+            ?>
+        </h1>
     </div>
     <?php 
             if($this->edit == true)
@@ -69,12 +94,48 @@
                                 endforeach; ?>
                         </div>
                         <div id="topic-menu">
+                            <!-- Lien pour modifier les tags -->
                             <a href="<?php echo $this->url(array(
                                                             'controller'=>'tag',
                                                             'action'=>'retag',
                                                             'topic'=> $this->escape($this->topic['topicId'])
                                                         )); ?>
                                    ">Modifier tags</a>
+                            -
+                            <!-- Lien pour avertir un modérateur -->
+                            <a href="<?php echo $this->url(array(
+                                                            'controller'=>'topic',
+                                                            'action'=>'alert',
+                                                            'topic'=> $this->escape($this->topic['topicId'])
+                                                        )); ?>
+                                   " target="_blank">Avertir un modérateur</a>
+                            
+                            <?php  if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
+                            -
+                            <!-- Lien pour voter pour réouvrir / fermer le sujet -->
+                            <a href="<?php echo $this->url(array(
+                                                            'controller'=>'topic',
+                                                            'action'=>'reopen',
+                                                            'topic'=> $this->escape($this->topic['topicId'])
+                                                        )); ?>" class="reopen-modal-confirm" <?php echo $style_reopen_modal_confirm; ?>>Réouvrir</a>
+                                                        
+                            <a href="<?php echo $this->url(array(
+                                                            'controller'=>'topic',
+                                                            'action'=>'close',
+                                                            'topic'=> $this->escape($this->topic['topicId'])
+                                                        )); ?>" class="close-modal-form" <?php echo $style_close_modal_form; ?>>Fermer</a>
+                            <?php endif; ?>
+                                                   
+                            <?php  if($this->hasAccess($this->module.'_'.$this->controller, 'motifs')): ?>
+                            <!-- Lien pour afficher le motifs des votants -->
+                            <span class="nb-reopen-votes" <?php echo $style_nb_reopen_votes; ?>>(<?php echo $this->escape($this->nb_reopen_votes); ?>)</span>
+        
+                            <a href="<?php echo $this->url(array(
+                                                            'controller'=>'topic',
+                                                            'action'=>'motifs',
+                                                            'topic'=> $this->escape($this->topic['topicId'])
+                                                        )); ?>" class="close-motif" <?php echo $style_close_motif; ?>>(<?php echo $this->escape($this->nb_close_votes); ?>)</a>
+                           <?php endif; ?>
                         </div>
                     </td>
                 </tr>
@@ -95,7 +156,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="message-content"><?php echo nl2br($this->escape($mess->content));?></div>
+                            <div id="message-content"><?php echo $this->purify($mess->content);?></div>
                         </td>
                     </tr>
                     <tr>
@@ -120,7 +181,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            AUTEUR
+                                            <a href="#"><?php echo $this->escape($mess->login); ?></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -129,27 +190,32 @@
                     </tr>
                     <tr>
                         <td>
-                            <div>
-                                <a href="<?php echo $this->url(array(
-                                                    'controller'=>'message',
-                                                    'action'=>'comment',
-                                                    'message' => $mess->messageId,
-                                                    'topic' => $this->topic['topicId']
-                                                )); ?>" title="Commenter le message">Commenter
-                                </a>
-                                <div id="comment-form"></div>
+                            <div id="comments-<?php echo $this->escape($mess->messageId); ?>" class="comments">
+                                <?php
+                                    foreach($this->$i as $comment)
+                                    {
+                                        echo '<div class="comment">'.nl2br($this->escape($comment->content)).' - Le '.$this->escape($comment->date).' par '.$this->escape($comment->login).'</div>';
+                                    }
+                                ?>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div id="comments">
-                                <?php
-                                    foreach($this->$i as $comment)
-                                    {
-                                        echo '<div class="comment">'.nl2br($this->escape($comment->content)).'</div>';
-                                    }
-                                ?>
+                            <div class="comment-link">
+                                <a class="comment-link-<?php echo $this->escape($mess->messageId); ?>" href="<?php echo $this->url(array(
+                                                    'controller'=>'message',
+                                                    'action'=>'comment',
+                                                    'message' => $mess->messageId,
+                                                    'topic' => $this->topic['topicId']
+                                                )); ?>" title="Commenter le message">Ajouter un commentaire
+                                </a>
+                                <div id="comment-form-<?php echo $this->escape($mess->messageId); ?>" style="display:none;">
+                                    <?php 
+                                        $this->setFormId($this->commentForm, 'form_comment_'.$mess->messageId);
+                                        echo $this->commentForm; 
+                                    ?>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -160,9 +226,52 @@
     </div>
 </div>
 
-<a href="<?php echo $this->url(array(
-                                'controller'=>'topic',
-                                'action'=>'answer',
-                                'topic'=>$this->escape($this->topic['topicId'])
-                            )); ?>
-">R&eacute;pondre</a>
+<?php 
+$style_answer_topic = 'style="display: none;"';
+$style_dialog_form = 'style="display: none;"';
+$style_dialog_motif = 'style="display: none;"';
+$style_reopen_form = 'style="display: none;"';
+
+if($this->escape($this->topic['status']) != 'closed')
+    $style_answer_topic = '';
+?>
+<div id="answer-topic" <?php echo $style_answer_topic; ?>>
+    <a href="<?php echo $this->url(array(
+                                    'controller'=>'topic',
+                                    'action'=>'answer',
+                                    'topic'=>$this->escape($this->topic['topicId'])
+                                )); ?>
+    ">R&eacute;pondre</a>
+</div>
+
+<div id="block-quick-answer">
+    <?php echo $this->messageForm; ?>
+    <a name="answer"></a>
+</div>
+
+<?php  if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
+<div id="dialog-form" title="Voter pour fermer le sujet" <?php echo $style_dialog_form; ?>>
+    <!-- #customize your modal window here -->
+
+        <?php echo $this->form; ?>
+</div>
+
+<div id="dialog-motif" title="Motif des autres votants" <?php echo $style_dialog_motif; ?>>
+    <ol>
+    <?php
+    if($this->escape($this->topic['status']) != 'closed')
+    {
+        foreach($this->close_motif as $motif)
+            echo '<li>'.$this->escape($motif['motif']).' par <strong>'.$this->escape($motif['login']).'</strong></li>';
+    }
+    ?>
+    </ol>
+</div>
+
+<div id="dialog-reopen-form" title="Voter pour réouvrir le sujet" <?php echo $style_reopen_form; ?>>
+    <input type="hidden" name="topic_id" value="<?php echo $this->escape($this->topic['topicId']); ?>" />
+    Vous allez voter pour réouvrir le sujet.<br />
+    <?php echo $this->reopenTopicSentence($this->escape($this->nb_reopen_votes)); ?>
+</div>
+
+<?php endif; ?>

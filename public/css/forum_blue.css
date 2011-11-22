@@ -1,3 +1,8 @@
+a
+{
+    color: #222;
+}
+
 /******************************************/
 /************ Menu Navigation *************/
 /******************************************/
@@ -32,9 +37,9 @@
 
 #forum_nav a:hover
 {
-    color: #D3D3D3;
+    color: #FEFEFE; /* D3D3D3 */
     text-decoration: none;
-    background-color: #1C1C1C;
+    background-color: #993300; /* 1C1C1C */
 }
 
 /******************************************/
@@ -42,81 +47,196 @@
 /******************************************/
 #content
 {
-	font-family: "Trebuchet MS", Arial;
-    margin-left: 150px;
-    margin-top: 15px;
+    font-family: "Trebuchet MS", Arial;
+    margin: 15px auto;
+    width: 770px; /*700*/
+    float: left;
 }
+
+/******************************************/
+/*********** Sidebar let *****************/
+/******************************************/
+#sidebar-left
+{
+    float: left;
+    overflow: hidden;
+    width: 85px;
+    background-color: #FFCC66;
+    margin: 15px 10px 0 0;
+    padding: 5px;
+}
+
+
+/******************************************/
+/*********** Sidebar right *****************/
+/******************************************/
+#sidebar-right
+{
+    float: right;
+    overflow: hidden;
+    width: 200px;
+    margin: 15px auto;
+}
+
+/******************************************/
+/**************** Module ******************/
+/******************************************/
+.module
+{
+    margin: 0 0 15px auto;
+}
+
+/******************************************/
+/************ Sort Module *****************/
+/******************************************/
+#sort-module
+{
+    background-color: #F1F1F1;
+    padding: 10px;
+    /*width: 150px;*/
+    font-weight: bold;
+}
+
+#sort-module ul
+{
+    padding-left: 15px;
+    list-style-type: none;
+    font-weight: normal;
+}
+
+#description-module
+{
+    padding: 0 10px 0 10px;
+    border: #666 dotted 1px;
+}
+
 
 /******************************************/
 /***************** Topics *****************/
 /******************************************/
+#topics-top
+{
+    width: 768px;
+    float: left;
+    text-align: center;
+    background-color: #D3D3D3;
+    margin-bottom: 3px;
+    border: grey solid 1px;
+}
+
 #topics
 {
-    width: 800px;
+    float: left;
 }
 
 .topic
 {
+    width: 770px; /*700*/
     padding : 6px 0 6px 0;
     border-bottom: solid grey 1px;
     margin-bottom: 2px;
     background-color: #F1F1F1; /*#e6e6e6;/*#dcdcdd;*/
+    float: left;
 }
 
-.subject a
+#topic-container-top
 {
-    color: #0033FF;
-    font-weight: bold;
-    font-size: 13px;
+    width: 570px; /*500*/
+    float: left;
 }
 
-.subject a:visited
+.topic-container
+{
+    width: 570px; /*500*/
+    float: left;
+}
+
+.topic-stats
+{
+    float: right;
+    width: 195px;
+}
+
+.topic-subject a
+{
+	color: #0033FF;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.topic-subject a:hover, .topic-subject a:visited:hover
+{
+	color: #FF6600;
+	text-decoration: none;
+}
+
+.topic-subject a:visited
 {
     color: #5190bb;
 }
 
-.topic_subject
+.topic-subject
 {
-    width: 540px;
-    float: left;
+    padding-left: 15px;
+    width: 550px;
     overflow: hidden;
     /*word-wrap: break-word;*/
 }
 
-.subject, .tags
+.tags
 {
-    margin-left: 15px;
+    width: 550px;
+    padding-left: 15px;
 }
 
 .tags
 {
-	margin-bottom: 8px;
-	margin-top: 26px;
+    padding-bottom: 8px;
+    padding-top: 6px;
 }
 
 .tags a
 {
-	border-radius:5px 5px 5px 5px;
+    cursor: pointer;
+    border-radius:5px 5px 5px 5px;
     background-color: #EEEEEE;
     border:1px solid #9999FF;
     padding:2px 4px 3px;
-	color: #222222;
+    color: #222222;
     text-decoration:none;
+    
+    
+    
 }
 
-.topic_vote, .topic_response_number
+#topic-vote-top, #topic-response-top
 {
-    float: right;
-    width: 60px;
+    float: left;
+    width: 50px;
     text-align: center;
     margin-top: 0;
 }
 
-.topic_date
+.topic-vote, .topic-response-number
+{
+    float: right;
+    width: 50px;
+    text-align: center;
+    margin-top: 0;
+}
+
+#topic-date-top
+{
+    float: left;
+    text-align: center;
+    width: 93px;
+}
+
+.topic-date
 {
     float: right;
     text-align: center;
-    width: 100px;
+    width: 93px;
     border-right: solid grey 1px;
     border-left: solid grey 1px;
 }
@@ -129,22 +249,22 @@
 
 #favtags
 {
-	width: 900px;
+    overflow: hidden;
 }
 
 #favlist
 {
-    float: right;
     list-style-type : none;
 }
 
-ul#favlist li.favorited-style
+ul#favlist li.favorited-style 
 {
     border-radius:5px 5px 5px 5px;
     background-color: #EEEEEE; /*#DEE7F8;*/
     border:1px solid #9999FF; /*#CAD8F3;*/
-    padding:2px 4px 3px;
-    margin-bottom: 4px;
+    margin-top: 3px;
+    float: left;
+    clear: left;
 }
 
 ul#favlist li.favorited-style:hover , .tags a:hover
@@ -155,8 +275,9 @@ ul#favlist li.favorited-style:hover , .tags a:hover
 
 ul#favlist li.favorited-style a
 {
-	color: #222222;
+    color: #222222;
     text-decoration:none;
+    padding:2px 4px 3px;
 }
 
 ul#favlist li.favorited-style a.close2
@@ -166,7 +287,7 @@ ul#favlist li.favorited-style a.close2
     font-size:12px;
     font-weight:bold;
     outline:medium none;
-    padding:2px 0 2px 3px;
+    /*padding:2px 0 2px 3px;*/
     
 }
 
@@ -194,14 +315,10 @@ ul#favlist li.favorited-style a.close2
 
 #topic-main, #message
 {
+    width: 750px;
     border: solid  #D3D3D3 1px;
     background-color: #F1F1F1;
     margin-bottom: 20px;
-}
-
-#topic-main
-{
-    background-color: #E6E6E6;
 }
 
 #topic-date, #message-date
@@ -214,6 +331,7 @@ ul#favlist li.favorited-style a.close2
 {
     margin: 10px;
     /*line-height: 13px;*/
+    font-size: 13.5px;
 }
 
 #table-vote-author
@@ -229,9 +347,15 @@ ul#favlist li.favorited-style a.close2
     padding: 10px;
 }
 
-#topic-tags
+#topic-tags, #topic-menu
 {
     margin: 5px;
+}
+
+#topic-menu a, .nb-reopen-votes
+{
+    font-size: 11.5px;
+    color: #555555;
 }
 
 .increment, .decrement
@@ -249,4 +373,34 @@ ul#favlist li.favorited-style a.close2
     border-top: dashed grey 1px;
     margin-bottom: 20px;
     padding-top: 1px;
+}
+
+#topic-tags a
+{
+    border-radius:5px 5px 5px 5px;
+    background-color: #EEEEEE; /*#DEE7F8;*/
+    border:1px solid #9999FF; /*#CAD8F3;*/
+    padding:2px 4px 3px;
+    color: #333333;
+    text-decoration:none;
+}
+
+#topic-tags a:hover
+{
+    background-color:#bbcef1;
+    border-color:#6d95e0;
+}
+
+/******************************************/
+/************** Modal dialogs *************/
+/******************************************/
+
+#dialog-motif ol
+{
+    margin-left: 20px;
+}
+
+.close-modal-form, .close-motif, .reopen-modal-confirm
+{
+    cursor: pointer;
 }

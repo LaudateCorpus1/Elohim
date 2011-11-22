@@ -33,6 +33,7 @@ class Islamine_Acl extends Zend_Acl
         }
         
         $this->_setKarmaPrivileges();
+        $this->_setUserPrivileges();
     }
 	
     protected function _setRoles($roles)	
@@ -89,9 +90,30 @@ class Islamine_Acl extends Zend_Acl
         $this->_karma_privileges = $model_privileges->getAll();
     }
     
-    public function _getKarmaPrivileges()
+    /*public function _getKarmaPrivileges()
     {
         return $this->_karma_privileges;
+    }*/
+    
+    /*
+     * Définit le role spécifique de chaque utilisateur (i.e. les actions de karma)
+     */
+    protected function _setUserPrivileges()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $role = $identity->login.'_'.$identity->id;
+            if(!$this->hasRole($role)) 
+                $this->addRole(new Zend_Acl_Role($role), $identity->role);
+
+            foreach($this->_karma_privileges as $privilege)
+            {
+                if(intval($identity->karma) >= $privilege->karma_needed)
+                        $this->allow($role, $privilege->module.'_'.$privilege->resource, $privilege->privilege);
+            }
+        }
     }
 
 }

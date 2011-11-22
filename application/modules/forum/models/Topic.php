@@ -18,6 +18,33 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             }
             return $row->toArray();
     }
+    
+    public function getAll($closed_flag = true, $count = 50, $order = 'Topic.date DESC')
+    {
+        $orderby = $order;
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'count(Messages.topicId) as amount_messages',
+                  'topicId',
+                  'title',
+                  'userId',
+                  'date',
+                  'vote',
+                  'status'
+                  ))
+              ->joinLeft(array('Messages'), 'Topic.topicId=Messages.topicId', null)
+              ->group($this->_name.'.topicId')
+              ->order($orderby)
+              ->order('Topic.date DESC')
+              ->limit($count);
+        
+        if(!$closed_flag)
+            $query->where('status != "closed"');
+
+        $res = $this->fetchAll($query);
+        return $res;
+    }
 
     public function addTopic($userId, $title, $message, $ipAddress = null, $date = null, $vote = 0)
     {
@@ -58,6 +85,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                                 'messages_date' => 'date',
                                 'messages_vote' => 'vote'
                                 ))
+              ->join(array('user'), 'Messages.userId=user.id', 'login') 
               ->where('Topic.topicId = ?',$topicId)
               ->order('Messages.date ASC');
 
@@ -89,18 +117,23 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         return $res;
     }
 
-    public function getTopicsByTagName($name)
+    public function getTopicsByTagName($name, $closed_flag = true, $count = 50, $order = 'Topic.date DESC')
     {
+        $orderby = $order;
+        
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from($this->_name,array(
-                                'topic_topicId' => 'topicId',
+                                'count(Messages.topicId) as amount_messages',
+                                'topicId',
                                 'userId',
                                 'title',
                                 'message',
                                 'date',
-                                'vote'
+                                'vote',
+                                'status'
                                 ))
+              ->joinLeft('Messages', 'Topic.topicId=Messages.topicId', null)
               ->join('TopicTag', 'Topic.topicId = TopicTag.topicId',array(
                                 'topicTag_topicId' => 'topicId',
                                 'topicTag_tagId' => 'tagId'
@@ -108,7 +141,14 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->join('Tags', 'TopicTag.tagId = Tags.tagId',array(
                                 'tag_tagId' => 'tagId'
                                 ))
-              ->where('Tags.name = ?',$name);
+              ->where('Tags.name = ?',$name)
+              ->group($this->_name.'.topicId')
+              ->order($orderby)
+              ->order('Topic.date DESC')
+              ->limit($count);
+        
+        if(!$closed_flag)
+            $query->where('status != "closed"');
 
         $res = $this->fetchAll($query);
         return $res;
@@ -122,7 +162,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         $res = $this->fetchRow($query);
 
         $data = array('vote' => new Zend_Db_Expr('vote + 1'));
-        $this->update($data, array('topicId = ?' => $topicId));
+        $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
 
         return (int)$res->vote + 1;
     }
@@ -135,7 +175,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         $res = $this->fetchRow($query);
 
         $data = array('vote' => new Zend_Db_Expr('vote - 1'));
-        $this->update($data, array('topicId = ?' => $topicId));
+        $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
 
         return (int)$res->vote - 1;
     }
@@ -151,6 +191,114 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         {
             return true;
         }
+    }
+    
+    public function getMotifByTopic($topic_id)
+    {
+        $query = $this->select()
+                      ->setIntegrityCheck(false)
+                      ->from($this->_name, null)
+                      ->join('close_motif', $this->_name.'.topicId = close_motif.topic_id', array('motif', 'user_id'))
+                      ->join('user', 'close_motif.user_id = user.id', array('login'))
+                      ->where('close_motif.topic_id = ?',$topic_id);
+
+        $res = $this->fetchAll($query);
+
+        return $res;
+    }
+    
+    public function sortTopics($sort_type, $closed_flag = true, $tag_name = null)
+    {
+        $order = $this->_name.'.date DESC';
+        switch($sort_type)
+        {
+            case 'votes': 
+                $order = $this->_name.'.vote DESC';
+                if($tag_name != null)
+                    $res = $this->getTopicsByTagName ($tag_name, $closed_flag, 50, $order);
+                else
+                    $res = $this->getAll($closed_flag, 50, $order);
+                break;
+            
+            case 'responses': 
+                $order = 'amount_messages DESC';
+                if($tag_name != null)
+                    $res = $this->getTopicsByTagName ($tag_name, $closed_flag, 50, $order);
+                else
+                    $res = $this->getAll($closed_flag, 50, $order);
+                break;
+            
+            case 'unanswered':
+                if($tag_name != null)
+                    $res = $this->getUnansweredByTagName($tag_name, $closed_flag, 50, $order);
+                else
+                    $res = $this->getUnanswered($closed_flag, 50, $order);
+                break;
+        }
+        
+        return $res;
+    }
+    
+    public function getUnanswered($closed_flag, $count = 50, $order = 'Topic.date DESC')
+    {
+        $orderby = $order;
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'count(Messages.topicId) as amount_messages',
+                  'topicId',
+                  'title',
+                  'userId',
+                  'date',
+                  'vote',
+                  'status'
+                  ))
+              ->joinLeft(array('Messages'), 'Topic.topicId=Messages.topicId', array('messages_topicId' => 'topicId'))
+              ->where('Messages.topicId IS NULL')
+              ->group($this->_name.'.topicId')
+              ->order($orderby)
+              ->limit($count);
+        
+        if(!$closed_flag)
+            $query->where('status != "closed"');
+
+        $res = $this->fetchAll($query);
+        return $res;
+    }
+    
+    public function getUnansweredByTagName($tag_name, $closed_flag, $count = 50, $order = 'Topic.date DESC')
+    {
+        $orderby = $order;
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'count(Messages.topicId) as amount_messages',
+                  'topicId',
+                  'title',
+                  'userId',
+                  'date',
+                  'vote',
+                  'status'
+                  ))
+              ->joinLeft('Messages', 'Topic.topicId=Messages.topicId', array('messages_topicId' => 'topicId'))
+              ->join('TopicTag', 'Topic.topicId = TopicTag.topicId',array(
+                                'topicTag_topicId' => 'topicId',
+                                'topicTag_tagId' => 'tagId'
+                                ))
+              ->join('Tags', 'TopicTag.tagId = Tags.tagId',array(
+                                'tag_tagId' => 'tagId'
+                                ))
+              ->where('Tags.name = ?', $tag_name)
+              ->where('Messages.topicId IS NULL')
+              ->group($this->_name.'.topicId')
+              ->order($orderby)
+              ->limit($count);
+        
+        if(!$closed_flag)
+            $query->where('status != "closed"');
+
+        $res = $this->fetchAll($query);
+        return $res;
     }
 }
 ?>

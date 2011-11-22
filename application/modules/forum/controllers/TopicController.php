@@ -5,6 +5,10 @@ class Forum_TopicController extends Zend_Controller_Action {
     public function init() {
         $this->_helper->layout->setLayout('forum_layout');
         
+        $view = Zend_Layout::getMvcInstance()->getView();
+        $view->addHelperPath(APPLICATION_PATH . '/../library/Islamine/View/Helper', 'Islamine_View_Helper_');
+
+        
         if ($this->_request->isXmlHttpRequest()) {
             $this->_helper->viewRenderer->setNoRender();
             $this->_helper->layout->disableLayout();    //disable layout for ajax
@@ -23,7 +27,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             $this->view->edit = false;
             $topic = new Forum_Model_Topic();
             $messages = new Forum_Model_Message();
-            $this->view->topic = $topic->getTopic($id);
+            $this->view->topic = $topic->find($id)->current()->toArray();
 
             /*if ($this->view->topic['type'] == 'wiki') {
                 $this->view->edit = true;
@@ -31,29 +35,80 @@ class Forum_TopicController extends Zend_Controller_Action {
 
             $list = $this->view->messages = $topic->getMessagesFromTopic($id);
             $this->view->tags = $topic->getTagsFromTopic($id);
+            
+            if($this->view->topic['status'] != 'closed')
+            {
+                $close_motif = $topic->getMotifByTopic($id)->toArray();
+                $this->view->nb_close_votes = count($close_motif);
+                $this->view->close_motif = $close_motif;
+            }
+            else
+            {
+                $reopen_model = new Forum_Model_ReopenTopic();
+                $this->view->nb_reopen_votes = $reopen_model->count($id);
+            }
 
             foreach ($list as $message) {
                 $this->view->$i = $messages->getCommentsFromMessage($message->messageId);
                 $i++;
             }
+            
+            /*
+             * Formulaire d'ajout de commentaire
+             */
+            $commentForm = new Forum_Form_UserPostComment();
+            $this->view->commentForm = $commentForm;
+            
+            /*
+             * Formulaire de réponse rapide
+             */
+            $messageForm = new Forum_Form_UserPostMessage();
+            $this->view->messageForm = $messageForm;
+            
+            /*
+             * Formulaire de fermeture de topic
+             * Un variable pour savoir si l'utilisateur est loggé est passé au script JS
+             * pour éviter à envoyer la requete au serveur s'il n'est pas connecté
+             */
+            $form = new Forum_Form_CloseTopic();
+            $auth = Zend_Auth::getInstance();
+            $user_name = "";
+            $autho = 'false';
+            if($auth->hasIdentity())
+            {
+                $autho = 'true';
+                $identity = $auth->getIdentity();
+                $user_name = $identity->login;
+                $form->populate(array('topic_id' => $id, 'username' => $user_name));
+            }
+            $this->view->form = $form;
+            $this->view->headScript()->appendScript("var auth = $autho;");
         }
     }
 
     public function answerAction() {
+        
         $messageForm = new Forum_Form_UserPostMessage();
-        $this->view->messageForm = $messageForm;
 
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
-
+            
             if ($messageForm->isValid($formData)) {
-                $content = $messageForm->getValue('content');
-                $topicId = $this->_getParam('topic');
-                $message = new Forum_Model_Message();
-                $message->addMessage('1', $topicId, $content, $_SERVER['REMOTE_ADDR']);
-                $this->_redirect('/topic/show/topic/' . $topicId);
+                $auth = Zend_Auth::getInstance();
+                if($auth->hasIdentity())
+                {
+                    $identity = $auth->getIdentity();
+                    $content = $messageForm->getValue('form_message_content');
+                    $topicId = $this->_getParam('topic');
+                    $message = new Forum_Model_Message();
+                    $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
+                    
+                    echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
+//$this->_redirect('/forum/topic/show/topic/' . $topicId);
+                }
             }
         }
+        $this->view->messageForm = $messageForm;
     }
 
     public function addAction() {
@@ -75,7 +130,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $topicId = $topic->addTopic('1', $title, $message, $_SERVER['REMOTE_ADDR']);
 
                 foreach ($tagArray as $t) {
-                    if ($tag->doesExist($t)) {
+                    if ($tag->doesExist($t) !== false) {
                         $tagId = $tag->incrementTag($t);
                         $topicTag->addRow($topicId, $tagId);
                     } else {
@@ -84,7 +139,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                     }
                 }
 
-                $this->_redirect('/topic/show/topic/' . $topicId);
+                $this->_redirect('/forum/topic/show/topic/' . $topicId);
             }
         }
         $this->view->topicForm = $topicForm;
@@ -96,10 +151,8 @@ class Forum_TopicController extends Zend_Controller_Action {
         $name = $this->_getParam('name');
 
         $list = $this->view->topics = $topics->getTopicsByTagName($name);
-        foreach ($list as $topic) {
-            $this->view->$i = $topics->getTagsFromTopic($topic->topic_topicId);
-            $i++;
-        }
+        
+        $this->_forward('index', 'index', 'forum', array('topics' => $list));
     }
 
     public function incrementvoteAction() {
@@ -167,6 +220,167 @@ class Forum_TopicController extends Zend_Controller_Action {
         $form->setDefaultMessage($row['message']);
         $this->view->form = $form;
     }
+    
+    public function alertAction()
+    {
+        $id = $this->_getParam('topic');
+        if ($id > 0) 
+        {
+            $i = 0;
+            $topic_model = new Forum_Model_Topic();
+            $topic = $topic_model->find($id)->current();
+            
+            if($topic != null)
+            {
+                $this->view->topic = $topic->toArray();
+                $form = new Forum_Form_Alert();
+                $this->view->form = $form;
+            }
+            
+            if ($this->getRequest()->isPost()) 
+            {
+                $formData = $this->getRequest()->getPost();
+                if($form->isValid($formData)) 
+                {
+                    $motif = $form->getValue('motif');
+                   
+                    $mail = new Islamine_Mail('jeremie.paas@gmail.com', '!SSAARRLL22!');
+                    $mail->addTo('jeremie.paas@gmail.com', 'Test');    
+                    $mail->setFrom('jeremie.paas@gmail.com', 'Test');
+                    $mail->setSubject(' Envoyé  emails par connexion SMTP');
+                    $mail->setBodyText(' le Message .éé.............. Motif : '.$motif, 'utf-8');
+                    $mail->send();
+                    
+                    $this->view->message = 'Votre demande a été prise en compte.';
+                }
+            }
+        }
+    }
+    
+    public function closeAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $model_topic = new Forum_Model_Topic();
+            if ($this->_request->isXmlHttpRequest()) 
+            {
+                $data = $this->getRequest()->getPost();
+                $motif_model = new Forum_Model_CloseMotif();
+                $motif_model->addMotif($data['topic_id'], $data['close_motif'], $identity->id);
+                $count = $motif_model->countMotif($data['topic_id']);
+                if($count == 7)
+                {
+                    $model_topic->updateTopic(array('status' => 'closed'), $data['topic_id']);
+                    $reopen_model = new Forum_Model_ReopenTopic();
+                    $reopen_model->deleteByTopic($data['topic_id']);
+                }
+                echo $count;
+            }
+            else
+            {
+                $form = new Forum_Form_CloseTopic();
+                $form->addElement($form->createElement('submit', 'Valider'));
+                $topic_id = $this->_getParam('topic');
+                $form->populate(array('topic_id' => $topic_id, 'username' => $identity->login));
+                $this->view->form = $form;
 
+                if ($this->getRequest()->isPost()) 
+                {
+                    $formData = $this->getRequest()->getPost();
+                    if($form->isValid($formData)) 
+                    {
+                        $data = $this->getRequest()->getPost();
+                        $motif_model = new Forum_Model_CloseMotif();
+
+                        $topic_id = $form->getValue('topic_id');
+                        $motif_model->addMotif($topic_id, $form->getValue('close_motif'), $identity->id);
+                        $count = $motif_model->countMotif($data['topic_id']);
+                        if($count == 7)
+                        {
+                            $model_topic->updateTopic(array('status' => 'closed'), $data['topic_id']);
+                            $reopen_model = new Forum_Model_ReopenTopic();
+                            $reopen_model->deleteByTopic($topic_id);
+                        }
+                        $this->_redirect('/forum/topic/show/topic/' . $topic_id);
+                    }
+                }
+            }
+        }
+    }
+    
+    public function motifsAction()
+    {
+        $topic_model = new Forum_Model_Topic();
+        $topic_id = $this->_getParam('topic');
+        $close_motif = $topic_model->getMotifByTopic($topic_id)->toArray();
+            
+        if(count($close_motif) != 0)
+            $this->view->close_motif = $close_motif;
+    }
+    
+    public function reopenAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $model_topic = new Forum_Model_Topic();
+            if ($this->_request->isXmlHttpRequest()) 
+            {
+                $data = $this->getRequest()->getPost();
+                $reopen_model = new Forum_Model_ReopenTopic();
+                $reopen_model->addRow($data['topic_id'], $identity->id);
+                $count = $reopen_model->count($data['topic_id']);
+                if($count == 7)
+                {
+                    $model_topic->updateTopic(array('status' => ''), $data['topic_id']);
+                    $close_model = new Forum_Model_CloseMotif();
+                    $close_model->deleteByTopic($data['topic_id']);
+                }
+                echo $count;
+            }
+            else
+            {
+                $form = new Forum_Form_ReopenTopic();
+                $topic_id = $this->_getParam('topic');
+                $this->view->form = $form;
+
+                if ($this->getRequest()->isPost()) 
+                {
+                    $formData = $this->getRequest()->getPost();
+                    if($form->isValid($formData)) 
+                    {
+                        $data = $this->getRequest()->getPost();
+                        $reopen_model = new Forum_Model_ReopenTopic();
+                        $reopen_model->addRow($topic_id, $identity->id);
+                        $count = $reopen_model->count($topic_id);
+                        if($count == 7)
+                        {
+                            $model_topic->updateTopic(array('status' => ''), $topic_id);
+                            $close_model = new Forum_Model_CloseMotif();
+                            $close_model->deleteByTopic($topic_id);
+                        }
+                        $this->_redirect('/forum/topic/show/topic/' . $topic_id);
+                    }
+                }
+            }
+        }
+    }
+
+    public function sortAction()
+    {
+        $sort_type = $this->_getParam('t');
+            
+        if($sort_type == 'date')
+            $this->_redirect ('/forum');
+        else
+        {
+            $model_topic = new Forum_Model_Topic();
+            $topics_sorted = $model_topic->sortTopics($sort_type);
+            $this->_forward('index', 'index', 'forum', array('topics' => $topics_sorted));
+        }
+    }
 }
 

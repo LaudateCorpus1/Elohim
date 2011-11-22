@@ -18,6 +18,9 @@
 
 		tag_input		= el.children(".tagit-new").children(".tagit-input");
 
+                if($('#tagsValues').val() != "")
+                        $('#tagsValues').val("");   
+                
                 if (typeof options.populateTags != 'undefined' && options.populateTags != '')
                 {
                     var tagsSplit = options.populateTags.split(' ');
@@ -26,9 +29,6 @@
                         create_choice(l);
                     });
                 }
- 
-                if($('#tagsValues').val() != "")
-                    $('#tagsValues').val("");
 
 		$(this).click(function(e){
 			if (e.target.tagName == 'A') {

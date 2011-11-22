@@ -24,13 +24,14 @@ class Forum_Form_UserPostMessage extends Zend_Form {
     }
 
     public function addElementsMessageForm() {
-        $this->text = new Zend_Form_Element_Textarea('content');
+        $this->text = new Zend_Form_Element_Textarea('form_message_content');
         $this->text->setRequired(true)
                    ->setLabel("Message")
                    ->setAttribs(array('rows' => '7', 'cols' => '50'));
 
-        $this->submit = new Zend_Form_Element_Submit('post');
-
+        $this->submit = new Zend_Form_Element_Submit('post_message');
+        $this->submit->setLabel('Envoyer');
+        
         $this->addElements(array($this->text, $this->submit));
 
 //        $this->addElements(array(

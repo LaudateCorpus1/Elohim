@@ -85,6 +85,7 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
                                 'content',
                                 'date'
                                 ))
+              ->join('user', 'Comments.userId = user.id', array('login'))
               ->where('Messages.messageId = ?',$messageId);
 
         $res = $this->fetchAll($query);

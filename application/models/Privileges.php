@@ -6,8 +6,7 @@ class Model_Privileges extends Zend_Db_Table_Abstract
     
     public function get($type)
     {
-        $id = (int)$id;
-        $where = $this->getAdapter()->quoteInto('type = ?', $id);
+        $where = $this->getAdapter()->quoteInto('type = ?', $type);
         $row = $this->fetchRow($this->select()->where($where));
         if($row == null)
                 throw new Exception("Privilege introuvable");
@@ -17,6 +16,17 @@ class Model_Privileges extends Zend_Db_Table_Abstract
     public function getAll()
     {
         return $this->fetchAll();
+    }
+    
+    public function getMRP($module, $resource, $privilege)
+    {
+        $row = $this->fetchRow($this->select()
+                ->where('module = ?', $module)
+                ->where('resource = ?', $resource)
+                ->where('privilege = ?', $privilege));
+       // if($row == null)
+                //throw new Exception("Privilege introuvable");
+        return $row;
     }
 }
 

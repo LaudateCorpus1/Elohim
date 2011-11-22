@@ -27,7 +27,7 @@ class Forum_Form_UserPostTopic extends Zend_Form {
             $this->createElement('text', 'title')->setRequired(true)->setLabel('Titre'),
             $this->createElement('textarea', 'content', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Message'),
 //            $autoComplete,
-            $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Tags'),
+            $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Tags')->setDisableLoadDefaultDecorators(true),
             $auto,
             $this->createElement('submit', 'post')
         ));

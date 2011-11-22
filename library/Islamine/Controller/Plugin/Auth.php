@@ -26,7 +26,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     /**
      * @var Tableau des actions qui nécessitent un certain niveau de karma
      */
-    private $_karma_array;
+    //private $_karma_array;
     
 
     /**
@@ -55,11 +55,11 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     /**
      * Constructeur
      */
-    public function __construct(Islamine_Acl $acl = null)	
+    public function __construct()	
     {
         $this->_acl = Zend_Registry::get('acl');
         $this->_auth = Zend_Auth::getInstance();
-        $this->_karma_array = $this->_acl->_getKarmaPrivileges();
+        //$this->_karma_array = $this->_acl->_getKarmaPrivileges();
     }
 
     /**
@@ -75,7 +75,10 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
           $user = $this->_auth->getStorage()->read();
           if(is_object($user))
               $user = get_object_vars($user);
-          $role = $user['role'] ;
+          
+          $role = $user['login'].'_'.$user['id'];
+          if(!$this->_acl->hasRole($role)) 
+            $role = $user['role'] ;
         }
         else 
         {
@@ -124,10 +127,34 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             }
             else 
             {
+                $model_privileges = new Model_Privileges();
+                $privilege = $model_privileges->getMRP($module, $controller, $action);
+                
+                if($request->isXmlHttpRequest())
+                {
+                    $this->disableLayout();
+                    $this->sendAjaxResponse($privilege);
+                    // redirectAndExit() cleans up, sends the headers and stopts the script
+                    Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
+                }
+                else
+                {
+                    $request->setParam('privilege', $privilege);
+
+                    $module = self::FAIL_KARMA_MODULE ;
+                    $controller = self::FAIL_KARMA_CONTROLLER ;
+                    $action = self::FAIL_KARMA_ACTION ;
+                }
+                        
+                        
+                        
+                        
+                        
                 // On regarde si l'action non autorisée est une action qui demande un niveau de karma
-                $allow = true;
+                /*$allow = true;
                 $nb_array = 0;
                 $dPrivilege = null;
+                // REMPLACER CETTE BOUCLE PAR UNE REQUETE DIRECTE A LA BASE SUR LE CONTROLLEUR ET L'ACTION APPELEE
                 foreach($this->_karma_array as $privilege)
                 {
                     $karma_module = $privilege->module;
@@ -164,14 +191,14 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                         }
                         else
                         {
-                            $this->_request->setParam('privilege', $dPrivilege);
+                            $request->setParam('privilege', $dPrivilege);
                         
                             $module = self::FAIL_KARMA_MODULE ;
                             $controller = self::FAIL_KARMA_CONTROLLER ;
                             $action = self::FAIL_KARMA_ACTION ;
                         }
                     }
-                }
+                }*/
             }
         }
 
@@ -180,7 +207,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         $request->setActionName($action) ;
     }
     
-    protected function allowKarmaAction($privilege)
+    /*protected function allowKarmaAction($privilege)
     {
         if ($this->_auth->hasIdentity())
         {
@@ -192,7 +219,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         }
         else
             return false;
-    }
+    }*/
     
     protected function disableLayout()
     {

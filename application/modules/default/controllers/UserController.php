@@ -100,15 +100,19 @@ class UserController extends Zend_Controller_Action
         $form = new Default_Form_UserLogin();
         $this->view->message = null;
 
-        if($this->getRequest()->isPost()) 
+        //if($this->getRequest()->isPost()) 
         {
             $formData = $this->getRequest()->getPost();
-            if ($form->isValid($formData)) 
+            if ($form->isValid($formData))
             {
                 if ($this->_process($form->getValues())) 
                 {
                     // We're authenticated! Redirect to the home page
-                    $this->_redirect('/');
+                    if(isset($formData['uri']))
+                        $this->_redirect($formData['uri']);
+                    else {
+                        $this->_redirect('/');
+                    }
                 }
                 else
                 {

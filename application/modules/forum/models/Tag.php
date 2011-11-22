@@ -22,11 +22,11 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
 
     public function addTag($name, $amount)
     {
-            $data = array(
-                'name' => $name,
-                'amount' => $amount
-            );
-            return $this->insert($data);
+        $data = array(
+            'name' => $name,
+            'amount' => $amount
+        );
+        return $this->insert($data);
     }
 
     public function deleteTag($id)
@@ -50,7 +50,22 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
         $this->update($data, $this->getAdapter()->quoteInto('name = ?', (string)$name));
         return $res->tagId;
     }
+    
+    public function decrementTag($name)
+    {
+        $query = $this->select()
+                ->from($this->_name,array('tagId','amount'))
+                ->where('name = ?',$name);
+        $res = $this->fetchRow($query);
+        $amount = (int)$res->amount - 1;
+        $data = array('amount' => $amount);
+        $this->update($data, $this->getAdapter()->quoteInto('name = ?', (string)$name));
+        return $res->tagId;
+    }
 
+    /*
+     * Retourne false si le tag n'existe pas, son ID sinon
+     */
     public function doesExist($tag)
     {
         $query = $this->select();
@@ -59,11 +74,11 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
         $res = $this->fetchRow($query);
         if($res == null)
         {
-                return false;
+            return false;
         }
         else
         {
-            return true;
+            return $res->tagId;
         }
     }
 
@@ -74,6 +89,20 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
                       ->where('tagId = ?',(int)$id);
         $res = $this->fetchRow($query);
         return $res->name;
+    }
+    
+    public function getIds(array $names)
+    {
+        if(count($names) != 0)
+        {
+            $query = $this->select()
+                          ->from($this->_name,'tagId')
+                          ->where('name IN(?)', $names);
+            $res = $this->fetchAll($query);
+            return $res->toArray();
+        }
+        else
+            return null;
     }
 
     public function getFavoriteTags($userId)

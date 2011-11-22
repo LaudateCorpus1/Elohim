@@ -1,54 +1,55 @@
-<div id="favtags">
-    <ul id="favlist">
-    <?php
-        foreach($this->favTags as $fav) :
-    ?>
-        <li class="favorited-style">
-            <a href="<?php echo $this->url(array(
-                                                'controller'=>'topic',
-                                                'action'=>'tag',
-                                                'name'=> $this->escape($fav->name)
-                                            )); ?>
-                           " class="favorited-<?php echo $fav->tags_tagId; ?>"><?php echo $this->escape($fav->name);?></a>
-           <a href="<?php echo $this->url(array(
-                                                'controller'=>'tag',
-                                                'action'=>'favorite',
-                                                'tag'=> $this->escape($fav->tags_tagId)
-                                            )); ?>" class="close2">x</a>
-        </li>
-     <?php endforeach; ?>
-    </ul>
+<div id="topics-top">
+    <div id="topic-container-top">
+        Titre et thèmes
+    </div>
+    <div id="topic-date-top">
+        Date
+    </div>
+    <div id="topic-vote-response-top">
+        Votes / Réponses
+    </div>
 </div>
 
 <div id="topics">
     <?php $i=0;
-    foreach($this->topics as $topic) : ?>
-        <div class="topic">
-            <div class="subject">
-                <span class="topic_subject"><a href="<?php echo $this->url(array(
+    foreach($this->topics as $topic) : 
+        $class = 'topic';
+        if($this->escape($topic->status) == 'closed')
+                $class = 'topic-closed';
+    ?>
+        <div class="<?php echo $class; ?>">
+            <div class="topic-container">
+                <div class="topic-subject">
+                    <?php if($this->escape($topic->status) == 'closed')
+                            echo '[fermé]';
+                    ?>
+                    <a href="<?php echo $this->url(array(
                                             'controller'=>'topic',
                                             'action'=>'show',
                                             'topic'=>$this->escape($topic->topicId)
                                         )); ?>
-                   "><?php echo $this->escape($topic->title);?></a></span>
-            <span class="topic_vote"><?php echo $this->escape($topic->vote);?></span>
-            <span class="topic_response_number"><?php echo '5'; ?></span>
-            <span class="topic_date"><?php echo $this->escape($topic->date);?></span>
-            </div>
-            
-            <div class="tags">
-                
-                <?php
-                foreach($this->$i as $tag) : ?>
-                <a href="<?php echo $this->url(array(
-                                            'controller'=>'topic',
-                                            'action'=>'tag',
-                                            'name'=> $this->escape($tag->name)
-                                        )); ?>
-                   "><?php echo $this->escape($tag->name); ?></a>
+                   "><?php echo $this->escape($topic->title);?></a></div>
+                <div class="tags">
 
-                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),'1');
-                endforeach; ?>
+                    <?php
+                    foreach($this->$i as $tag) : ?>
+                    <a href="<?php echo $this->url(array(
+                                                'controller'=>'topic',
+                                                'action'=>'tag',
+                                                'name'=> $this->escape($tag->name)
+                                            )); ?>
+                       "><?php echo $this->escape($tag->name); ?></a>
+
+                    <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),$this->escape($this->identity));
+                    endforeach; ?>
+                </div>
+            </div>
+            <div class="topic-stats">
+                <div class="vote-response-block">
+                <div class="topic-vote"><?php echo $this->escape($topic->vote);?> votes</div>
+                <div class="topic-response-number"><?php echo $this->escape($topic->amount_messages); ?> réponses</div>
+                </div>
+                <div class="topic-date"><?php echo $this->escape($topic->date);?></div>
             </div>
         </div>
     <?php $i++; endforeach; ?>

@@ -6,11 +6,18 @@ body {
 	color:/*#9a9a9a*/ #333333;
 	font:normal 12px/1.8em Arial, Helvetica, sans-serif;
 }
-html, .main {
+html {
 	padding:0;
 	margin:0;
 	background:#fefefe url(../images/bg_orange.png) top repeat-x;
 }
+
+.main
+{
+    width: 980px;
+    margin: 0 auto;
+}
+
 .clr {
 	clear:both;
 	padding:0;
@@ -27,7 +34,7 @@ img{
 .logo {
 	padding:15px 0 20px 0;
 	margin:0 auto;
-	width:450px;
+	width:400px;
 	float:left;
 }
 .logo img {
@@ -95,6 +102,48 @@ a.rm, a.com {
 	width:970px;
 }
 
+
+/******************************************/
+/*************** Form Login ***************/
+/******************************************/
+
+#user-top
+{
+    float: right;
+    margin: 0 auto;
+    width: 570px;
+}
+
+#form_login_top input
+{
+    float: left;
+}
+
+#form_login_top label
+{
+    float: left;
+    color: #F1F1F1;
+}
+
+#user-top-links
+{
+    float: right;
+    font-size: 0.9em;
+    color: #F1F1F1;
+}
+
+#user-top-links-log
+{
+    float: left;
+    color: #F1F1F1;
+    margin-top: 10px;
+}
+
+#user-top-links a, #user-top-links-log a
+{
+    color: #F1F1F1;
+}
+
 .menu_nav {
 	margin:20px 0 0 0;
 	padding:3px 0 0 10px;
@@ -145,7 +194,8 @@ a.rm, a.com {
 
 #nav
 {
-    
+    width: 970px;
+    float: left;
 }
 
 #nav ul
@@ -210,4 +260,3 @@ a.rm, a.com {
 .footer .rf {
 	float:right;
 }
-

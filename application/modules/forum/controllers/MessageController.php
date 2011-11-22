@@ -34,28 +34,39 @@ class Forum_MessageController extends Zend_Controller_Action {
     }
 
     public function commentAction() {
-        $commentForm = new Forum_Form_UserPostMessage();
-        $this->view->commentForm = $commentForm;
-
-        if ($this->_request->isXmlHttpRequest()) {
-            echo $commentForm;
-        }
-
+        $commentForm = new Forum_Form_UserPostComment();
+        
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
 
             if ($commentForm->isValid($formData)) {
-                $content = $commentForm->getValue('content');
-                $messageId = $this->_getParam('message');
+                $this->_processCommentForm($formData);
+            }
+        }
+        $this->view->commentForm = $commentForm;
+    }
+
+    protected function _processCommentForm($data)
+    {
+        $content = $data['form_comment_content'];
+        $messageId = $this->_getParam('message');
+        $comment = new Forum_Model_Comment();
+        $commentMessage = new Forum_Model_CommentMessage();
+        
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $commentId = $comment->addComment($identity->id, $content);
+            $commentMessage->addRow($commentId, $messageId);
+            
+            if ($this->_request->isXmlHttpRequest()) {
+                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => '...'));
+            } else {
                 $topicId = $this->_getParam('topic');
-                $comment = new Forum_Model_Comment();
-                $commentMessage = new Forum_Model_CommentMessage();
-                $commentId = $comment->addComment('1', $content);
-                $commentMessage->addRow($commentId, $messageId);
-                $this->_redirect('/topic/show/topic/' . $topicId);
+                $this->_redirect('/forum/topic/show/topic/' . $topicId);
             }
         }
     }
-
 }
 
