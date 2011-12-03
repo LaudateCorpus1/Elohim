@@ -24,10 +24,9 @@ class Forum_TopicController extends Zend_Controller_Action {
         $id = $this->_getParam('topic');
         if ($id > 0) {
             $i = 0;
-            $this->view->edit = false;
             $topic = new Forum_Model_Topic();
             $messages = new Forum_Model_Message();
-            $this->view->topic = $topic->find($id)->current()->toArray();
+            $this->view->topic = $topic->getTopic($id);
 
             /*if ($this->view->topic['type'] == 'wiki') {
                 $this->view->edit = true;
@@ -65,6 +64,8 @@ class Forum_TopicController extends Zend_Controller_Action {
             $messageForm = new Forum_Form_UserPostMessage();
             $this->view->messageForm = $messageForm;
             
+            $this->view->author = false;
+            
             /*
              * Formulaire de fermeture de topic
              * Un variable pour savoir si l'utilisateur est loggé est passé au script JS
@@ -79,10 +80,19 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $autho = 'true';
                 $identity = $auth->getIdentity();
                 $user_name = $identity->login;
+                $this->view->identity = $identity->id;
+                
+                // L'auteur peut éditer son topic
+                if($this->view->topic['userId'] == $identity->id)
+                {
+                    $this->view->author = true;
+                }
+                
                 $form->populate(array('topic_id' => $id, 'username' => $user_name));
             }
             $this->view->form = $form;
             $this->view->headScript()->appendScript("var auth = $autho;");
+            $this->view->headScript()->appendFile("/js/answerEditor.js");
         }
     }
 
@@ -104,7 +114,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                     $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
                     
                     echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
-//$this->_redirect('/forum/topic/show/topic/' . $topicId);
+                    //$this->_redirect('/forum/topic/show/topic/' . $topicId);
                 }
             }
         }
@@ -113,21 +123,23 @@ class Forum_TopicController extends Zend_Controller_Action {
 
     public function addAction() {
         
+        $this->view->headScript()->appendFile("/js/topicEditor.js");
         $topicForm = new Forum_Form_UserPostTopic();
 
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
             if ($topicForm->isValid($formData)) {
                 $tagArray = array();
-                $title = $topicForm->getValue('title');
-                $message = $topicForm->getValue('content');
+                $title = $topicForm->getValue('form_topic_title');
+                $message = $topicForm->getValue('form_topic_content');
                 $tags = $topicForm->getValue('tagsValues');
                 $tagArray = explode(" ", $tags);
                 $topic = new Forum_Model_Topic();
                 $tag = new Forum_Model_Tag();
                 $topicTag = new Forum_Model_TopicTag();
-
-                $topicId = $topic->addTopic('1', $title, $message, $_SERVER['REMOTE_ADDR']);
+                $auth = Zend_Auth::getInstance();
+                
+                $topicId = $topic->addTopic($auth->getIdentity()->id, $title, $message, $_SERVER['REMOTE_ADDR']);
 
                 foreach ($tagArray as $t) {
                     if ($tag->doesExist($t) !== false) {
@@ -156,69 +168,226 @@ class Forum_TopicController extends Zend_Controller_Action {
     }
 
     public function incrementvoteAction() {
+        $auth = Zend_Auth::getInstance();
+        $identity = $auth->getIdentity();
         $incrementTopic = new Forum_Model_Topic();
         $this->view->topic = $topicId = $this->_getParam('topic');
-        $vote = $incrementTopic->incrementVote($topicId);
-        if ($this->_request->isXmlHttpRequest())
-            echo $vote;
+        $model_vote = new Forum_Model_Vote();
+        
+        if($model_vote->alreadyVoted($identity->id, $topicId, 'UP_TOPIC'))
+        {
+            if($this->_request->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous avez déjà voté'));
+            else
+                $this->view->message = 'Vous avez déjà voté';
+        }
+        else
+        {
+            $res = $incrementTopic->incrementVote($topicId, $identity->id);
+            if($res === false)
+            {
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous ne pouvez pas voter pour vous'));
+                else
+                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
+            }
+            else
+            {
+                $user_model = new Model_User();
+
+                $revote = false;
+
+                if($model_vote->alreadyVoted($identity->id, $topicId, 'DOWN_TOPIC'))
+                {
+                    $revote = true;
+                    // Il faut annuler l'ancien vote
+                    $model_vote->deleteVote($identity->id, $topicId, 'TOPIC');
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_down_reward;
+                    $user_model->setKarma(abs(intval($karma_up)), $res->userId);
+                }
+                else 
+                {
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_up_reward;
+                    $user_model->setKarma($karma_up, $res->userId);
+                    $model_vote->addVote($identity->id, $topicId, 'UP_TOPIC');
+                }
+
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'UP_TOPIC', 'revote' => $revote));
+                else
+                    $this->view->message = 'Merci d\'avoir voté';
+            }
+        }
     }
 
     public function decrementvoteAction() {
-        $decrementTopic = new Forum_Model_Topic();
+        $auth = Zend_Auth::getInstance();
+        $identity = $auth->getIdentity();
+        $incrementTopic = new Forum_Model_Topic();
         $this->view->topic = $topicId = $this->_getParam('topic');
-        $vote = $decrementTopic->decrementVote($topicId);
-        if ($this->_request->isXmlHttpRequest())
-            echo $vote;
+        $model_vote = new Forum_Model_Vote();
+        
+        if($model_vote->alreadyVoted($identity->id, $topicId, 'DOWN_TOPIC'))
+        {
+            if($this->_request->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous avez déjà voté'));
+            else
+                $this->view->message = 'Vous avez déjà voté';
+        }
+        else
+        {
+            $res = $incrementTopic->decrementVote($topicId, $identity->id);
+            if($res === false)
+            {
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous ne pouvez pas voter pour vous'));
+                else
+                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
+            }
+            else
+            {
+                $user_model = new Model_User();
+
+                $revote = false;
+
+                if($model_vote->alreadyVoted($identity->id, $topicId, 'UP_TOPIC'))
+                {
+                    $revote = true;
+                    // Il faut annuler l'ancien vote
+                    $model_vote->deleteVote($identity->id, $topicId, 'TOPIC');
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_up_reward;
+                    $user_model->setKarma('-'.$karma_up, $res->userId);
+                }
+                else 
+                {
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_down_reward;
+                    $user_model->setKarma($karma_up, $res->userId);
+                    $model_vote->addVote($identity->id, $topicId, 'DOWN_TOPIC');
+                }
+
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'DOWN_TOPIC', 'revote' => $revote));
+                else
+                    $this->view->message = 'Merci d\'avoir voté';
+            }
+        }
     }
 
     public function editAction() {
         $topicId = $this->_getParam('topic');
         $topic = new Forum_Model_Topic();
         $row = $topic->getTopic($topicId);
-        $form = new Forum_Form_UserPostMessage();
-        $namespace = new Zend_Session_Namespace('default');
+        
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            // L'auteur peut éditer son topic
+            if($row['userId'] == $identity->id)
+            {
+                $this->view->headScript()->appendFile("/js/topicEditor.js");
+                $form = new Forum_Form_UserPostTopic();
+                $namespace = new Zend_Session_Namespace('default');
 
+                if ($this->getRequest()->isPost()) {
+                    $formData = $this->getRequest()->getPost();
 
-        if ($this->getRequest()->isPost()) {
-            $formData = $this->getRequest()->getPost();
+                    if ($form->isValid($formData)) {
+                        $message = $form->getValue('form_topic_content');
 
-            if ($form->isValid($formData)) {
-                $message = $form->getValue('content');
+                        if (!$topic->editConfilct($namespace->mess, $topicId)) {
+                            /*if ($row['type'] == 'wiki') {
+                                if ($row['lastEditTime'] == null) {
+                                    $date = $row['date'];
+                                } else {
+                                    $date = $row['lastEditTime'];
+                                }
+                                $wiki = new Forum_Model_WikiTopic();
+                                $wiki->addHistory($topicId, '1', $row['ipAddress'], $row['message'], $date);
+                            }*/
+                            $title = $form->getValue('form_topic_title');
+                            $new_tags = $form->getValue('tagsValues');
 
-                if (!$topic->editConfilct($namespace->mess, $topicId)) {
-                    /*if ($row['type'] == 'wiki') {
-                        if ($row['lastEditTime'] == null) {
-                            $date = $row['date'];
+                            $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditTime' => date('Y-m-d H:i:s', time())), $topicId);
+                            $this->updateTags($topicId, $new_tags);
+                            
+                            $this->_redirect('forum/topic/show/topic/' . $topicId);
                         } else {
-                            $date = $row['lastEditTime'];
+                            $authorText = new Zend_Form_Element_Textarea('authorText');
+                            $authorText->setLabel("Votre texte")
+                                    ->setAttribs(array('rows' => '7', 'cols' => '50'))
+                                    ->setValue($message);
+
+                            $this->view->conflict = "Quelqu'un a modifié le texte pendant votre édition.
+                                        Dans la zone de texte ci-dessus se trouve le texte tel qu'il est
+                                        acutellement. Vos modifications se trouvent dans la zone de texte ci-dessous,
+                                        veuillez les apporter dans la zone supérieure. Seule cette zone sera enregistrée.";
+
+                            $this->view->authorText = $authorText;
+                            $namespace->mess = $row['message'];
                         }
-                        $wiki = new Forum_Model_WikiTopic();
-                        $wiki->addHistory($topicId, '1', $row['ipAddress'], $row['message'], $date);
-                    }*/
-
-                    $topic->updateTopic(array('message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditTime' => date('Y-m-d H:i:s', time())), $topicId);
-                    $this->_redirect('/topic/show/topic/' . $topicId);
+                    }
                 } else {
-                    $authorText = new Zend_Form_Element_Textarea('authorText');
-                    $authorText->setLabel("Votre texte")
-                            ->setAttribs(array('rows' => '7', 'cols' => '50'))
-                            ->setValue($message);
-
-                    $this->view->conflict = "Quelqu'un a modifié le texte pendant votre édition.
-                                Dans la zone de texte ci-dessus se trouve le texte tel qu'il est
-                                acutellement. Vos modifications se trouvent dans la zone de texte ci-dessous,
-                                veuillez les apporter dans la zone supérieure. Seule cette zone sera enregistrée.";
-
-                    $this->view->authorText = $authorText;
                     $namespace->mess = $row['message'];
                 }
+
+                $tags = $topic->getTagsFromTopic($topicId)->toArray();
+                $tags_string = "";
+                foreach ($tags as $tag)
+                {
+                    $tags_string .= $tag['name']. " ";
+                }
+                $tags_string = substr($tags_string, 0, -1);
+                $form->populate(array('form_topic_title' => $row['title'], 'form_topic_content' => $row['message'], 'tagsValues' => $tags_string));
+                $this->view->form = $form;
             }
-        } else {
-            $namespace->mess = $row['message'];
+            else
+                $this->_redirect ('/default/error/error');
+        }
+    }
+
+    protected function updateTags($topic_id, $new_tags)
+    {
+        $id = $topic_id;
+        $topic = new Forum_Model_Topic();
+        $tags = $topic->getTagsFromTopic($id)->toArray();
+        $aOld_tag_name = array();
+        foreach ($tags as $tag)
+        {
+            $aOld_tag_name[] = $tag['name'];
         }
 
-        $form->setDefaultMessage($row['message']);
-        $this->view->form = $form;
+        
+                $tag_model = new Forum_Model_Tag();
+                $aTags = array();
+                $aTags = explode(" ", $new_tags);
+                
+                $aDiff_tags_old = array_diff($aOld_tag_name, $aTags);
+                $aDiff_tags_new = array_diff($aTags, $aOld_tag_name);
+                
+                $topic_tag_model = new Forum_Model_TopicTag();
+                
+                foreach ($aDiff_tags_old as $tag) 
+                {
+                    if (($tag_id = $tag_model->doesExist($tag)) !== false)
+                    {
+                            $topic_tag_model->deleteRow ($id, $tag_id);
+                            $tag_model->decrementTag($tag);
+                    }
+                }
+                
+                foreach ($aDiff_tags_new as $tag) 
+                {
+                    if (($tag_model->doesExist($tag)) !== false) 
+                    {
+                        $tag_id = $tag_model->incrementTag($tag);
+                    } 
+                    else 
+                    {
+                        $tag_id = $tag_model->addTag($tag, '1');
+                    }
+                    $topic_tag_model->addRow($id, $tag_id);
+                }
     }
     
     public function alertAction()

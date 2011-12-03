@@ -8,6 +8,19 @@ require_once 'elements/Autocomplete.php';
 
 class Forum_Form_UserPostTopic extends Zend_Form {
 
+    private $elementDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'element')),
+        'Label',
+        array(array('row' => 'HtmlTag'), array('tag' => 'li'))
+    );
+    
+    private $buttonDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'button')),
+        array(array('row' => 'HtmlTag'), array('tag' => 'li')),
+    );
+    
     public function init() {
         $this->setAttrib('id', 'form_topic')
                 ->setMethod('POST')
@@ -19,17 +32,28 @@ class Forum_Form_UserPostTopic extends Zend_Form {
     public function addElementsTopicForm() {
 
         $auto = new Forum_Form_Element_Autocomplete('tags');
+        $auto->removeDecorator('Label');
 
 //        $autoComplete = new ZendX_JQuery_Form_Element_AutoComplete('tags');
 //        $autoComplete->setLabel('Tags')->setRequired(true);
 //        $autoComplete->setJQueryParam('url', '/tag/autocomplete');
         $this->addElements(array(
-            $this->createElement('text', 'title')->setRequired(true)->setLabel('Titre'),
-            $this->createElement('textarea', 'content', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Message'),
+            $this->createElement('text', 'form_topic_title', array('size' => '83'))->setRequired(true)->setLabel('Titre')->setDecorators($this->elementDecorators),
+            $this->createElement('textarea', 'form_topic_content', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Message')->setDecorators($this->elementDecorators),
 //            $autoComplete,
-            $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Tags')->setDisableLoadDefaultDecorators(true),
-            $auto,
-            $this->createElement('submit', 'post')
+            $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots clés')->setDecorators($this->elementDecorators),
+            $auto->setDecorators($this->elementDecorators),
+            $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)
+        ));
+    }
+    
+    public function loadDefaultDecorators() {
+
+        $this->setDecorators(array(
+            'FormErrors',
+            'FormElements',
+            array('HtmlTag', array('tag' => 'ul')),
+            'Form'
         ));
     }
 

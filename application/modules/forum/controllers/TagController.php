@@ -16,9 +16,7 @@ class Forum_TagController extends Zend_Controller_Action
     public function indexAction()
     {
         $tag = new Forum_Model_Tag();
-        $order = 'amount DESC';
-        $count = 50;
-        $this->view->tags = $tag->fetchAll(null, $order, $count);
+        $this->view->tags = $tag->getAll()->toArray();
     }
 
     public function favoriteAction()

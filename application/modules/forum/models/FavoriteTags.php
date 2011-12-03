@@ -32,7 +32,7 @@ class Forum_Model_FavoriteTags extends Zend_Db_Table_Abstract
 
    public function deleteRow($userId,$tagId)
    {
-       $this->delete(array('userId = ?' =>$userId, 'tagId = ?' => $tagId));
+       $this->delete(array('userId = ?' => $userId, 'tagId = ?' => $tagId));
    }
 }
 ?>

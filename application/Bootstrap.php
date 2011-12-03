@@ -26,6 +26,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_HasAccess());
     }
 
-
+    protected function _initConstants()
+    {
+        $registry = Zend_Registry::getInstance();
+        $registry->constants = new Zend_Config( $this->getApplication()->getOption('constants'));
+    }
 }
 

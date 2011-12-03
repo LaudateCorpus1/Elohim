@@ -111,7 +111,24 @@ a.rm, a.com {
 {
     float: right;
     margin: 0 auto;
-    width: 570px;
+}
+
+#user-top #username, #user-top #password
+{
+    border: solid #9a9a9a 1px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    width: 120px;
+}
+
+#user-top #login
+{
+    border: solid #9a9a9a 1px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 #form_login_top input

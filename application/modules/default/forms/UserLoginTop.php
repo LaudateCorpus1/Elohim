@@ -18,9 +18,9 @@ class Default_Form_UserLoginTop extends Zend_Form {
                 ->setAction('/user/login')
                 ->setMethod('POST')
                 ->setName('form_login_top');
-        
+
         $username = new Zend_Form_Element_Text('username', array(
-                    'label' => 'Username',
+                    'label' => 'Pseudo',
                     'required' => true,
                     'filters' => array(
                         'StringTrim'
@@ -30,6 +30,16 @@ class Default_Form_UserLoginTop extends Zend_Form {
                     ),
                     'class' => 'input-text'
                 ));
+
+        $username->setDecorators(array(
+            'ViewHelper',
+            'Description',
+            'Errors',
+            array(array('data' => 'HtmlTag'), array('tag' => 'td')),
+            array('Label', array('tag' => 'td')),
+            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'openOnly' => true))
+        ));
+
 
         $password = new Zend_Form_Element_Password('password', array(
                     'label' => 'Mot de passe',
@@ -43,34 +53,60 @@ class Default_Form_UserLoginTop extends Zend_Form {
                     'class' => 'input-password'
                 ));
 
-            $URI = new Zend_Form_Element_Hidden('uri', array(
+        $password->setDecorators(array(
+            'ViewHelper',
+            'Description',
+            'Errors',
+            array(array('data' => 'HtmlTag'), array('tag' => 'td')),
+            array('Label', array('tag' => 'td')),
+        ));
+
+
+        $URI = new Zend_Form_Element_Hidden('uri', array(
                     'required' => true
                 ));
-            $URI->setDecorators(array('ViewHelper'));
+        
+        $URI->setDecorators(array(
+            'ViewHelper',
+            'Description',
+            'Errors', array(array('data' => 'HtmlTag'), array('tag' => 'td'))
+        ));
 
-        /*$rememberMe = new Zend_Form_Element_Checkbox('rememberMe', array(
-                    'decorators' => $this->checkboxDecorators,
-                    'label' => 'Remember me?',
-                    'required' => true,
-                    'class' => 'input-checkbox'
-                ));*/
+        /* $rememberMe = new Zend_Form_Element_Checkbox('rememberMe', array(
+          'decorators' => $this->checkboxDecorators,
+          'label' => 'Remember me?',
+          'required' => true,
+          'class' => 'input-checkbox'
+          )); */
 
         $submit = new Zend_Form_Element_Submit('login', array(
-                    'label' => 'Login',
+                    'label' => 'Connexion',
                     'class' => 'input-submit'
                 ));
-        
-        $submit->removeDecorator('DtDdWrapper');
 
+        $submit->setDecorators(array(
+            'ViewHelper',
+            'Description',
+            'Errors', array(array('data' => 'HtmlTag'), array('tag' => 'td',
+                    'colspan' => '2', 'align' => 'center')),
+            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => 'true'))
+        ));
 
         $this->addElements(array(
             $username,
             $password,
-            /*$rememberMe,*/
+            /* $rememberMe, */
             $URI,
             $submit
         ));
+
+        $this->setDecorators(array(
+            'FormElements',
+            array(array('data' => 'HtmlTag'), array('tag' => 'table')),
+            'Form'
+        ));
     }
+
 }
 
 ?>

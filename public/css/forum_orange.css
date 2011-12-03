@@ -199,24 +199,47 @@ a
 {
     width: 550px;
     padding-left: 15px;
-}
-
-.tags
-{
-    padding-bottom: 8px;
     padding-top: 6px;
 }
 
-.tags a
+.tag
 {
-    cursor: pointer;
     border-radius:5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
     background-color: #FFCC66;
     border:1px solid #FF6633;
-    padding:2px 4px 3px;
-    color: #333333;
+    margin-right: 2px;
+    color: #333333; 
+    float: left;
+    padding: 0 3px 0 3px;
+}
+
+.tag:hover
+{
+    background-color:#FFFF99;
+    border-color:#CC6600;
+    cursor: pointer;
+}
+
+.tag-name a
+{
     text-decoration:none;
+}
+
+.tag-name
+{
+    float: left;
+}
+
+.tag-action
+{
+    padding: 3px 0 0 4px;
+    float: right;
+}
+
+.tag-action img
+{
+    vertical-align: middle;
 }
 
 /*#topic-vote-top, #topic-response-top
@@ -307,7 +330,7 @@ ul#favlist li.favorited-style
     clear: left;
 }
 
-ul#favlist li.favorited-style:hover , .tags a:hover
+ul#favlist li.favorited-style:hover
 {
     background-color:#FFFF99;
     border-color:#CC6600;
@@ -334,7 +357,7 @@ ul#favlist li.favorited-style a.close2
 /******************************************/
 /*************** Show Topic ***************/
 /******************************************/
-#show-topic, #table-topic, #table-message
+#show-topic, #table-topic, .table-message
 {
     width: 750px;
 }
@@ -353,7 +376,7 @@ ul#favlist li.favorited-style a.close2
     width: inherit;
 }
 
-#topic-main, #message
+#topic-main, .message
 {
     width: 750px;
     border: solid  #D3D3D3 1px;
@@ -361,10 +384,42 @@ ul#favlist li.favorited-style a.close2
     margin-bottom: 20px;
 }
 
-#topic-date, #message-date
+#topic-top
+{
+    border-bottom: dotted grey 1px;
+}
+
+#edit-topic
+{
+    float: right;
+    font-size: 11px;
+}
+
+#topic-date
+{
+    float: left;
+    font-size: 11px;
+}
+
+.message-top td
 {
     font-size: 11px;
     border-bottom: dotted grey 1px;
+}
+
+.message-date
+{
+    float: left;
+}
+
+#message-validated
+{
+    background-color: #9F9;
+}
+
+.message-validation
+{
+    float: right;
 }
 
 #topic-content, #message-content
@@ -399,6 +454,7 @@ ul#favlist li.favorited-style a.close2
 #topic-tags, #topic-menu
 {
     margin: 5px;
+    height: 21px;
 }
 
 #topic-menu a, .nb-reopen-votes
@@ -412,17 +468,17 @@ ul#favlist li.favorited-style a.close2
     cursor: pointer;
 }
 
-#table-message .comments
+.table-message .comments
 {
     margin: 20px;
 }
 
-#table-message .comment-link
+.table-message .comment-link
 {
     margin: 0 20px 20px 20px;
 }
 
-#table-message .comment-link a
+.table-message .comment-link a
 {
     cursor: pointer;
     color: #666;
@@ -430,30 +486,13 @@ ul#favlist li.favorited-style a.close2
     font-size: 0.9em;
 }
 
-#table-message .comment
+.table-message .comment
 {
     border: solid #DDD 1px;
     margin-bottom: 5px;
     padding: 1px 4px 0 4px;
     font-size: 11px;
     background-color: #F6F6F6;
-}
-
-#topic-tags a
-{
-    border-radius:5px 5px 5px 5px;
-    -moz-border-radius:5px 5px 5px 5px;
-    background-color: #FFCC66;
-    border:1px solid #FF6633;
-    padding:2px 4px 3px;
-    color: #333333;
-    text-decoration:none;
-}
-
-#topic-tags a:hover
-{
-    background-color:#FFFF99;
-    border-color:#CC6600;
 }
 
 #answer-topic a
@@ -485,8 +524,43 @@ ul#favlist li.favorited-style a.close2
     margin-left: 20px;
 }
 
-.close-modal-form, .close-motif, .reopen-modal-confirm
+.close-modal-form, .close-motif, .reopen-modal-confirm, .message-validation a
 {
     cursor: pointer;
 }
 
+#dialog-validate-message, #dialog-devalidate-message
+{
+    display: none;
+}
+
+/******************************************/
+/**************** Add Topic ***************/
+/******************************************/
+
+#form_topic ul
+{
+    list-style: none outside none;
+}
+
+#form_topic ul li label
+{
+    display: block;
+    padding-top: 15px;
+}
+
+#form_topic_title
+{
+    border: solid #C6C6C6 1px;
+    padding: 3px;
+}
+
+/******************************************/
+/*************** Index tags ***************/
+/******************************************/
+
+#tags-table td
+{
+    
+    padding: 0 40px 40px 0;
+}

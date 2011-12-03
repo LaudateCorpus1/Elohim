@@ -19,6 +19,22 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
             }
             return $row->toArray();
     }
+    
+    public function getAll($count = 50)
+    {
+        $query = $this->select();
+        $query->from($this->_name, array(
+                  'amount',
+                  'name',
+                  'tagId'
+                  ))
+              ->where('amount != 0')
+              ->order('amount DESC')
+              ->limit($count);
+        
+        $res = $this->fetchAll($query);
+        return $res;
+    }
 
     public function addTag($name, $amount)
     {
@@ -139,7 +155,7 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
         $res = $this->fetchRow($query);
         if($res == null)
         {
-                return false;
+            return false;
         }
         else
         {

@@ -22,11 +22,11 @@ echo $this->doctype() . PHP_EOL;
                     ->appendStylesheet('/css/forum_orange.css')
                     ->appendStylesheet('/css/assets/output_xhtml.css');
         
-        $this->headScript()->appendFile('https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js');
-              $this->headScript()->appendFile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js");
-              $this->headScript()->appendFile($this->baseUrl().'/js/tag-it.js');
-              $this->headScript()->appendFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
-              echo $this->headScript()->appendFile($this->baseUrl().'/js/script.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/tag-it.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/script.js');
+            $this->headScript()->prependFile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"); 
+            echo $this->headScript()->prependFile('https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js');
         ?>
     </head>
     <body>

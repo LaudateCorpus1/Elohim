@@ -367,7 +367,6 @@ ol li .send {
 
 #sidebar li li a {
 	padding-left: 25px;
-	background: url(../images/img03.jpg) no-repeat 15px 4px;
 }
 
 #sidebar li li span {
@@ -407,7 +406,7 @@ ol li .send {
 #search {
 	margin: 0px;
 	padding: 20px 0px ;
-	background: url(images/img04.jpg) no-repeat 20px 28px;
+	background: url(../images/img04.jpg) no-repeat 20px 28px;
 }
 
 #search form {

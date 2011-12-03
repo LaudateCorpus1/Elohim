@@ -1,10 +1,21 @@
-<?php foreach ($this->tags as $tag) : ?>
-    <a href="<?php
-    echo $this->url(array(
-        'controller' => 'topic',
-        'action' => 'tag',
-        'name' => $this->escape($tag->name)
-    )); ?>
-       "><?php echo $this->escape($tag->name); ?></a> x <?php echo $this->escape($tag->amount); ?>
-
+<table id="tags-table">
+<?php foreach (array_chunk($this->tags, 5) as $row) : ?>
+    <tr>
+        <?php foreach ($row as $tag) : ?>
+        <td>
+            <div class="tag">
+                <div class="tag-name">
+                    <a href="<?php echo $this->url(array(
+                                        'controller' => 'topic',
+                                        'action' => 'tag',
+                                        'name' => $this->escape($tag['name'])
+                                    )); ?>"><?php echo $this->escape($tag['name']); ?>
+                    </a>
+                </div>  
+            </div> 
+            &nbsp; x <?php echo $this->escape($tag['amount']); ?>
+        </td>
+        <?php endforeach; ?>
+    </tr>
 <?php endforeach; ?>
+</table>

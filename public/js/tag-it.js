@@ -13,8 +13,13 @@
 		el.addClass("tagit");
 
 		// create the input field.
-		var html_input_field = "<li class=\"tagit-new\"><input class=\"tagit-input\" type=\"text\" /></li>\n";
+		var html_input_field = "<li class=\"tagit-new\"><input class=\"tagit-input\" type=\"text\" value=\"5 tags max (ex: mariage)\" /></li>\n";
 		el.html (html_input_field);
+                $('ul.tagit input[type="text"]').css('color','#888');
+                $('ul.tagit input[type="text"]').focus(function() {
+                    $(this).val('');
+                    $(this).css('color','#333');
+                });
 
 		tag_input		= el.children(".tagit-new").children(".tagit-input");
 

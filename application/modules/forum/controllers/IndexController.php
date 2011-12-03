@@ -36,9 +36,8 @@ class Forum_IndexController extends Zend_Controller_Action {
         {
             $autho = 'true';
             $identity = $auth->getIdentity();
-            $this->view->identity = $identity->id;
             $favTags = new Forum_Model_Tag();
-            $this->view->favTags = $favTags->getFavoriteTags('1');
+            $this->view->favTags = $favTags->getFavoriteTags($identity->id);
 
         //        if($favTags->alreadyFavorited($tagId, '1'))
         //        $this->view->favorite = $this->view->favoriteTag("remove");

@@ -11,18 +11,27 @@
  */
 class Zend_View_Helper_FavoriteTag extends Zend_View_Helper_Abstract
 {
-    public function favoriteTag($tagId,$userId)
+    public function favoriteTag($tagId)
     {
-        $tags = new Forum_Model_Tag();
-        if($tags->alreadyFavorited($tagId, $userId))
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
         {
-            //return "-";
-            return "<a href=\"/forum/tag/favorite/tag/$tagId\" class=\"fav-$tagId\" title=\"Retirer des favoris\">-</a>";
+            $userId = $auth->getIdentity()->id;
+            $tags = new Forum_Model_Tag();
+            if($tags->alreadyFavorited($tagId, $userId))
+            {
+                //return "-";
+                return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Retirer des favoris"><img src="/images/moins.png" alt="retirerfavoris"/></a>';
+            }
+            else
+            {
+                //return "+";
+                return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+            }
         }
         else
         {
-            //return "+";
-            return "<a href=\"/forum/tag/favorite/tag/$tagId\" class=\"fav-$tagId\" title=\"Ajouter en favoris\">+</a>";
+            return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img src="/images/plus2.png" alt="ajouterfavoris"/></a>';
         }
     }
 }

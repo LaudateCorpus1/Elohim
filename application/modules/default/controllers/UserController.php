@@ -135,6 +135,9 @@ class UserController extends Zend_Controller_Action
                 if ($result->isValid()) 
                 {
                     $user = $adapter->getResultRowObject(null, 'password');
+                    /*$user_model = new Model_User();
+                    $user_votes = $user_model->getVotes($user->id);
+                    $extended_user = (object)array_merge((array)$user, $user_votes);*/
                     $auth->getStorage()->write($user);
                     return true;
                 }

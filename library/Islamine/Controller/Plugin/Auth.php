@@ -44,6 +44,13 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     const FAIL_ACL_CONTROLLER = 'error';
     
     /**
+     * Chemin de redirection lors de l'échec de contrôle des privilèges
+     */
+    const ERROR_MODULE     = 'default';
+    const ERROR_ACTION     = 'error';
+    const ERROR_CONTROLLER = 'error';
+    
+    /**
      * Chemin de redirection lors de l'échec de contrôle des privilèges de karma
      */
     const FAIL_KARMA_MODULE     = 'forum';
@@ -100,105 +107,59 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             $resource = $module.'_'.$controller ;
 
         // est-ce que la ressource existe ?
-        if (!$this->_acl->has($resource))
-            $resource = null;
-        
-        // contrôle si l'utilisateur est autorisé
-        if (!$this->_acl->isAllowed($role, $resource, $action))
+        if (!$this->_acl->has($resource)) 
         {
-            // l'utilisateur n'est pas autorisé à accéder à cette ressource
-            // on va le rediriger
-            if (!$this->_auth->hasIdentity()) 
+            return true;
+            // action/resource does not exist in ACL
+            $module = self::ERROR_MODULE;
+            $controller = self::ERROR_CONTROLLER;
+            $action = self::ERROR_ACTION;
+        } 
+        else 
+        {
+            // contrôle si l'utilisateur est autorisé
+            if (!$this->_acl->isAllowed($role, $resource, $action))
             {
-                if($request->isXmlHttpRequest())
+                // l'utilisateur n'est pas autorisé à accéder à cette ressource
+                // on va le rediriger
+                if (!$this->_auth->hasIdentity()) 
                 {
-                    $this->disableLayout();
-                    $this->sendAjaxResponse(array('error_message' => 'Vous devez vous identifier'));
-                    // redirectAndExit() cleans up, sends the headers and stopts the script
-                    Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
+                    if($request->isXmlHttpRequest())
+                    {
+                        $this->disableLayout();
+                        $this->sendAjaxResponse(array('error_message' => 'Vous devez vous identifier'));
+                        // redirectAndExit() cleans up, sends the headers and stopts the script
+                        Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
+                    }
+                    else
+                    {
+                        // il n'est pas identifié -> module de login
+                        $module = self::FAIL_AUTH_MODULE;
+                        $controller = self::FAIL_AUTH_CONTROLLER;
+                        $action = self::FAIL_AUTH_ACTION;
+                    }
                 }
-                else
+                else 
                 {
-                    // il n'est pas identifié -> module de login
-                    $module = self::FAIL_AUTH_MODULE;
-                    $controller = self::FAIL_AUTH_CONTROLLER;
-                    $action = self::FAIL_AUTH_ACTION;
-                }
-            }
-            else 
-            {
-                $model_privileges = new Model_Privileges();
-                $privilege = $model_privileges->getMRP($module, $controller, $action);
-                
-                if($request->isXmlHttpRequest())
-                {
-                    $this->disableLayout();
-                    $this->sendAjaxResponse($privilege);
-                    // redirectAndExit() cleans up, sends the headers and stopts the script
-                    Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
-                }
-                else
-                {
-                    $request->setParam('privilege', $privilege);
+                    $model_privileges = new Model_Privileges();
+                    $privilege = $model_privileges->getMRP($module, $controller, $action);
 
-                    $module = self::FAIL_KARMA_MODULE ;
-                    $controller = self::FAIL_KARMA_CONTROLLER ;
-                    $action = self::FAIL_KARMA_ACTION ;
-                }
-                        
-                        
-                        
-                        
-                        
-                // On regarde si l'action non autorisée est une action qui demande un niveau de karma
-                /*$allow = true;
-                $nb_array = 0;
-                $dPrivilege = null;
-                // REMPLACER CETTE BOUCLE PAR UNE REQUETE DIRECTE A LA BASE SUR LE CONTROLLEUR ET L'ACTION APPELEE
-                foreach($this->_karma_array as $privilege)
-                {
-                    $karma_module = $privilege->module;
-                    $karma_resource = $privilege->resource;
-                    $karma_privilege = $privilege->privilege;
-                    if($karma_module == $module && $karma_resource == $controller && $karma_privilege == $action)
+                    if($request->isXmlHttpRequest())
                     {
-                        $allow = $this->allowKarmaAction($privilege);
-                        $dPrivilege = $privilege;
-                        break;
+                        $this->disableLayout();
+                        $this->sendAjaxResponse($privilege);
+                        // redirectAndExit() cleans up, sends the headers and stopts the script
+                        Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
                     }
-                    $nb_array++;
-                }
-                
-                // Ce n'est pas une action qui nécessite un niveau de karma, l'utilisateur n'a donc pas les droits
-                if($nb_array == count($this->_karma_array))
-                {
-                    // il est identifié -> error de privilèges
-                    $module = self::FAIL_ACL_MODULE ;
-                    $controller = self::FAIL_ACL_CONTROLLER ;
-                    $action = self::FAIL_ACL_ACTION ;
-                }
-                else // L'action nessécite un niveau de karma
-                {
-                    // Son niveau de karma n'est pas suffisant
-                    if(!$allow)
+                    else
                     {
-                        if($request->isXmlHttpRequest())
-                        {
-                            $this->disableLayout();
-                            $this->sendAjaxResponse($dPrivilege);
-                            // redirectAndExit() cleans up, sends the headers and stopts the script
-                            Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
-                        }
-                        else
-                        {
-                            $request->setParam('privilege', $dPrivilege);
-                        
-                            $module = self::FAIL_KARMA_MODULE ;
-                            $controller = self::FAIL_KARMA_CONTROLLER ;
-                            $action = self::FAIL_KARMA_ACTION ;
-                        }
+                        $request->setParam('privilege', $privilege);
+
+                        $module = self::FAIL_KARMA_MODULE ;
+                        $controller = self::FAIL_KARMA_CONTROLLER ;
+                        $action = self::FAIL_KARMA_ACTION ;
                     }
-                }*/
+                }
             }
         }
 
@@ -206,20 +167,6 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         $request->setControllerName($controller) ;
         $request->setActionName($action) ;
     }
-    
-    /*protected function allowKarmaAction($privilege)
-    {
-        if ($this->_auth->hasIdentity())
-        {
-            $identity = $this->_auth->getIdentity();
-            if(intval($identity->karma) < $privilege->karma_needed)
-                return false;
-            else
-                return true;
-        }
-        else
-            return false;
-    }*/
     
     protected function disableLayout()
     {

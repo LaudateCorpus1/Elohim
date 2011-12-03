@@ -1,4 +1,5 @@
 <?php 
+    $validate = false;
     $this->headTitle($this->escape($this->topic['title'])); 
     $style_reopen_modal_confirm = 'style="display: none;"';
     $style_close_modal_form = 'style="display: none;"';
@@ -29,26 +30,25 @@
             ?>
         </h1>
     </div>
-    <?php 
-            if($this->edit == true)
-            {
-                echo '<div><a href="' . $this->url(array(
-                                'controller'=>'topic',
-                                'action'=>'edit',
-                                'topic'=>$this->escape($this->topic['topicId'])
-                            )) . '">Editer</a></div>';
-            }
-            ?>
     
     <div id="topic-main">
         <table id="table-topic">
             <tbody>
                 <tr>
-                    <td><div id="topic-date">Envoyé le <?php echo $this->escape($this->topic['date']); ?></div></td>
+                    <td id="topic-top">
+                        <div id="topic-date">Envoyé le <?php echo $this->escape($this->topic['date']); ?></div>
+                        <?php if($this->escape($this->author) && $this->escape($this->topic['status']) != 'closed'): ?>
+                        <div id="edit-topic"><a href="<?php echo $this->url(array(
+                                                                'controller'=>'topic',
+                                                                'action'=>'edit'
+                                                            )); ?>">Editer</a>
+                        </div>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>
-                        <div id="topic-content"><?php echo nl2br($this->escape($this->topic['message'])); ?></div>
+                        <div id="topic-content"><?php echo $this->purify($this->topic['message']); ?></div>
                     </td>
                 </tr>
                 <tr>
@@ -59,19 +59,16 @@
                                     <td>
                                         <div class="vote-t">
                                             <input type="hidden" value="<?php echo $this->escape($this->topic['topicId']); ?>" />
+                                            
+                                            <?php echo $this->vote($this->escape($this->topic['topicId']), 'DOWN_TOPIC'); ?>
+                                            
                                             <span class="vote-value"><?php echo $this->escape($this->topic['vote']); ?></span>
-                                            <a href="<?php echo $this->url(array(
-                                                                'controller'=>'topic',
-                                                                'action'=>'incrementvote'
-                                                            )); ?>" class="increment" title="Voter pour">+</a>
-                                            <a href="<?php echo $this->url(array(
-                                                                'controller'=>'topic',
-                                                                'action'=>'decrementvote'
-                                                            )); ?>" class="decrement" title="Voter contre">-</a>
+                                            
+                                            <?php echo $this->vote($this->escape($this->topic['topicId']), 'UP_TOPIC'); ?>
                                         </div>
                                     </td>
                                     <td>
-                                        AUTEUR
+                                        <?php echo $this->escape($this->topic['login']); ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -81,17 +78,22 @@
                 <tr>
                     <td>
                          <div id="topic-tags">
-                            <?php
-                                foreach($this->tags as $tag) : ?>
-                                <a href="<?php echo $this->url(array(
-                                                            'controller'=>'topic',
-                                                            'action'=>'tag',
-                                                            'name'=> $this->escape($tag->name),
-                                                            'topic' => null
-                                                        )); ?>
-                                   "><?php echo $this->escape($tag->name); ?></a>
-                                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),'1');
-                                endforeach; ?>
+                            <?php foreach($this->tags as $tag) : ?>
+                            <div class="tag">
+                                <div class="tag-name">
+                                    <a href="<?php echo $this->url(array(
+                                                                'controller'=>'topic',
+                                                                'action'=>'tag',
+                                                                'name'=> $this->escape($tag->name),
+                                                                'topic' => null
+                                                            )); ?>
+                                       "><?php echo $this->escape($tag->name); ?></a>
+                                </div>  
+                                <div class="tag-action">
+                                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),$this->escape($this->identity)); ?>
+                                </div>
+                            </div>    
+                            <?php endforeach; ?>
                         </div>
                         <div id="topic-menu">
                             <!-- Lien pour modifier les tags -->
@@ -146,12 +148,31 @@
     <div id="messages">
     <?php $i = 0;
     foreach($this->messages as $mess) : ?>
-        <div id="message">
-            <table id="table-message">
+        <div id="message-<?php echo $this->escape($mess->messageId); ?>" class="message">
+            <table class="table-message" <?php if($this->escape($mess->validation)) echo 'id="message-validated"'; ?> >
                 <tbody>
-                    <tr>
+                    <tr class="message-top">
                         <td>
-                            <div id="message-date">Envoyé le <?php echo $this->escape($mess->messages_date);?></div>
+                            <div class="message-date">Envoyé le <?php echo $this->escape($mess->messages_date);?></div>
+
+                            <?php if($this->escape($this->author) && ($this->escape($mess->messages_userId) != $this->escape($this->topic['userId']))): ?>
+                                <div class="message-validation">
+                                <?php if($this->escape($mess->validation)) : $validate = true; ?>
+                                    <a class="message-devalidation-link" href="<?php echo $this->url(array(
+                                                                        'controller'=>'message',
+                                                                        'action'=>'devalidate',
+                                                                        'message' => $this->escape($mess->messageId)
+                                                                    )); ?>">Annuler validation</a>
+                                <?php endif; ?>
+                                <?php if(!$validate): ?>
+                                        <a class="message-validation-link" href="<?php echo $this->url(array(
+                                                                            'controller'=>'message',
+                                                                            'action'=>'validate',
+                                                                            'message' => $this->escape($mess->messageId)
+                                                                        )); ?>">Valider</a>
+                                <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <tr>
@@ -167,8 +188,14 @@
                                         <td>
                                             <div class="vote-m">
                                                 <input type="hidden" value="<?php echo $mess->messageId; ?>" />
+                                                
+                                                <?php echo $this->vote($this->escape($mess->messageId), 'DOWN_MESSAGE'); ?>
+                                                
                                                 <span class="vote-value"><?php echo $this->escape($mess->messages_vote);?></span>
-                                                <a href="<?php echo $this->url(array(
+                                                
+                                                <?php echo $this->vote($this->escape($mess->messageId), 'UP_MESSAGE'); ?>
+                                                
+                                                <!--<a href="<?php echo $this->url(array(
                                                                     'controller'=>'message',
                                                                     'action'=>'incrementvote',
                                                                     'message' => $mess->messageId
@@ -177,7 +204,7 @@
                                                                     'controller'=>'message',
                                                                     'action'=>'decrementvote',
                                                                     'message' => $mess->messageId
-                                                                )); ?>" class="decrement" title="Voter contre">-</a>
+                                                                )); ?>" class="decrement" title="Voter contre">-</a>-->
                                             </div>
                                         </td>
                                         <td>
@@ -249,10 +276,8 @@ if($this->escape($this->topic['status']) != 'closed')
     <a name="answer"></a>
 </div>
 
-<?php  if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
+<?php if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
 <div id="dialog-form" title="Voter pour fermer le sujet" <?php echo $style_dialog_form; ?>>
-    <!-- #customize your modal window here -->
-
         <?php echo $this->form; ?>
 </div>
 
@@ -275,3 +300,16 @@ if($this->escape($this->topic['status']) != 'closed')
 </div>
 
 <?php endif; ?>
+
+<?php if($this->hasAccess($this->module.'_message', 'validate')): ?>
+    <?php if(!$validate): ?>
+        <div id="dialog-validate-message" title="Valider cette réponse">
+            Voulez-vous vraiment valider cette réponse ?
+            Il vous sera toujours possible d'annuler cette action et de valider une autre réponse.
+        </div>
+    <?php else: ?>
+        <div id="dialog-devalidate-message" title="Annuler la validation">
+        Voulez-vous vraiment annuler la validation de cette réponse ?
+        </div>
+    <?php endif; ?>
+<?php endif;

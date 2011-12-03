@@ -18,6 +18,20 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
             }
             return $row->toArray();
     }
+    
+    public function getAuthor($id)
+    {
+        $query = $this->select()
+                ->from($this->_name, 'userId')
+                ->where($this->getAdapter()->quoteInto('messageId = ?',$id));
+        $row = $this->fetchRow($query);
+        
+        if (!$row)
+        {
+                throw new Exception("Could not find row $id");
+        }
+        return $row;
+    }
 
     public function addMessage($userId, $topicId, $content, $ipAddress = null, $date = null, $vote = 0)
     {
@@ -34,38 +48,60 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
 
     public function deleteMessage($id)
     {
-        $this->delete(array('messageId = ?' => $id));
+        $this->delete(array($this->getAdapter()->quoteInto('messageId = ?', $id)));
     }
 
     public function updateMessage(array $data, $id)
     {
-            $this->update($data, array('messageId = ?' => $id));
+            $this->update($data, array($this->getAdapter()->quoteInto('messageId = ?', $id)));
     }
 
-    public function incrementVote($messageId)
+    public function incrementVote($messageId, $author_id)
     {
-        $query = $this->select()
-                ->from($this->_name,'vote')
-                ->where('messageId = ?',$messageId);
-        $res = $this->fetchRow($query);
-
+        $this->getAdapter()->beginTransaction();
+        
         $data = array('vote' => new Zend_Db_Expr('vote + 1'));
         $this->update($data, array('messageId = ?' => $messageId));
-
-        return (int)$res->vote + 1;
-    }
-
-    public function decrementVote($messageId)
-    {
+        
         $query = $this->select()
-                ->from($this->_name,'vote')
-                ->where('messageId = ?',$messageId);
+                ->from($this->_name, array('vote', 'userId'))
+                ->where($this->getAdapter()->quoteInto('messageId = ?',$messageId));
         $res = $this->fetchRow($query);
 
+        if($res->userId == $author_id)
+        {
+            $this->getAdapter()->rollBack();
+            return false;
+        }
+        else
+        {
+            $this->getAdapter()->commit();
+            return $res;
+        }
+    }
+
+    public function decrementVote($messageId, $author_id)
+    {
+        $this->getAdapter()->beginTransaction();
+        
         $data = array('vote' => new Zend_Db_Expr('vote - 1'));
         $this->update($data, array('messageId = ?' => $messageId));
+        
+        $query = $this->select()
+                ->from($this->_name,array('vote', 'userId'))
+                ->where($this->getAdapter()->quoteInto('messageId = ?',$messageId));
+        $res = $this->fetchRow($query);
 
-        return (int)$res->vote - 1;
+        if($res->userId == $author_id)
+        {
+            $this->getAdapter()->rollBack();
+            return false;
+        }
+        else
+        {
+            $this->getAdapter()->commit();
+            return $res;
+        }
     }
 
     public function getCommentsFromMessage($messageId)

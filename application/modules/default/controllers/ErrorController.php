@@ -34,6 +34,13 @@ class ErrorController extends Zend_Controller_Action
                 $this->view->message = 'Application error';
                 break;
         }
+        $exception = $errors->exception;
+        $columnMapping = array('type' => 'priority', 'message' => 'message', 'date' => 'timestamp');
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $writer = new Zend_Log_Writer_Db($db, 'error_log', $columnMapping);
+        $logger = new Zend_Log($writer);
+        $logger->err($exception->getMessage());
+
         
         // Log exception, if logger available
         if ($log = $this->getLog()) {

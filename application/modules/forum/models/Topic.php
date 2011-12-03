@@ -11,7 +11,25 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
     public function getTopic($id)
     {
             $id = (int)$id;
-            $row = $this->fetchRow(array('topicId = ?' => $id));
+            $where = $this->getAdapter()->quoteInto('TopicId = ?', $id);
+            
+            $query = $this->select();
+            $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'topicId',
+                  'title',
+                  'message',
+                  'userId',
+                  'date',
+                  'vote',
+                  'status',
+                  'close_votes',
+                  'reopen_votes'
+                  ))
+              ->join('user', 'Topic.userId=user.id', 'login')
+              ->where($where);
+            
+            $row = $this->fetchRow($query);
             if (!$row)
             {
                     throw new Exception("Could not find row $id");
@@ -77,16 +95,18 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->from($this->_name,array(
                                 'topic_topicId' => 'topicId'
                                 ))
-              ->join(array('Messages'), 'Topic.topicId=Messages.topicId',array(
+              ->join('Messages', 'Topic.topicId=Messages.topicId',array(
                                 'messageId',
                                 'messages_userId' => 'userId',
                                 'messages_topicId' => 'topicId',
                                 'content',
                                 'messages_date' => 'date',
-                                'messages_vote' => 'vote'
+                                'messages_vote' => 'vote',
+                                'validation'
                                 ))
-              ->join(array('user'), 'Messages.userId=user.id', 'login') 
-              ->where('Topic.topicId = ?',$topicId)
+              ->join('user', 'Messages.userId=user.id', 'login') 
+              ->where($this->getAdapter()->quoteInto('Topic.topicId = ?',$topicId))
+              ->order('Messages.validation DESC')
               ->order('Messages.date ASC');
 
         $res = $this->fetchAll($query);
@@ -110,7 +130,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                                 'name',
                                 'amount'
                                 ))
-              ->where('Topic.topicId = ?',$topicId);
+              ->where($this->getAdapter()->quoteInto('Topic.topicId = ?',$topicId));
 
         $res = $this->fetchAll($query);
 
@@ -154,30 +174,52 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         return $res;
     }
 
-    public function incrementVote($topicId)
+    public function incrementVote($topicId, $author_id)
     {
-        $query = $this->select()
-                ->from($this->_name,'vote')
-                ->where('topicId = ?',$topicId);
-        $res = $this->fetchRow($query);
-
+        $this->getAdapter()->beginTransaction();
+        
         $data = array('vote' => new Zend_Db_Expr('vote + 1'));
         $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
-
-        return (int)$res->vote + 1;
+        
+        $query = $this->select()
+                ->from($this->_name, array('vote', 'userId'))
+                ->where($this->getAdapter()->quoteInto('topicId = ?',$topicId));
+        $res = $this->fetchRow($query);
+        
+        if($res->userId == $author_id)
+        {
+            $this->getAdapter()->rollBack();
+            return false;
+        }
+        else
+        {
+            $this->getAdapter()->commit();
+            return $res;
+        }
     }
 
-    public function decrementVote($topicId)
+    public function decrementVote($topicId, $author_id)
     {
-        $query = $this->select()
-                ->from($this->_name,'vote')
-                ->where('topicId = ?',$topicId);
-        $res = $this->fetchRow($query);
-
+        $this->getAdapter()->beginTransaction();
+        
         $data = array('vote' => new Zend_Db_Expr('vote - 1'));
         $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
+        
+        $query = $this->select()
+                ->from($this->_name, array('vote', 'userId'))
+                ->where($this->getAdapter()->quoteInto('topicId = ?',$topicId));
+        $res = $this->fetchRow($query);
 
-        return (int)$res->vote - 1;
+        if($res->userId == $author_id)
+        {
+            $this->getAdapter()->rollBack();
+            return false;
+        }
+        else
+        {
+            $this->getAdapter()->commit();
+            return $res;
+        }
     }
 
     public function editConfilct($messageBeforeSubmission, $topicId)
@@ -200,7 +242,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                       ->from($this->_name, null)
                       ->join('close_motif', $this->_name.'.topicId = close_motif.topic_id', array('motif', 'user_id'))
                       ->join('user', 'close_motif.user_id = user.id', array('login'))
-                      ->where('close_motif.topic_id = ?',$topic_id);
+                      ->where($this->getAdapter()->quoteInto('close_motif.topic_id = ?',$topic_id));
 
         $res = $this->fetchAll($query);
 
@@ -288,7 +330,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->join('Tags', 'TopicTag.tagId = Tags.tagId',array(
                                 'tag_tagId' => 'tagId'
                                 ))
-              ->where('Tags.name = ?', $tag_name)
+              ->where($this->getAdapter()->quoteInto('Tags.name = ?', $tag_name))
               ->where('Messages.topicId IS NULL')
               ->group($this->_name.'.topicId')
               ->order($orderby)
