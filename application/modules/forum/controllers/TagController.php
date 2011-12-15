@@ -19,7 +19,7 @@ class Forum_TagController extends Zend_Controller_Action
         $this->view->tags = $tag->getAll()->toArray();
     }
 
-    public function favoriteAction()
+    /*public function favoriteAction()
     {
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
@@ -33,19 +33,48 @@ class Forum_TagController extends Zend_Controller_Action
             {
                 $favoriteTag->addRow($identity->id, $tagId);
                 if($this->_request->isXmlHttpRequest())
-                    echo $tag->getTagName($tagId)."/add";
+                    echo Zend_Json::encode(array('status' => 'ok', 'tagname' => $tag->getTagName($tagId), 'tagid' => $tagId, 'action' => 'add'));
+                else
+                    $this->view->message = 'Le mot-clé a été mis en favoris';
             }
             else
             {
                 $favoriteTag->deleteRow($identity->id, $tagId);
                 if($this->_request->isXmlHttpRequest())
-                    echo $tag->getTagName($tagId)."/remove";
+                    echo Zend_Json::encode(array('status' => 'ok', 'tagname' => $tag->getTagName($tagId), 'tagid' => $tagId, 'action' => 'remove'));
                 else
-                    $this->view->favorited = true;
+                    $this->view->message = 'Le mot-clé a été retiré en favoris';
+            }
+        }
+    }*/
+
+    public function addfavoritedAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $tag = new Forum_Model_Tag();
+            $tagId = $this->_getParam('tag');
+            $favoriteTag = new Forum_Model_FavoriteTags();
+            if($tag->alreadyFavorited($tagId, $identity->id))
+            {
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce mot-clé est déjà en favoris'));
+                else
+                    $this->view->message = 'Ce mot-clé est déjà en favoris';
+            }
+            else
+            {
+                $favoriteTag->addRow($identity->id, $tagId);
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'tagname' => $tag->getTagName($tagId), 'tagid' => $tagId, 'action' => 'add'));
+                else
+                    $this->view->message = 'Le mot-clé a été mis en favoris';
             }
         }
     }
-
+    
     public function removefavoritedAction()
     {
         $auth = Zend_Auth::getInstance();
@@ -56,7 +85,20 @@ class Forum_TagController extends Zend_Controller_Action
             $tagId = $this->_getParam('tag');
             $favoriteTag = new Forum_Model_FavoriteTags();
             if($tag->alreadyFavorited($tagId, $identity->id))
-                    $favoriteTag->deleteRow($identity->id, $tagId);
+            {
+                $favoriteTag->deleteRow($identity->id, $tagId);
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'tagname' => $tag->getTagName($tagId), 'tagid' => $tagId, 'action' => 'remove'));
+                else
+                    $this->view->message = 'Le mot-clé a été retiré en favoris';
+            }
+            else
+            {
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce mot-clé n\'est pas en favoris'));
+                else
+                    $this->view->message = 'Ce mot-clé n\'est pas en favoris';
+            }
         }
     }
 

@@ -35,10 +35,11 @@ class ErrorController extends Zend_Controller_Action
                 break;
         }
         $exception = $errors->exception;
-        $columnMapping = array('type' => 'priority', 'message' => 'message', 'date' => 'timestamp');
+        $columnMapping = array('type' => 'priority', 'message' => 'message', 'date' => 'timestamp', 'trace' => 'trace');
         $db = Zend_Db_Table::getDefaultAdapter();
         $writer = new Zend_Log_Writer_Db($db, 'error_log', $columnMapping);
         $logger = new Zend_Log($writer);
+        $logger->setEventItem('trace', $exception->getTraceAsString());
         $logger->err($exception->getMessage());
 
         

@@ -7,8 +7,7 @@
                                             'action'=>'show',
                                             'topic'=>$this->escape($topic->topic_topicId),
                                             'name'=>null
-                                        )); ?>
-                   "><?php echo $this->escape($topic->title);?></a></td>
+                                        )); ?>"><?php echo $this->escape($topic->title);?></a></td>
             <td><?php echo $this->escape($topic->date);?></td>
             <td><?php echo $this->escape($topic->vote);?></td>
         </tr>
@@ -21,8 +20,7 @@
                                             'controller'=>'topic',
                                             'action'=>'tag',
                                             'name'=>$this->escape($tag->name)
-                                        )); ?>
-                   "><?php echo $this->escape($tag->name); ?></a>
+                                        )); ?>"><?php echo $this->escape($tag->name); ?></a>
 
                 <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),'1');
                 endforeach; ?>

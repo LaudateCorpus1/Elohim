@@ -1,3 +1,5 @@
+<?php $this->headTitle($this->escape($this->title)); ?>
+
 <div id="topics-top">
     <div id="topic-container-top">
         Sujet et mots clés
@@ -13,11 +15,8 @@
 <div id="topics">
     <?php $i=0;
     foreach($this->topics as $topic) : 
-        $class = 'topic';
-        if($this->escape($topic->status) == 'closed')
-                $class = 'topic-closed';
     ?>
-        <div class="<?php echo $class; ?>">
+        <div <?php echo $this->topicContainerClass($topic); ?>>
             <div class="topic-container">
                 <div class="topic-subject">
                     <?php if($this->escape($topic->status) == 'closed')
@@ -27,10 +26,8 @@
                                             'controller'=>'topic',
                                             'action'=>'show',
                                             'topic'=>$this->escape($topic->topicId)
-                                        )); ?>
-                   "><?php echo $this->escape($topic->title);?></a></div>
+                                        )); ?>"><?php echo $this->escape($topic->title);?></a></div>
                 <div class="tags">
-
                     <?php
                     foreach($this->$i as $tag) : ?>
                     <div class="tag">
@@ -39,14 +36,21 @@
                                                 'controller'=>'topic',
                                                 'action'=>'tag',
                                                 'name'=> $this->escape($tag->name)
-                                            )); ?>
-                             "><?php echo $this->escape($tag->name); ?></a>
+                                            )); ?>"><?php echo $this->escape($tag->name); ?></a>
                         </div>  
                         <div class="tag-action">
                             <?php echo $this->favoriteTag($this->escape($tag->tag_tagId)); ?>
                         </div>
                     </div>
                     <?php endforeach; ?>
+                </div>
+                <div class="topic-author">
+                    <a href="<?php echo $this->url(array(
+                                                'module' => 'default',
+                                                'controller'=>'user',
+                                                'action'=>'index',
+                                                'username'=> $this->escape($topic['login'])
+                                            ), null, true); ?>"><?php echo $this->escape($topic->login); ?></a>
                 </div>
             </div>
             <div class="topic-stats">

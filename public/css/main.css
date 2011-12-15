@@ -4,12 +4,12 @@ body {
 	padding:0;
 	width:100%;
 	color:/*#9a9a9a*/ #333333;
-	font:normal 12px/1.8em Arial, Helvetica, sans-serif;
+	font:normal 80%/1.8em "Helvetica Nueue", Arial, Helvetica, sans-serif;
 }
 html {
 	padding:0;
 	margin:0;
-	background:#fefefe url(../images/bg_orange.png) top repeat-x;
+	background: #fefefe /*#E6EBEA /*#E3EDE1 /*#A4D49F /*#9acc9a*/ url(../images/bg_islam5.png) top repeat-x;
 }
 
 .main
@@ -34,7 +34,7 @@ img{
 .logo {
 	padding:15px 0 20px 0;
 	margin:0 auto;
-	width:400px;
+	width:370px;
 	float:left;
 }
 .logo img {
@@ -62,7 +62,7 @@ h1 a:hover span {
 	color:#fff;
 }
 h1 span {
-	color: /*#33CC33;*/#FFCC66;
+	color: #FFF;
 }
 h1 small {
 	color:#fff;
@@ -72,10 +72,10 @@ h1 small {
 	letter-spacing:normal;
 }
 h2 {
-	font:normal 24px Arial, Helvetica, sans-serif;
-	padding:0;
-	margin:5px 0;
-	color:#595959;
+    font:normal 24px Arial, Helvetica, sans-serif;
+    padding:0;
+    margin:5px 0;
+    color:#595959;
 }
 
 a {
@@ -104,36 +104,33 @@ a.rm, a.com {
 
 
 /******************************************/
-/*************** Form Login ***************/
+/************** Form Login Top ************/
 /******************************************/
 
 #user-top
 {
     float: right;
     margin: 0 auto;
+    width: 600px;
 }
 
 #user-top #username, #user-top #password
 {
-    border: solid #9a9a9a 1px;
+    /*border: solid #9a9a9a 1px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    border-radius: 4px;
+    border-radius: 4px;*/
     width: 120px;
 }
 
 #user-top #login
 {
-    border: solid #9a9a9a 1px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
     cursor: pointer;
 }
 
 #form_login_top input
 {
-    float: left;
+    float: right;
 }
 
 #form_login_top label
@@ -144,7 +141,7 @@ a.rm, a.com {
 
 #user-top-links
 {
-    float: right;
+    float: left;
     font-size: 0.9em;
     color: #F1F1F1;
 }
@@ -152,14 +149,101 @@ a.rm, a.com {
 #user-top-links-log
 {
     float: left;
-    color: #F1F1F1;
-    margin-top: 10px;
+    color: #222;
+    margin-top: 5px;
+    width: 300px;
+    background-color: #F7A922; /*#2b66c9;*/
+    padding: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
-#user-top-links a, #user-top-links-log a
+#user-top-links a
 {
     color: #F1F1F1;
 }
+
+#user-top-links-log a
+{
+    color: #F1F1F1;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.user-top-info, .user-account-link
+{
+    float: left;
+}
+
+.user-top-notifications
+{
+    margin-left: 10px;
+    float: right;
+}
+
+.user-top-notifications a, .user-top-notifications a:hover
+{
+    background-color: #F00;
+    
+    /* Safari 4-5, Chrome 1-9 */
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#666), to(#111));
+
+    /* Safari 5.1, Chrome 10+ */
+    background-image: -webkit-linear-gradient(top, #666, #111);
+
+    /* Firefox 3.6+ */
+    background-image: -moz-linear-gradient(top, #fe0000, #9a0000);
+
+    /* IE 10 */
+    background-image: -ms-linear-gradient(top, #fe0000, #9a0000);
+
+    /* Opera 11.10+ */
+    background-image: -o-linear-gradient(top, #fe0000, #9a0000);
+    
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    padding: 2px 4px 2px 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.user-top-notifications.new a, .user-top-notifications.new a:hover
+{
+    background-color: #F00;
+    
+    /* Safari 4-5, Chrome 1-9 */
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fe0000), to(#9a0000));
+
+    /* Safari 5.1, Chrome 10+ */
+    background-image: -webkit-linear-gradient(top, #fe0000, #9a0000);
+
+    /* Firefox 3.6+ */
+    background-image: -moz-linear-gradient(top, #fe0000, #9a0000);
+
+    /* IE 10 */
+    background-image: -ms-linear-gradient(top, #fe0000, #9a0000);
+
+    /* Opera 11.10+ */
+    background-image: -o-linear-gradient(top, #fe0000, #9a0000);
+    
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    padding: 2px 4px 2px 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.user-logout-link
+{
+    float: right;
+}
+
+/******************************************/
+/**************** Navigation **************/
+/******************************************/
 
 .menu_nav {
 	margin:20px 0 0 0;
@@ -276,4 +360,154 @@ a.rm, a.com {
 }
 .footer .rf {
 	float:right;
+}
+
+
+/********************************/
+/**** Login & Register Page *****/
+/********************************/
+
+#login, #register
+{
+    margin: 70px auto;
+    border: solid 1px #AAA;
+    -moz-box-shadow: 0 0 10px #888;
+    -webkit-box-shadow: 0 0 10px #888;
+    box-shadow: 0 0 10px #888;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #F0F0F0;
+    height: auto;
+}
+
+#login
+{
+    width: 575px;
+    padding: 10px 10px 50px 10px;
+}
+
+#register
+{
+    width: 610px;
+    padding: 10px;
+}
+
+.help-error
+{
+    color: #B94A48;
+}
+
+.error
+{
+    border-color: #EE5F5B;
+}
+
+.error:focus
+{
+    border-color: #E9322D;
+    -webkit-box-shadow: 0 0 6px #f8b9b7;
+    -moz-box-shadow: 0 0 6px #f8b9b7;
+    box-shadow: 0 0 6px #f8b9b7;
+}
+
+.user-login-links
+{
+    float: right;
+}
+
+
+/**************************/
+/********* Modules ********/
+/**************************/
+
+
+.partage
+{
+    color: #F90;
+    font-weight: bold;
+}
+
+.modulep
+{
+    border: 1px solid #FC6;
+    padding: 5px;
+}
+
+#partner
+{
+    background:url(../images/pub.png) no-repeat left;
+}
+
+/******************************************/
+/************** User account **************/
+/******************************************/
+
+#user-topics
+{
+    width: 650px;
+    float: left;
+}
+
+.user-topic
+{
+    background-color: #EEE;
+    width: 650px;
+    margin-bottom: 7px;
+    float: left;
+    -moz-box-shadow: 0 0 1px #888;
+    -webkit-box-shadow: 0 0 1px #888;
+    box-shadow: 0 0 1px #888;
+
+}
+
+.user-topic:hover
+{
+    background-color: #FEFEFE;
+    -moz-box-shadow: 0 0 2px #888;
+    -webkit-box-shadow: 0 0 2px #888;
+    box-shadow: 0 0 2px #888;
+}
+
+.user-topic-subject-date-block
+{
+    float: left;
+}
+
+.user-topic-date
+{
+    padding-left: 15px;
+}
+
+.user-topic-vote
+{
+    text-align: center;
+    margin: 10px 10px 0 4px;
+    padding: 0 3px 0 3px;
+    -moz-box-shadow: 0 0 3px #888;
+    -webkit-box-shadow: 0 0 3px #888;
+    box-shadow: 0 0 3px #888;
+    background-color: #D3D3D3;
+    float: right;
+}
+
+#user-messages
+{
+    width: 650px;
+    float: left;
+}
+
+.user-message
+{
+    width: 635px;
+    border-top: dotted 1px #AAA;
+    padding-bottom: 5px;
+    padding-left: 15px;
+}
+
+.user-message a
+{
+    float: left;
+    text-decoration: none;
+    color: #222;
 }

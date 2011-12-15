@@ -8,6 +8,9 @@ ini_set('display_errors', true);
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
+defined('APPLICATION_UPLOADS_DIR')
+    || define('APPLICATION_UPLOADS_DIR', realpath(dirname(__FILE__) . '/../data/users'));
+
 // Define application environment
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));

@@ -127,7 +127,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                     if($request->isXmlHttpRequest())
                     {
                         $this->disableLayout();
-                        $this->sendAjaxResponse(array('error_message' => 'Vous devez vous identifier'));
+                        $this->sendAjaxResponse(array('status' => 'error', 'message' => 'Vous devez vous identifier'));
                         // redirectAndExit() cleans up, sends the headers and stopts the script
                         Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
                     }

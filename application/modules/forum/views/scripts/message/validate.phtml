@@ -1,0 +1,8 @@
+<?php echo $this->escape($this->message); ?>
+<br />
+<a href="<?php echo $this->url(array(
+                            'module' => 'forum',
+                            'controller'=>'topic',
+                            'action'=>'show',
+                            'topic' => $this->escape($this->topic)
+                        ),null, true); ?>">Retour au sujet</a>

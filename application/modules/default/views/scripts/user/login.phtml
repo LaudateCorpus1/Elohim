@@ -1,4 +1,14 @@
-<h2>Connexion</h2>
-
-<?php echo $this->form; ?>
-<?php echo $this->message; ?>
+<?php $this->headTitle('Connexion'); ?>
+<div id="login">
+    <h3>Connexion</h3>
+    
+    <?php echo $this->form; ?>
+    <p class="help-error"><?php echo $this->message; ?></p>
+    <div class="user-login-links">
+        <a href="<?php echo $this->url(array(
+                                        'module' => 'default',
+                                        'controller'=>'user',
+                                        'action'=>'register'
+                                    )); ?>">S'inscrire</a><br /><a href="">Mot de passe oublié</a>
+    </div>
+</div>

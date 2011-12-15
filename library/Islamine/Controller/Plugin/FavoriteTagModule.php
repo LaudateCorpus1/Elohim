@@ -17,12 +17,13 @@ class Islamine_Controller_Plugin_FavoriteTagModule extends Zend_Controller_Plugi
             $tag_model = new Forum_Model_Tag();
             $identity = $auth->getIdentity();
             $fav_tags = $tag_model->getFavoriteTags($identity->id);
-            if(count($fav_tags) > 0)
-            {
-                $html .= '<div id="favtags">
+            
+            $html .= '<div id="favtags">
                             Sujets favoris
                             <ul id="favlist">';
-
+            
+            if(count($fav_tags) > 0)
+            {
                 foreach($fav_tags as $fav_tag)
                 {
                     $html .='<li class="favorited-style">

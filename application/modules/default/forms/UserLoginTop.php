@@ -61,7 +61,6 @@ class Default_Form_UserLoginTop extends Zend_Form {
             array('Label', array('tag' => 'td')),
         ));
 
-
         $URI = new Zend_Form_Element_Hidden('uri', array(
                     'required' => true
                 ));
@@ -72,16 +71,9 @@ class Default_Form_UserLoginTop extends Zend_Form {
             'Errors', array(array('data' => 'HtmlTag'), array('tag' => 'td'))
         ));
 
-        /* $rememberMe = new Zend_Form_Element_Checkbox('rememberMe', array(
-          'decorators' => $this->checkboxDecorators,
-          'label' => 'Remember me?',
-          'required' => true,
-          'class' => 'input-checkbox'
-          )); */
-
-        $submit = new Zend_Form_Element_Submit('login', array(
+        $submit = new Zend_Form_Element_Submit('login-btn', array(
                     'label' => 'Connexion',
-                    'class' => 'input-submit'
+                    'class' => 'btn primary'
                 ));
 
         $submit->setDecorators(array(
@@ -91,13 +83,27 @@ class Default_Form_UserLoginTop extends Zend_Form {
                     'colspan' => '2', 'align' => 'center')),
             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => 'true'))
         ));
+        
+        $rememberMe = new Zend_Form_Element_Checkbox('rememberMe', array(
+            'label' => 'Rester connecté',
+            'required' => true,
+            'description' => '<div id="user-top-links"><a href="/default/user/register">S\'inscrire</a> | <a href="">Mot de passe oublié</a></div>'
+        ));
+        
+        $rememberMe->setDecorators(array(
+            'ViewHelper',
+            array('Description', array('escape' => false, 'tag' => false, 'placement' => 'prepend')),
+            array(array('td' => 'HtmlTag'), array('tag' => 'td', 'colspan' => '5')),
+            array('Label', array('tag' => 'td', 'placement' => 'append')),
+            //array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => 'true'))
+        ));
 
         $this->addElements(array(
             $username,
             $password,
-            /* $rememberMe, */
             $URI,
-            $submit
+            $submit,
+            $rememberMe
         ));
 
         $this->setDecorators(array(

@@ -1,2 +1,13 @@
-<?php
-echo $this->form;
+<?php $this->headTitle('Inscription'); ?>
+<div id="register">
+    <h3>S'inscrire</h3>
+    <?php
+    if(isset($this->error))
+        echo '<div class="help-error">'.$this->escape($this->error).'</div>';
+
+    if(isset($this->success))
+        echo $this->escape($this->success);  
+    
+    echo $this->form;
+    ?>
+</div>

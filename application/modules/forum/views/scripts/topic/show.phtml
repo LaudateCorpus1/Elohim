@@ -68,7 +68,25 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <?php echo $this->escape($this->topic['login']); ?>
+                                        <div class="user-avatar">
+                                            <a href="<?php echo $this->url(array(
+                                                            'module' => 'default',
+                                                            'controller'=>'user',
+                                                            'action'=>'index',
+                                                            'username' => $this->escape($this->topic['login'])
+                                                        ), null, true); ?>">
+                                                        <img src="<?php echo $this->baseUrl(); ?>/images/userpic.gif"
+                                            </a>
+                                        </div>
+                                        <div class="user-details">
+                                            <a href="<?php echo $this->url(array(
+                                                                'module' => 'default',
+                                                                'controller'=>'user',
+                                                                'action'=>'index',
+                                                                'username' => $this->escape($this->topic['login'])
+                                                            ), null, true); ?>"><?php echo $this->escape($this->topic['login']); ?></a>
+                                        </div>
+                                        
                                     </td>
                                 </tr>
                             </tbody>
@@ -86,8 +104,7 @@
                                                                 'action'=>'tag',
                                                                 'name'=> $this->escape($tag->name),
                                                                 'topic' => null
-                                                            )); ?>
-                                       "><?php echo $this->escape($tag->name); ?></a>
+                                                            )); ?>"><?php echo $this->escape($tag->name); ?></a>
                                 </div>  
                                 <div class="tag-action">
                                 <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),$this->escape($this->identity)); ?>
@@ -109,8 +126,7 @@
                                                             'controller'=>'topic',
                                                             'action'=>'alert',
                                                             'topic'=> $this->escape($this->topic['topicId'])
-                                                        )); ?>
-                                   " target="_blank">Avertir un modérateur</a>
+                                                        )); ?>" target="_blank">Avertir un modérateur</a>
                             
                             <?php  if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
                             -
@@ -148,6 +164,7 @@
     <div id="messages">
     <?php $i = 0;
     foreach($this->messages as $mess) : ?>
+        <a name="<?php echo $this->escape($mess->messageId); ?>"></a>
         <div id="message-<?php echo $this->escape($mess->messageId); ?>" class="message">
             <table class="table-message" <?php if($this->escape($mess->validation)) echo 'id="message-validated"'; ?> >
                 <tbody>
@@ -208,7 +225,24 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="#"><?php echo $this->escape($mess->login); ?></a>
+                                            <div class="user-avatar">
+                                                <a href="<?php echo $this->url(array(
+                                                                'module' => 'default',
+                                                                'controller'=>'user',
+                                                                'action'=>'index',
+                                                                'username' => $this->escape($mess->login)
+                                                            ), null, true); ?>">
+                                                            <img src="<?php echo $this->baseUrl(); ?>/images/userpic.gif"
+                                                </a>
+                                            </div>
+                                            <div class="user-details">
+                                                <a href="<?php echo $this->url(array(
+                                                                    'module' => 'default',
+                                                                    'controller'=>'user',
+                                                                    'action'=>'index',
+                                                                    'username' => $this->escape($mess->login)
+                                                                ), null, true); ?>"><?php echo $this->escape($mess->login); ?></a>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -267,8 +301,7 @@ if($this->escape($this->topic['status']) != 'closed')
                                     'controller'=>'topic',
                                     'action'=>'answer',
                                     'topic'=>$this->escape($this->topic['topicId'])
-                                )); ?>
-    ">R&eacute;pondre</a>
+                                )); ?>">R&eacute;pondre</a>
 </div>
 
 <div id="block-quick-answer">

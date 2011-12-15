@@ -16,7 +16,7 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
             {
                     throw new Exception("Could not find row $id");
             }
-            return $row->toArray();
+            return $row;
     }
     
     public function getAuthor($id)
@@ -51,9 +51,13 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
         $this->delete(array($this->getAdapter()->quoteInto('messageId = ?', $id)));
     }
 
-    public function updateMessage(array $data, $id)
+    public function updateMessage(array $data, $messageId, $topicId = null)
     {
-            $this->update($data, array($this->getAdapter()->quoteInto('messageId = ?', $id)));
+        $where = array();
+        $where[] = $this->getAdapter()->quoteInto('messageId = ?', $messageId);
+        if($topicId != null)
+            $where[] = $this->getAdapter()->quoteInto('topicId = ?', $topicId);
+        return $this->update($data, $where);
     }
 
     public function incrementVote($messageId, $author_id)

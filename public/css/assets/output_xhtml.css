@@ -8,7 +8,7 @@
 /**
  * Basic definitions for the editing area.
  */
-/*body
+body
 {
 	font-family: Arial, Verdana, sans-serif;
 	font-size: 80%;
@@ -16,7 +16,7 @@
 	background-color: #ffffff;
 	padding: 5px;
 	margin: 0px;
-}*/
+}
 
 /**
  * Core styles.
@@ -76,6 +76,36 @@
 /**
  * Font sizes.
  */
+ 
+ .FontTen
+ {
+     font-size: 10px;
+ }
+ 
+ .FontTwelve
+ {
+     font-size: 12px;
+ }
+ 
+ .FontFourteen
+ {
+     font-size: 14px;
+ }
+ 
+ .FontSixteen
+ {
+     font-size: 16px;
+ }
+ 
+ .FontTwenty
+ {
+     font-size: 20px;
+ }
+ 
+ .FontTwentyfour
+ {
+     font-size: 24px;
+ }
 
 .FontSmaller
 {

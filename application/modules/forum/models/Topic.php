@@ -34,7 +34,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             {
                     throw new Exception("Could not find row $id");
             }
-            return $row->toArray();
+            return $row;
     }
     
     public function getAll($closed_flag = true, $count = 50, $order = 'Topic.date DESC')
@@ -52,16 +52,31 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                   'status'
                   ))
               ->joinLeft(array('Messages'), 'Topic.topicId=Messages.topicId', null)
+              ->join('user', 'Topic.userId = user.id', 'login')
               ->group($this->_name.'.topicId')
               ->order($orderby)
               ->order('Topic.date DESC')
               ->limit($count);
         
         if(!$closed_flag)
-            $query->where('status != "closed"');
+            $query->where($this->_name.'.status != "closed"');
 
         $res = $this->fetchAll($query);
         return $res;
+    }
+    
+    public function getAuthor($id)
+    {
+        $query = $this->select()
+                ->from($this->_name, 'userId')
+                ->where($this->getAdapter()->quoteInto('topicId = ?',$id));
+        $row = $this->fetchRow($query);
+        
+        if (!$row)
+        {
+            throw new Exception("Could not find row $id");
+        }
+        return $row;
     }
 
     public function addTopic($userId, $title, $message, $ipAddress = null, $date = null, $vote = 0)
@@ -84,7 +99,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
 
     public function updateTopic(array $data, $id)
     {
-            $this->update($data, array('topicId = ?' => $id));
+            $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $id));
     }
 
     public function getMessagesFromTopic($topicId)
@@ -161,6 +176,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->join('Tags', 'TopicTag.tagId = Tags.tagId',array(
                                 'tag_tagId' => 'tagId'
                                 ))
+              ->join('user', 'Topic.userId = user.id', 'login')
               ->where('Tags.name = ?',$name)
               ->group($this->_name.'.topicId')
               ->order($orderby)
@@ -168,7 +184,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->limit($count);
         
         if(!$closed_flag)
-            $query->where('status != "closed"');
+            $query->where($this->_name.'.status != "closed"');
 
         $res = $this->fetchAll($query);
         return $res;
@@ -296,13 +312,14 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                   'status'
                   ))
               ->joinLeft(array('Messages'), 'Topic.topicId=Messages.topicId', array('messages_topicId' => 'topicId'))
+              ->join('user', 'Topic.userId = user.id', 'login')
               ->where('Messages.topicId IS NULL')
               ->group($this->_name.'.topicId')
               ->order($orderby)
               ->limit($count);
         
         if(!$closed_flag)
-            $query->where('status != "closed"');
+            $query->where($this->_name.'.status != "closed"');
 
         $res = $this->fetchAll($query);
         return $res;
@@ -330,6 +347,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->join('Tags', 'TopicTag.tagId = Tags.tagId',array(
                                 'tag_tagId' => 'tagId'
                                 ))
+              ->join('user', 'Topic.userId = user.id', 'login')
               ->where($this->getAdapter()->quoteInto('Tags.name = ?', $tag_name))
               ->where('Messages.topicId IS NULL')
               ->group($this->_name.'.topicId')
@@ -337,10 +355,22 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->limit($count);
         
         if(!$closed_flag)
-            $query->where('status != "closed"');
+            $query->where($this->_name.'.status != "closed"');
 
         $res = $this->fetchAll($query);
         return $res;
+    }
+    
+    public function isClosed($topic_id)
+    {
+        $query = $this->select()
+                ->from($this->_name, 'status')
+                ->where($this->getAdapter()->quoteInto('topicId = ?',$topic_id));
+        $row = $this->fetchRow($query);
+        if($row->status == 'closed')
+            return true;
+        else
+            return false;
     }
 }
 ?>

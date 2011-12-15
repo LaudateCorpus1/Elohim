@@ -16,7 +16,8 @@ class Islamine_View_Helper_Purify extends Zend_View_Helper_Abstract
    {
        $options = array(
            array(
-               'HTML.AllowedElements', 'span,a,p,ol,ul,li', null
+               //'HTML.AllowedElements', 'span,a,p,ol,ul,li', null
+               'HTML.Allowed', 'span[class],a[href|title],p,ol,ul,li,img[src|title|alt]', null
            )
        );
        $filter = new Islamine_Filter_HtmlPurifier($options);

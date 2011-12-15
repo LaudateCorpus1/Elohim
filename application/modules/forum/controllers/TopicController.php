@@ -26,7 +26,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             $i = 0;
             $topic = new Forum_Model_Topic();
             $messages = new Forum_Model_Message();
-            $this->view->topic = $topic->getTopic($id);
+            $this->view->topic = $topic->getTopic($id)->toArray();
 
             /*if ($this->view->topic['type'] == 'wiki') {
                 $this->view->edit = true;
@@ -98,27 +98,45 @@ class Forum_TopicController extends Zend_Controller_Action {
 
     public function answerAction() {
         
-        $messageForm = new Forum_Form_UserPostMessage();
+        $topicId = $this->_getParam('topic');
+        $model_topic = new Forum_Model_Topic();
+        $closed = $model_topic->isClosed($topicId);
+        
+        if(!$closed)
+        {
+            $messageForm = new Forum_Form_UserPostMessage();
 
-        if ($this->getRequest()->isPost()) {
-            $formData = $this->getRequest()->getPost();
-            
-            if ($messageForm->isValid($formData)) {
-                $auth = Zend_Auth::getInstance();
-                if($auth->hasIdentity())
-                {
-                    $identity = $auth->getIdentity();
-                    $content = $messageForm->getValue('form_message_content');
-                    $topicId = $this->_getParam('topic');
-                    $message = new Forum_Model_Message();
-                    $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
-                    
-                    echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
-                    //$this->_redirect('/forum/topic/show/topic/' . $topicId);
+            if ($this->getRequest()->isPost()) {
+                $formData = $this->getRequest()->getPost();
+
+                if ($messageForm->isValid($formData)) {
+                    $auth = Zend_Auth::getInstance();
+                    if($auth->hasIdentity())
+                    {
+                        $identity = $auth->getIdentity();
+                        $content = $messageForm->getValue('form_message_content');
+
+                        $message = new Forum_Model_Message();
+                        $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
+
+                        $topic_author = $model_topic->getAuthor($topicId);
+                        $this->_helper->notifyUser('Un nouveau message !', $topic_author->userId);
+                        
+                        if($this->_request->isXmlHttpRequest())
+                            echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
+                        //$this->_redirect('/forum/topic/show/topic/' . $topicId);
+                    }
                 }
             }
+            $this->view->messageForm = $messageForm;
         }
-        $this->view->messageForm = $messageForm;
+        else
+        {
+            if($this->_request->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce sujet est fermé, vous ne pouvez pas y répondre'));
+            else
+                $this->view->message = 'Ce sujet est fermé, vous ne pouvez pas y répondre';
+        }
     }
 
     public function addAction() {
@@ -160,7 +178,7 @@ class Forum_TopicController extends Zend_Controller_Action {
     public function tagAction() {
         $i = 0;
         $topics = new Forum_Model_Topic();
-        $name = $this->_getParam('name');
+        $name = $this->view->tag = $this->_getParam('name');
 
         $list = $this->view->topics = $topics->getTopicsByTagName($name);
         
@@ -177,7 +195,7 @@ class Forum_TopicController extends Zend_Controller_Action {
         if($model_vote->alreadyVoted($identity->id, $topicId, 'UP_TOPIC'))
         {
             if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous avez déjà voté'));
+                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
             else
                 $this->view->message = 'Vous avez déjà voté';
         }
@@ -187,7 +205,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             if($res === false)
             {
                 if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous ne pouvez pas voter pour vous'));
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
                 else
                     $this->view->message = 'Vous ne pouvez pas voter pour vous';
             }
@@ -230,7 +248,7 @@ class Forum_TopicController extends Zend_Controller_Action {
         if($model_vote->alreadyVoted($identity->id, $topicId, 'DOWN_TOPIC'))
         {
             if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous avez déjà voté'));
+                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
             else
                 $this->view->message = 'Vous avez déjà voté';
         }
@@ -240,11 +258,11 @@ class Forum_TopicController extends Zend_Controller_Action {
             if($res === false)
             {
                 if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'error_message' => 'Vous ne pouvez pas voter pour vous'));
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
                 else
                     $this->view->message = 'Vous ne pouvez pas voter pour vous';
             }
-            else
+            else // OK
             {
                 $user_model = new Model_User();
 

@@ -25,7 +25,8 @@ $(function()
     {
         var attr = $(this).attr('class');
         var tagId = attr.split("-");
-        var url = "/forum/tag/favorite/tag/"+tagId[1];
+        var action = $(this).find('img').first().attr('class');
+        var url = "/forum/tag/"+action+"favorited/tag/"+tagId[1];
 
         if(auth)
         {
@@ -33,30 +34,27 @@ $(function()
             {
                 if(checkSuccess(response))
                 {
-                    var responseSplit = response.split("/");
-                    var html = '<li class="favorited-style"><a href="/forum/topic/tag/name/'+responseSplit[0]+'" class="favorited-'+tagId[1]+'">'+responseSplit[0]+'</a>\n\
+                    var html = '<li class="favorited-style"><a href="/forum/topic/tag/name/'+response.tagname+'" class="favorited-'+response.tagid+'">'+response.tagname+'</a>\n\
                                 <a class="close2">x</a></li>';
 
-                    if(responseSplit[1] == "add")
+                    if(response.action == "add")
                     {
                         $('#favlist').append(html);
-                        $('.close2').removeAttr('href');
-                        deleteTagWithCross();
-                        $('.fav-'+tagId[1]).each(function()
+                        $('.fav-'+response.tagid).each(function()
                         {
-                            $(this).html('<a class="fav-'+tagId[1]+'" title="Retirer des favoris"><img src="/images/moins.png" alt="retirerfavoris"/></a>');
+                            $(this).html('<a class="fav-'+response.tagid+'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>');
                         });
                     }
-                    else if(responseSplit[1] == "remove")
+                    else if(response.action == "remove")
                     {
-                        $('.favorited-'+tagId[1]).parent().remove();
-                        $('.fav-'+tagId[1]).each(function()
+                        $('.favorited-'+response.tagid).parent().remove();
+                        $('.fav-'+response.tagid).each(function()
                         {
-                            $(this).html('<a class="fav-'+tagId[1]+'" title="Ajouter aux favoris"><img src="/images/plus2.png" alt="ajouterfavoris"/></a>');
+                            $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
                         });
                     }
                 }
-            });
+            }, 'json');
         }
         else
             alert("Vous devez vous identifier");
@@ -72,14 +70,17 @@ $(function()
         {
             var attr = $(this).parent().find('a').first().attr('class').split('-');
             url = "/forum/tag/removefavorited/tag/"+attr[1];
-            $.post(url, {}, function()
+            $.post(url, {}, function(response)
             {
-                $('.favorited-'+attr[1]).parent().remove();
-                $('.fav-'+attr[1]).each(function()
+                if(checkSuccess(response))
                 {
-                    $(this).html('<a class="fav-'+attr[1]+'" title="Ajouter aux favoris"><img src="/images/plus2.png" alt="ajouterfavoris"/></a>');
-                });
-            });
+                    $('.favorited-'+response.tagid).parent().remove();
+                    $('.fav-'+response.tagid).each(function()
+                    {
+                        $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="remove" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
+                    });
+                }
+            },'json');
         });
     }
 
@@ -121,33 +122,36 @@ $(function()
     dialogCloseMotif();    
     dialogReopenTopic();
     dialogValidateAnswer();
-    
-    /*$('#loading_div').hide().ajaxStart(function()
-    {
-        $(this).show();
-    }).ajaxStop(function() 
-    {
-        $(this).hide();
-    });*/
 
 });
 
 function checkSuccess(response)
 {
-    try
+    if(response.status == 'error')
     {
+        alert(response.message);
+        return false;
+    }
+    return true;
+    /*try
+    {
+        alert("teAAs");
         var obj = null;
+        alert(typeof(response));
         if(typeof(response) != 'object')
         {
+            alert("tesQQs");
             obj = jQuery.parseJSON(response);
-            if(obj.error_message != null)
+            if(obj.status == 'error')
             {
-                alert(obj.error_message);
+                alert("tess");
+                alert(obj.message);
                 return false;
             }
         }
         else
         {
+            alert("teALLOOAs");
             if(response.error_message != null)
             {
                 alert(response.error_message);
@@ -158,8 +162,9 @@ function checkSuccess(response)
     }
     catch(e)
     {
+        alert("tes");
         return true;
-    }
+    }*/
 }
 
 
@@ -190,7 +195,7 @@ function rate(action, object)
                 {
                     object.parent().find('span').first().text(response.vote);
                     
-                    var html
+                    var html;
                     if(response.type.indexOf('UP') != -1)
                     {
                         if(response.revote)
@@ -376,6 +381,7 @@ function dialogReopenTopic()
 
 function dialogValidateAnswer()
 {
+    var topicId = url.substring(url.lastIndexOf('/') + 1);
     $( "#dialog-validate-message" ).dialog({
                 autoOpen: false,
                 resizable: false,
@@ -384,16 +390,16 @@ function dialogValidateAnswer()
                 modal: true,
                 buttons: {
                         Valider: function() {
+                            var messageId = $(this).data('messageId');
                             $.ajax({
                                 type: "POST",
                                 url: "/forum/message/validate",
                                 dataType: "json",
-                                data: { "message": messageId },
+                                data: { "message": messageId, "topic": topicId },
                                 success: function(response)
                                 {
                                     if(checkSuccess(response))
                                     {
-                                        var topicId = url.substring(url.lastIndexOf('/') + 1);
                                         $('.message-validation').hide();
                                         $('#message-'+messageId).find('.message-validation').html('<a href="/forum/message/devalidate/topic/'+topicId+'/message/'+messageId+'">Annuler validation</a>');
                                         $('#message-'+messageId).find('.message-validation').show();
@@ -421,9 +427,9 @@ function dialogValidateAnswer()
     $('.message-validation-link').click(function(e) {
         //Cancel the link behavior
         e.preventDefault();
-        _id = $(this).parents('div:eq(1)').attr('id');
-        messageId = _id.substring(_id.lastIndexOf('-') + 1);
-        $('#dialog-validate-message').dialog('open', {'messageId': messageId});
+        var _id = $(this).parents('div:eq(1)').attr('id');
+        var messageId = _id.substring(_id.lastIndexOf('-') + 1);
+        $('#dialog-validate-message').data('messageId', messageId).dialog('open');
     });
 }
 

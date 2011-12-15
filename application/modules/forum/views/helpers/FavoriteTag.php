@@ -21,17 +21,17 @@ class Zend_View_Helper_FavoriteTag extends Zend_View_Helper_Abstract
             if($tags->alreadyFavorited($tagId, $userId))
             {
                 //return "-";
-                return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Retirer des favoris"><img src="/images/moins.png" alt="retirerfavoris"/></a>';
+                return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>';
             }
             else
             {
                 //return "+";
-                return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+                return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
             }
         }
         else
         {
-            return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+            return '<a href="/forum/tag/favorite/tag/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
         }
     }
 }

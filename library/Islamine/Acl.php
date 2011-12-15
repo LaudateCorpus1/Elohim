@@ -104,13 +104,21 @@ class Islamine_Acl extends Zend_Acl
         if($auth->hasIdentity())
         {
             $identity = $auth->getIdentity();
+            
+            /*
+             * On vérifie d'abord l'utilisateur est à jourmet jour l'utilisateur
+             */
+            $model_user = new Model_User($this->_config);
+            $user = $model_user->get($identity->id);
+            Zend_Registry::set('user', $user);
+            
             $role = $identity->login.'_'.$identity->id;
             if(!$this->hasRole($role)) 
                 $this->addRole(new Zend_Acl_Role($role), $identity->role);
 
             foreach($this->_karma_privileges as $privilege)
             {
-                if(intval($identity->karma) >= $privilege->karma_needed)
+                if(intval($user->karma) >= $privilege->karma_needed)
                     $this->allow($role, $privilege->module.'_'.$privilege->resource, $privilege->privilege);
             }
         }

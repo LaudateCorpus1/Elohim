@@ -72,7 +72,7 @@
 
 		tag_input.keypress(function(event){
 			if (event.which == BACKSPACE) {
-				if (tag_input.val() == "") {
+				if (tag_input.val() == ""){
                                     // When backspace is pressed, the last tag is deleted.
                                     $(el).children(".tagit-choice:last").remove();
                                     var tagList = $('#tagsValues').val().split(' ');

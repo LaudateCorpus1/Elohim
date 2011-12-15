@@ -1,1 +1,26 @@
-Index action of User controller
+<?php $this->headTitle('Utilisateur '.$this->escape($this->user->login)); ?>
+
+<h2><?php echo $this->escape($this->user->login); ?></h2>
+
+<div id="user-info">
+    Inscrit le <?php echo $this->escape($this->user->date_created); ?>
+    <br />
+    Karma <?php echo $this->escape($this->user->karma); ?>
+</div>
+
+<p><a href="<?php echo $this->url(array(
+                            'controller'=>'user',
+                            'action'=>'listtopics'
+                        )); ?>">Afficher ses sujets</a>
+</p>
+
+<p><a href="<?php echo $this->url(array(
+                            'controller'=>'user',
+                            'action'=>'listmessages'
+                        )); ?>">Afficher ses messages</a>
+</p>
+
+
+<p>Voir ses favoris</p>
+
+<p>Tags</p>

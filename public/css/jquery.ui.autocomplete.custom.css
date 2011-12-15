@@ -30,6 +30,8 @@ ul.tagit {
         width:680px;
 }
 ul.tagit li {
+        border-radius:5px 5px 5px 5px;
+        -webkit-border-radius:5px 5px 5px 5px;
 	-moz-border-radius:5px 5px 5px 5px;
 	display: block;
 	float: left;
@@ -66,6 +68,8 @@ ul.tagit li.tagit-choice a.close {
 }
 ul.tagit input[type="text"] {
 	-moz-box-sizing:border-box;
+        box-sizing:border-box;
+        -webkit-box-sizing:border-box;
 	border:none;
 	margin:0;
 	padding:0;
@@ -73,4 +77,8 @@ ul.tagit input[type="text"] {
 	border-color:#C6C6C6;
 	background-color:#FFFFFF;
 	color:#333333;
+}
+
+ul.tagit input[type="text"]:focus {
+	outline:0;
 }
