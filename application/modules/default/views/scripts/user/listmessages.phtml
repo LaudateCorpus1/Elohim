@@ -1,0 +1,29 @@
+<?php $this->headTitle('Messages postés par '.$this->escape($this->user->login)); ?>
+
+<h2><?php echo $this->escape($this->user->login); ?></h2>
+
+<h2>Messages</h2>
+<div id="user-messages">
+    <?php foreach($this->user_messages as $message) : ?>
+        <div class="user-topic">
+                <div class="topic-subject">
+                    <a href="<?php echo $this->url(array(
+                                            'module' => 'forum',
+                                            'controller'=>'topic',
+                                            'action'=>'show',
+                                            'topic'=>$this->escape($message->topicId)
+                                        ), null, true); ?>"><?php echo $this->escape($message->title); ?></a>
+                </div>
+                <div class="user-message">
+                    <a href="<?php echo $this->url(array(
+                                            'module' => 'forum',
+                                            'controller'=>'topic',
+                                            'action'=>'show',
+                                            'topic'=>$this->escape($message->topicId)
+                                        ), null, true).'#'.$this->escape($message->messageId); ?>"><?php echo $this->purify($this->textWrap($message->content, 300)); ?></a>
+                    <div class="user-topic-vote"><?php echo $this->escape($message->vote_message);?> votes</div>
+                </div>
+        </div>
+    <?php endforeach; ?>
+    <?php echo $this->paginationControl($this->user_messages, 'Sliding', '/partials/pagination.phtml'); ?>       
+</div>

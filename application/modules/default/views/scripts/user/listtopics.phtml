@@ -1,0 +1,24 @@
+<?php $this->headTitle('Sujets postés par '.$this->escape($this->user->login)); ?>
+
+<h2><?php echo $this->escape($this->user->login); ?></h2>
+
+<h2>Topics</h2>
+<div id="user-topics">
+    <?php foreach($this->user_topics as $topic) : ?>
+    <div class="user-topic">
+        <div class="user-topic-subject-date-block">
+        <div class="topic-subject">
+        <a href="<?php echo $this->url(array(
+                                'module' => 'forum',
+                                'controller'=>'topic',
+                                'action'=>'show',
+                                'topic'=>$this->escape($topic->topicId)
+                            ), null, true); ?>"><?php echo $this->escape($topic->title);?></a>
+        </div>
+        <div class="user-topic-date"><?php echo $this->escape($topic->date);?></div>
+        </div>
+        <div class="user-topic-vote"><?php echo $this->escape($topic->vote);?> votes</div>
+    </div>
+    <?php endforeach; ?>
+    <?php echo $this->paginationControl($this->user_topics, 'Sliding', '/partials/pagination.phtml'); ?>
+</div>
