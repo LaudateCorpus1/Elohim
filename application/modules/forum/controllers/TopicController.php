@@ -23,6 +23,41 @@ class Forum_TopicController extends Zend_Controller_Action {
         
         $id = $this->_getParam('topic');
         if ($id > 0) {
+            
+            $this->view->author = false;
+            
+            /*
+             * Formulaire de fermeture de topic
+             * Un variable pour savoir si l'utilisateur est loggé est passé au script JS
+             * pour éviter à envoyer la requete au serveur s'il n'est pas connecté
+             */
+            $form = new Forum_Form_CloseTopic();
+            $auth = Zend_Auth::getInstance();
+            $user_name = "";
+            $autho = 'false';
+            if($auth->hasIdentity())
+            {
+                $autho = 'true';
+                $identity = $auth->getIdentity();
+                $user_name = $identity->login;
+                $this->view->identity = $identity->id;
+                
+                // L'auteur peut éditer son topic
+                if($this->view->topic['userId'] == $identity->id)
+                {
+                    $this->view->author = true;
+                    
+                    if(isset($this->_getParam('notif')))
+                    {
+                            $notification = $this->_getParam('notif');
+                            $modelNotification = new Model_Notification();
+                            $modelNotification->updateNotification(array('beenRead' => true), $notification);    
+                    }
+                }
+                
+                $form->populate(array('topic_id' => $id, 'username' => $user_name));
+            }
+            
             $i = 0;
             $topic = new Forum_Model_Topic();
             $messages = new Forum_Model_Message();
@@ -64,32 +99,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             $messageForm = new Forum_Form_UserPostMessage();
             $this->view->messageForm = $messageForm;
             
-            $this->view->author = false;
             
-            /*
-             * Formulaire de fermeture de topic
-             * Un variable pour savoir si l'utilisateur est loggé est passé au script JS
-             * pour éviter à envoyer la requete au serveur s'il n'est pas connecté
-             */
-            $form = new Forum_Form_CloseTopic();
-            $auth = Zend_Auth::getInstance();
-            $user_name = "";
-            $autho = 'false';
-            if($auth->hasIdentity())
-            {
-                $autho = 'true';
-                $identity = $auth->getIdentity();
-                $user_name = $identity->login;
-                $this->view->identity = $identity->id;
-                
-                // L'auteur peut éditer son topic
-                if($this->view->topic['userId'] == $identity->id)
-                {
-                    $this->view->author = true;
-                }
-                
-                $form->populate(array('topic_id' => $id, 'username' => $user_name));
-            }
             $this->view->form = $form;
             $this->view->headScript()->appendScript("var auth = $autho;");
             $this->view->headScript()->appendFile("/js/answerEditor.js");

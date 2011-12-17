@@ -1,4 +1,5 @@
 var url = window.location.pathname;
+var mouse_is_inside = false;
 
 $(function()
 {
@@ -122,6 +123,30 @@ $(function()
     dialogCloseMotif();    
     dialogReopenTopic();
     dialogValidateAnswer();
+    
+    
+    /*
+     * Notifications 
+     */
+    $('.notifications').hover(function(){ 
+        mouse_is_inside=true; 
+    }, function(){ 
+        mouse_is_inside=false; 
+    });
+
+    $('body').mouseup(function(){ 
+        if(!mouse_is_inside) $('.notifications').fadeOut('slow');
+    });
+    
+    $('.notifications-link').click(function()
+    {
+        $('.notifications').fadeIn('slow');
+    });
+    
+    $('.close-notifications').click(function()
+    {
+        $('.notifications').fadeOut('slow');
+    });
 
 });
 
@@ -330,7 +355,7 @@ function dialogReopenTopic()
                             $.ajax({
                                 type: "POST",
                                 url: "/forum/topic/reopen",
-                                data: { "topic_id": topic_id },
+                                data: {"topic_id": topic_id},
                                 success: function(response)
                                 {
                                     if(checkSuccess(response))
@@ -395,7 +420,7 @@ function dialogValidateAnswer()
                                 type: "POST",
                                 url: "/forum/message/validate",
                                 dataType: "json",
-                                data: { "message": messageId, "topic": topicId },
+                                data: {"message": messageId, "topic": topicId},
                                 success: function(response)
                                 {
                                     if(checkSuccess(response))
@@ -445,7 +470,7 @@ function addComment(messageId, content)
             type: "POST",
             url: "/forum/message/comment",
             dataType: "json",
-            data: { "message": messageId, "form_comment_content": content },
+            data: {"message": messageId, "form_comment_content": content},
             success: function(response)
             {
                 if(checkSuccess(response))
