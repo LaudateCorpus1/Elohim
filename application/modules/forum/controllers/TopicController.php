@@ -25,6 +25,10 @@ class Forum_TopicController extends Zend_Controller_Action {
         if ($id > 0) {
             
             $this->view->author = false;
+            $i = 0;
+            $topic = new Forum_Model_Topic();
+            $messages = new Forum_Model_Message();
+            $this->view->topic = $topic->getTopic($id)->toArray();
             
             /*
              * Formulaire de fermeture de topic
@@ -46,23 +50,10 @@ class Forum_TopicController extends Zend_Controller_Action {
                 if($this->view->topic['userId'] == $identity->id)
                 {
                     $this->view->author = true;
-                    
-                    if(isset($this->_getParam('notif')))
-                    {
-                            $notification = $this->_getParam('notif');
-                            $modelNotification = new Model_Notification();
-                            $modelNotification->updateNotification(array('beenRead' => true), $notification);    
-                    }
                 }
                 
                 $form->populate(array('topic_id' => $id, 'username' => $user_name));
             }
-            
-            $i = 0;
-            $topic = new Forum_Model_Topic();
-            $messages = new Forum_Model_Message();
-            $this->view->topic = $topic->getTopic($id)->toArray();
-
             /*if ($this->view->topic['type'] == 'wiki') {
                 $this->view->edit = true;
             }*/
@@ -130,11 +121,13 @@ class Forum_TopicController extends Zend_Controller_Action {
                         $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
 
                         $topic_author = $model_topic->getAuthor($topicId);
-                        $this->_helper->notifyUser('Un nouveau message !', $topic_author->userId);
+                        if($topic_author->userId != $identity->id)
+                            $this->_helper->notifyUser('Un nouveau message !', $topic_author->userId, $topicId);
                         
                         if($this->_request->isXmlHttpRequest())
                             echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
-                        //$this->_redirect('/forum/topic/show/topic/' . $topicId);
+                        else
+                            $this->_redirect('/forum/topic/show/topic/' . $topicId);
                     }
                 }
             }

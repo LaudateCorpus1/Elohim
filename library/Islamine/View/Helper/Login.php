@@ -60,9 +60,10 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
             $html .= '<div class="notification new">
                             Nouvelle réponse : <a class="notification-id-'.$notification->id.'" href="'.$this->view->url(array(
                                                                     'module' => 'forum',
-                                                                    'controller' => 'index',
-                                                                    'action' => 'index'
-                                    )).'">'.$notification->message.'</a>
+                                                                    'controller' => 'topic',
+                                                                    'action' => 'show',
+                                                                    'topic' => $notification->topicId
+                                    )).'">'.$notification->title.'</a>
                       </div>';
         }
         
