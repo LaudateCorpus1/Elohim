@@ -14,12 +14,7 @@ class Islamine_Controller_Plugin_SortModule extends Zend_Controller_Plugin_Abstr
         
         $html = '<div id="sort-module">';
         
-        /*$viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-        if (null === $viewRenderer->view) {
-            $viewRenderer->initView();
-        }
-        $view = $viewRenderer->view;*/
-        
+       
         $view = Zend_Controller_Front::getInstance()
         ->getParam('bootstrap')
         ->getResource('view');

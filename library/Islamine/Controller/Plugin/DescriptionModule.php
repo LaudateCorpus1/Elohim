@@ -20,7 +20,7 @@ class Islamine_Controller_Plugin_DescriptionModule extends Zend_Controller_Plugi
             qualité).*/
         $layout = Zend_Layout::getMvcInstance();
         $auth = Zend_Auth::getInstance();
-            
+        
         $layout->module_description = $html;
 
     }
