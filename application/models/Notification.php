@@ -32,5 +32,11 @@ class Model_Notification extends Zend_Db_Table_Abstract
         $data['read'] = false;
         return $this->insert($data);
     }
+    
+    public function updateNotification(array $data, $id)
+    {
+        $where = $this->getAdapter()->quoteInto('id = ?', $id);
+        $this->update($data, $where);
+    }
 }
 

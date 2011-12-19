@@ -164,16 +164,16 @@ a.rm, a.com {
     color: #F1F1F1;
 }
 
-#user-top-links-log a
+.user-top-info, .user-account-link
+{
+    float: left;
+}
+
+.user-top-info a, .user-logout-link a
 {
     color: #F1F1F1;
     font-size: 13px;
     font-weight: bold;
-}
-
-.user-top-info, .user-account-link
-{
-    float: left;
 }
 
 .user-top-notifications
@@ -193,13 +193,13 @@ a.rm, a.com {
     background-image: -webkit-linear-gradient(top, #666, #111);
 
     /* Firefox 3.6+ */
-    background-image: -moz-linear-gradient(top, #fe0000, #9a0000);
+    background-image: -moz-linear-gradient(top, #666, #111);
 
     /* IE 10 */
-    background-image: -ms-linear-gradient(top, #fe0000, #9a0000);
+    background-image: -ms-linear-gradient(top, #666, #111);
 
     /* Opera 11.10+ */
-    background-image: -o-linear-gradient(top, #fe0000, #9a0000);
+    background-image: -o-linear-gradient(top, #666, #111);
     
     border-radius: 4px;
     -moz-border-radius: 4px;
@@ -234,6 +234,24 @@ a.rm, a.com {
     padding: 2px 4px 2px 4px;
     cursor: pointer;
     text-decoration: none;
+}
+
+.notifications
+{
+    position: absolute;
+    z-index: 9999;
+    background-color: #F1F1F1;
+    border: solid 1px #AAA;
+    width: 300px;
+    height: 100px;
+    padding: 5px;
+    top: 64px;
+}
+
+.close-notifications
+{
+    color: #888;
+    cursor: pointer;
 }
 
 .user-logout-link

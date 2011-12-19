@@ -15,7 +15,7 @@ class Islamine_Controller_Plugin_Notification extends Zend_Controller_Plugin_Abs
         {
             $model_notification = new Model_Notification();
             $notifications = $model_notification->getAllUnreadByUser($auth->getIdentity()->id);
-            $return = count($notifications->toArray());
+            $return = $notifications;
         }
         
         $view = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');

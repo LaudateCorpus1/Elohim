@@ -36,15 +36,15 @@ a
     font-family: Helvetica, Calibri, Tahoma;
     font-size: 16px;
     font-weight: bold;
-    color: #222;
-    padding: 3px;
+    /*color: #F90;*/
+    padding: 5px;
 }
 
 #forum_nav a:hover
 {
-    color: #0069D6; /* D3D3D3 */
+    color: #222; /*#0069D6; /* D3D3D3 */
     text-decoration: none;
-    /*background-color: #993300; /* 9933001C1C1C */
+    background-color: #F7A922; /*#993300; /* 9933001C1C1C */
 }
 
 /******************************************/
@@ -127,12 +127,12 @@ a
     width: 768px;
     float: left;
     text-align: center;
-    background-color: #e3e3c7;
+    background-color: #F7A922; /*#e3e3c7;*/
     margin-bottom: 3px;
     border: grey solid 1px;
     font-weight: bold;
     font-size: 11px;
-    color:  #555;
+    color:  #F1F1F1;
 }
 
 #topics
@@ -178,7 +178,7 @@ a
 
 .topic.interest
 {
-    background-color: #AEA;
+    background-color: #FC6; /*#AEA;*/
 }
 
 #topic-container-top
