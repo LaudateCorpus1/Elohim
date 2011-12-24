@@ -79,6 +79,11 @@ class Forum_TopicController extends Zend_Controller_Action {
             }
             
             /*
+             * Mise à jour du nombre de vues
+             */
+            $topic->incrementView($id);
+            
+            /*
              * Formulaire d'ajout de commentaire
              */
             $commentForm = new Forum_Form_UserPostComment();
@@ -329,7 +334,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                             $title = $form->getValue('form_topic_title');
                             $new_tags = $form->getValue('tagsValues');
 
-                            $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditTime' => date('Y-m-d H:i:s', time())), $topicId);
+                            $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => date('Y-m-d H:i:s', time())), $topicId);
                             $this->updateTags($topicId, $new_tags);
                             
                             $this->_redirect('forum/topic/show/topic/' . $topicId);

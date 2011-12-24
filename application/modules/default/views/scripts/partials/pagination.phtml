@@ -4,43 +4,41 @@
 */
 ?>
 <?php if ($this->pageCount > 1): ?>
-<div class="paginationControl">
+<div class="pagination">
+    <ul>
 <!-- First page link -->
 <?php if (isset($this->previous)): ?>
-  <a href="<?php echo $this->url(array('page' => $this->first)); ?>">Première </a> |
+<li class="first"><a href="<?php echo $this->url(array('page' => $this->first)); ?>">Première </a></li>
 <?php else: ?>
-  <span class="disabled">Première</span> |
+<li class="first disabled"><a>Première</a></li>
 <?php endif; ?>
 <!-- Previous page link -->
 <?php if (isset($this->previous)): ?>
-<a href="<?php echo $this->url(array('page' => $this->previous)); ?>"> << Précédent</a> | 
+<li class="prev"><a href="<?php echo $this->url(array('page' => $this->previous)); ?>">Précédent</a></li> 
 <?php else: ?>
-<span class="disabled">&lt; Précédent</span> |
+<li class="prev disabled"><a>Précédent</a></li>
 <?php endif; ?>
 <!-- Numbered page links -->
 <?php foreach ($this->pagesInRange as $page): ?>
 <?php if ($page != $this->current): ?>
-    <a href="<?php echo $this->url(array('page' => $page)); ?>">
-        <?php echo $page; ?>
-    </a> |
+    <li><a href="<?php echo $this->url(array('page' => $page)); ?>"><?php echo $page; ?></a></li>
   <?php else: ?>
-    <?php echo $page; ?> |
+    <li class="active"><a href="<?php echo $this->url(array('page' => $page)); ?>"><?php echo $page; ?></a></li>
   <?php endif; ?>
 <?php endforeach; ?>
 <!-- Next page link -->
 <?php if (isset($this->next)): ?>
-  <a href="<?php echo $this->url(array('page' => $this->next)); ?>">
-    Suivant &gt;
-  </a>
+  <li class="next"><a href="<?php echo $this->url(array('page' => $this->next)); ?>">Suivant</a></li>
 <?php else: ?>
-  <span class="disabled">Suivant &gt;</span>
+  <li class="next disabled"><a>Suivant</a></li>
 <?php endif; ?>
 <!-- Last page link -->
 <?php if (isset($this->next)): ?>
-  <a href="<?php echo $this->url(array('page' => $this->last)); ?>">  Dernière  </a>
+  <li class="last"><a href="<?php echo $this->url(array('page' => $this->last)); ?>">  Dernière  </a></li>
 <?php else: ?>
-  <span class="disabled">Dernière</span>
+  <li class="last disabled"><a>Dernière</a></li>
 <?php endif; ?>
+    </ul>
 </div>
 <?php endif; ?>
 <?php
@@ -98,9 +96,9 @@ of <?php echo $this->totalItemCount; ?>
 <?php endforeach; ?>
 </select>
 <?php endif; */?>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
 <script type="text/javascript">
 $('paginationControl').observe('change', function() {
     window.location = this.options[this.selectedIndex].value;
 })
-</script>
+</script>-->

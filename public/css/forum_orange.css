@@ -507,16 +507,33 @@ ul#favlist li.favorited-style a.close2
     padding: 4px;
 }
 
-#topic-tags, #topic-menu
+.topic-tags
 {
     margin: 5px;
     height: 21px;
 }
 
-#topic-menu a, .nb-reopen-votes
+.topic-menu
+{
+    margin: 5px;
+    float: left;
+}
+
+.topic-info
+{
+    margin: 5px;
+    float: right;
+}
+
+.topic-menu a, .nb-reopen-votes, .topic-info, .message-info
 {
     font-size: 0.9em;
     color: #555555;
+}
+
+.message-info
+{
+    float: right;
 }
 
 .increment, .decrement
@@ -531,7 +548,12 @@ ul#favlist li.favorited-style a.close2
 
 .table-message .comment-link
 {
-    margin: 0 20px 20px 20px;
+    margin: 0 20px 10px 20px;
+}
+
+.comment-link
+{
+    float: left;
 }
 
 .table-message .comment-link a

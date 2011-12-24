@@ -23,10 +23,9 @@
                             echo '[fermé]';
                     ?>
                     <a href="<?php echo $this->url(array(
-                                            'controller'=>'topic',
-                                            'action'=>'show',
-                                            'topic'=>$this->escape($topic->topicId)
-                                        )); ?>"><?php echo $this->escape($topic->title);?></a></div>
+                                            'topic' => $this->escape($topic->topicId),
+                                            'title' => strtolower(str_replace(' ', '-', $this->escape($topic->title)))
+                                        ), 'showTopic'); ?>"><?php echo $this->escape($topic->title);?></a></div>
                 <div class="tags">
                     <?php
                     foreach($this->$i as $tag) : ?>
@@ -36,7 +35,7 @@
                                                 'controller'=>'topic',
                                                 'action'=>'tag',
                                                 'name'=> $this->escape($tag->name)
-                                            )); ?>"><?php echo $this->escape($tag->name); ?></a>
+                                            ), 'default'); ?>"><?php echo $this->escape($tag->name); ?></a>
                         </div>  
                         <div class="tag-action">
                             <?php echo $this->favoriteTag($this->escape($tag->tag_tagId)); ?>
@@ -46,11 +45,9 @@
                 </div>
                 <div class="topic-author">
                     <a href="<?php echo $this->url(array(
-                                                'module' => 'default',
-                                                'controller'=>'user',
-                                                'action'=>'index',
-                                                'username'=> $this->escape($topic['login'])
-                                            ), null, true); ?>"><?php echo $this->escape($topic->login); ?></a>
+                                                'id' => $this->escape($topic->userId),
+                                                'username'=> $this->escape($topic->login)
+                                            ), 'showUser', true); ?>"><?php echo $this->escape($topic->login); ?></a>
                 </div>
             </div>
             <div class="topic-stats">

@@ -24,7 +24,7 @@ class Model_Notification extends Zend_Db_Table_Abstract
         $query = $this->select()
                  ->setIntegrityCheck(false)
                  ->from($this->_name)
-                 ->join('topic', 'topic.topicId='.$this->_name.'.topicId', 'title')
+                 ->join('Topic', 'Topic.topicId='.$this->_name.'.topicId', 'title')
                  ->where($this->getAdapter()->quoteInto('toUserId = ?', $userId))
                  ->where('beenRead = 0');
          //Zend_Debug::dump($query->__toString()); exit;

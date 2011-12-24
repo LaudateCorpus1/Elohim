@@ -3,24 +3,55 @@
 <h2><?php echo $this->escape($this->user->login); ?></h2>
 
 <div id="user-info">
-    Inscrit le <?php echo $this->escape($this->user->date_created); ?>
+    <?php if($this->escape($this->edit)) : ?>
+    <a href="<?php echo $this->url(array(
+                                            'module' => 'default',
+                                            'controller'=>'user',
+                                            'action'=>'edit',
+                                            'username'=> $this->escape($this->user->login)
+                                        ), null, true); ?>">Editer mon profil</a><br />
+    <?php endif; ?>
+    
+    
+    <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($this->user->avatar) ?>" />
     <br />
-    Karma <?php echo $this->escape($this->user->karma); ?>
+    <span class="Bold">Inscrit le <?php echo $this->escape($this->user->date_created); ?></span>
+    <br />
+    <span class="Bold">Karma : </span><?php echo $this->escape($this->user->karma); ?>
+    <br />
+    
+    <?php if($this->escape($this->user->last_name) != null && $this->escape($this->user->last_name) != '') : ?>
+    <span class="Bold">Nom : </span><?php echo $this->escape($this->user->last_name); ?>
+    <br />
+    <?php endif; ?>
+    
+    <?php if($this->escape($this->user->first_name) != null && $this->escape($this->user->first_name) != '') : ?>
+    <span class="Bold">Prénom : </span><?php echo $this->escape($this->user->first_name); ?>
+    <br />
+    <?php endif; ?>
+    
+    <?php if($this->escape($this->user->email) != null && $this->escape($this->user->email) != '') : ?>
+    <span class="Bold">E-mail : </span><?php echo $this->escape($this->user->email); ?>
+    <br />
+    <?php endif; ?>
+    
+    <?php if($this->escape($this->user->location) != null && $this->escape($this->user->location) != '') : ?>
+    <span class="Bold">Lieu : </span><?php echo $this->escape($this->user->location); ?>
+    <?php endif; ?>
+
+    <hr />
+    <p><a href="<?php echo $this->url(array(
+                                'controller'=>'user',
+                                'action'=>'listtopics'
+                            )); ?>">Voir ses <?php echo $this->escape($this->user->amount_topics); ?> sujets</a>
+    </p>
+
+    <p><a href="<?php echo $this->url(array(
+                                'controller'=>'user',
+                                'action'=>'listmessages'
+                            )); ?>">Voir ses <?php echo $this->escape($this->user->amount_messages); ?> messages</a>
+    </p>
+
+    <!--<p>Tags</p>-->
+
 </div>
-
-<p><a href="<?php echo $this->url(array(
-                            'controller'=>'user',
-                            'action'=>'listtopics'
-                        )); ?>">Afficher ses sujets</a>
-</p>
-
-<p><a href="<?php echo $this->url(array(
-                            'controller'=>'user',
-                            'action'=>'listmessages'
-                        )); ?>">Afficher ses messages</a>
-</p>
-
-
-<p>Voir ses favoris</p>
-
-<p>Tags</p>

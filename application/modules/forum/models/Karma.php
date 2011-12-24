@@ -53,6 +53,7 @@ class Forum_Model_Karma extends Zend_Db_Table_Abstract
        $query = $this->select()
                       ->from($this->_name)
                       ->order('date DESC')
+                      ->order('id DESC')
                       ->limit(1);
        
        foreach($where as $key => $value)

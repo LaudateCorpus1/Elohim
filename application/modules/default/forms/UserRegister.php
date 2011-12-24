@@ -24,30 +24,6 @@ class Default_Form_UserRegister extends Zend_Form {
         $this->addPrefixPath('Islamine_Form_Decorator', 'Islamine/Form/Decorator/', 'decorator'); 
         $this->setMethod('post');
 
-        /*$firstName = new Zend_Form_Element_Text('first_name', array(
-                    'label' => 'First name',
-                    'required' => true,
-                    'filters' => array(
-                        'StringTrim'
-                    ),
-                    'validators' => array(
-                        array('StringLength', false, array(2, 50))
-                    ),
-                    'class' => 'input-text'
-                ));
-
-        $lastName = new Zend_Form_Element_Text('last_name', array(
-                    'label' => 'Last name',
-                    'required' => true,
-                    'filters' => array(
-                        'StringTrim'
-                    ),
-                    'validators' => array(
-                        array('StringLength', false, array(2, 50))
-                    ),
-                    'class' => 'input-text'
-                ));*/
-
         $email = new Zend_Form_Element_Text('email', array(
                     'label' => 'E-mail',
                     'required' => true,
@@ -147,10 +123,7 @@ class Default_Form_UserRegister extends Zend_Form {
 
 
         $this->addElements(array(
-            /*$firstName,
-            $lastName,*/
             $email,
-            //$emailAgain,
             $username,
             $password,
             $passwordAgain,

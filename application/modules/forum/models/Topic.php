@@ -24,9 +24,10 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                   'vote',
                   'status',
                   'close_votes',
-                  'reopen_votes'
+                  'reopen_votes',
+                  'lastEditDate'
                   ))
-              ->join('user', 'Topic.userId=user.id', 'login')
+              ->join('user', 'Topic.userId=user.id', array('login', 'avatar'))
               ->where($where);
             
             $row = $this->fetchRow($query);
@@ -117,9 +118,10 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                                 'content',
                                 'messages_date' => 'date',
                                 'messages_vote' => 'vote',
-                                'validation'
+                                'validation',
+                                'lastEditDate'
                                 ))
-              ->join('user', 'Messages.userId=user.id', 'login') 
+              ->join('user', 'Messages.userId = user.id', array('login', 'avatar')) 
               ->where($this->getAdapter()->quoteInto('Topic.topicId = ?',$topicId))
               ->order('Messages.validation DESC')
               ->order('Messages.date ASC');
@@ -371,6 +373,12 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             return true;
         else
             return false;
+    }
+    
+    public function incrementView($topicId)
+    {
+        $data = array('views' => new Zend_Db_Expr('views + 1'));
+        $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
     }
 }
 ?>

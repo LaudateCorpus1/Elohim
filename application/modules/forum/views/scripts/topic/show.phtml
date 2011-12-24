@@ -75,7 +75,7 @@
                                                             'action'=>'index',
                                                             'username' => $this->escape($this->topic['login'])
                                                         ), null, true); ?>">
-                                                        <img src="<?php echo $this->baseUrl(); ?>/images/userpic.gif"
+                                                        <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($this->topic['avatar']); ?>" />
                                             </a>
                                         </div>
                                         <div class="user-details">
@@ -95,7 +95,7 @@
                 </tr>
                 <tr>
                     <td>
-                         <div id="topic-tags">
+                         <div class="topic-tags">
                             <?php foreach($this->tags as $tag) : ?>
                             <div class="tag">
                                 <div class="tag-name">
@@ -112,7 +112,7 @@
                             </div>    
                             <?php endforeach; ?>
                         </div>
-                        <div id="topic-menu">
+                        <div class="topic-menu">
                             <!-- Lien pour modifier les tags -->
                             <a href="<?php echo $this->url(array(
                                                             'controller'=>'tag',
@@ -154,6 +154,12 @@
                                                             'topic'=> $this->escape($this->topic['topicId'])
                                                         )); ?>" class="close-motif" <?php echo $style_close_motif; ?>>(<?php echo $this->escape($this->nb_close_votes); ?>)</a>
                            <?php endif; ?>
+                        </div>
+                        <div class="topic-info">
+                            <?php 
+                                if($this->escape($this->topic['lastEditDate']) != null)
+                                    echo 'Edité le '.$this->escape($this->topic['lastEditDate']); 
+                            ?>
                         </div>
                     </td>
                 </tr>
@@ -232,7 +238,7 @@
                                                                 'action'=>'index',
                                                                 'username' => $this->escape($mess->login)
                                                             ), null, true); ?>">
-                                                            <img src="<?php echo $this->baseUrl(); ?>/images/userpic.gif"
+                                                            <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($mess->avatar); ?>" />
                                                 </a>
                                             </div>
                                             <div class="user-details">
@@ -277,6 +283,12 @@
                                         echo $this->commentForm; 
                                     ?>
                                 </div>
+                            </div>
+                            <div class="message-info">
+                            <?php 
+                                if($this->escape($mess->lastEditDate) != null)
+                                    echo 'Edité le '.$this->escape($mess->lastEditDate); 
+                            ?>
                             </div>
                         </td>
                     </tr>

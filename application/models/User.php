@@ -16,10 +16,38 @@ class Model_User extends Zend_Db_Table_Abstract
     
     public function getByLogin($login)
     {
-        $where = $this->getAdapter()->quoteInto('login = ?', $login);
-        $row = $this->fetchRow($this->select()->where($where));
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from(array('u' => $this->_name), array(
+                  't.amount_topics',
+                  'm.amount_messages',
+                  'u.date_created',
+                  'u.login',
+                  'u.karma',
+                  'email',
+                  'last_name',
+                  'first_name',
+                  'location',
+                  'u.last_connexion',
+                  'u.id',
+                  'u.password',
+                  'u.avatar'
+                  ))
+              ->joinLeft(array('t' => new Zend_Db_Expr('(SELECT t1.userId, COUNT(t1.topicId) AS amount_topics
+                                                         FROM Topic t1
+                                                         GROUP BY t1.userId)')
+                              ), 't.userId = u.id', null)
+              ->joinLeft(array('m' => new Zend_Db_Expr('(SELECT m1.userId, COUNT(m1.messageId) AS amount_messages
+                                                         FROM Messages m1
+                                                         GROUP BY m1.userId)')
+                              ), 'm.userId = u.id', null)
+              ->where($this->getAdapter()->quoteInto('u.login = ?', $login));
+        
+        //Zend_Debug::dump($query->__toString()); exit;
+        $row = $this->fetchRow($query);
         if($row == null)
             throw new Exception("Utilisateur introuvable");
+        
         return $row;
     }
     
@@ -35,7 +63,6 @@ class Model_User extends Zend_Db_Table_Abstract
                                 'date'
                                 ))
               ->where($this->getAdapter()->quoteInto($this->_name.'.login = ?',$login))
-              ->where('Topic.status != "closed"')
               ->order('Topic.date DESC');
 
         //$res = $this->fetchAll($query);

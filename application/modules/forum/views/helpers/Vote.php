@@ -21,7 +21,7 @@ class Zend_View_Helper_Vote extends Zend_View_Helper_Abstract
             $model_karma = new Forum_Model_Karma();
             $identity = $auth->getIdentity();
             $lastAction = $model_karma->getLastAction(array('fromUserId' => $identity->id, 'messageId' => $messageId));
-            
+
             //if($model_vote->alreadyVoted($identity->id, $messageId, $type))
             if($lastAction != null && $lastAction->type == $type && $lastAction->cancellation == false)
             {

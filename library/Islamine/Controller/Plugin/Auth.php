@@ -76,7 +76,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     public function preDispatch(Zend_Controller_Request_Abstract $request)	
     {
         // is the user authenticated
-        if ($this->_auth->hasIdentity()) 
+        /*if ($this->_auth->hasIdentity()) 
         {
           // yes ! we get his role
           $user = $this->_auth->getStorage()->read();
@@ -165,7 +165,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
         $request->setModuleName($module) ;
         $request->setControllerName($controller) ;
-        $request->setActionName($action) ;
+        $request->setActionName($action) ;*/
     }
     
     protected function disableLayout()

@@ -29,7 +29,14 @@ class UserController extends Zend_Controller_Action
         $model_user = new Model_User();
         $this->view->user = $model_user->getByLogin($username);
         
+        $edit = false;
         $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            if($auth->getIdentity()->id == $this->view->user->id)
+                $edit = true;
+        }
+        $this->view->edit = $edit;
     }
 
    public function registerAction()
@@ -91,6 +98,7 @@ class UserController extends Zend_Controller_Action
                           //$data['salt'] = $this->_helper->RandomString(40);
                           $data['role'] = 'member';
                           $data['status'] = 'pending';
+                          $data['avatar'] = 'userpic.gif';
                           
                           $model_user = new Model_User();
                           $model_user->add($data);
@@ -232,6 +240,122 @@ class UserController extends Zend_Controller_Action
         $message_pagination->setCurrentPageNumber($this->_getParam('page',1));
         $message_pagination->setItemCountPerPage(20);
         $this->view->user_messages = $message_pagination;
+    }
+    
+    public function editAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $username = $this->_getParam('username');
+            $model_user = new Model_User();
+            $user = $model_user->getByLogin($username);
+            if($auth->getIdentity()->id == $user->id)
+            {
+                $password = $user->password;
+                unset($user->password);
+                
+                $form = new Default_Form_UserEdit();
+                $form->populate($user->toArray());
+                if ($this->getRequest()->isPost()) 
+                {
+                    $errors = false;
+                    $formData = $this->getRequest()->getPost();
+                    if ($form->isValid($formData)) 
+                    {
+                        // Upload de l'avatar
+                        $uploaded_file = new Zend_File_Transfer_Adapter_Http();
+                        $file_name = $uploaded_file->getFileName('avatar', false);
+                        if(!empty ($file_name))
+                        {
+                            $destinationPath = APPLICATION_UPLOADS_DIR.'/'.$auth->getIdentity()->id;
+                            if(!file_exists($destinationPath))
+                                mkdir($destinationPath);
+                            
+                            $uploaded_file->setDestination($destinationPath);
+                            $extension = mb_substr($file_name, mb_strrpos($file_name, '.') +1);
+                            $uploaded_file->addFilter('Rename', array('target' => $destinationPath.'/avatar.'.$extension,
+                                                  'overwrite' => true));
+
+                            if (!$uploaded_file->receive())
+                            {
+                                $errors = true;
+                                $form->getElement('avatar')->addError($uploaded_file->getMessages());
+                            }
+                            
+                            //$filter = new Zend_Filter_ImageSize(); 
+                            //$output = $filter->setHeight(128)->setWidth(128)->setOverwriteMode(Zend_Filter_ImageSize::OVERWRITE_ALL)->filter($destinationPath.'/avatar.'.$extension);
+                                                        
+                            $data = $form->getValues();
+                            $data['avatar'] = 'users/'.$auth->getIdentity()->id.'/avatar.'.$extension;
+                        }
+                        else
+                        {
+                            $data = $form->getValues();
+                            unset($data['avatar']);
+                        }
+                        
+                        if($data['password'] == '' || $data['oldPassword'] == '' || $data['passwordAgain'] == '')
+                        {
+                            unset($data['password']);
+                            unset($data['oldPassword']);
+                            unset($data['passwordAgain']);
+                        }
+                        else
+                        {
+                            if($data['password'] != $data['passwordAgain'])
+                            {
+                                $form->getElement('password')->addError('Les deux mots de passe doivent être les mêmes');
+                                $form->getElement('passwordAgain')->addError('Les deux mots de passe doivent être les mêmes');
+                                $errors = true;
+                            }
+                            if(md5($data['oldPassword']) != $password)
+                            {
+                                $form->getElement('oldPassword')->addError('Votre ancien mot de passe n\'est pas correct');
+                                $errors = true;
+                            }
+                        }
+                        
+                        foreach ($data as $key => $value)
+                        {
+                            if($value == '')
+                                unset($data[$key]);
+                        }
+                        
+                        if(!$errors)
+                        {
+                            if(isset($data['password']))
+                            {
+                                unset($data['oldPassword']);
+                                unset($data['passwordAgain']);
+                                $data['password'] = md5($data['password']);
+                            }
+                            
+                            $model_user->updateUser($data, $user->id);
+                            $this->_redirect('/default/user/index/username/' . $username);
+                        }
+                    }
+                    
+                    $form->populate($form->getValues());
+                }
+                
+                $this->view->form = $form;
+            }
+        }
+    }
+    
+    public function showimageAction()
+    {
+        $this->view->id = $id = $this->_getParam('id');
+        
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+
+        $image = file_get_contents(APPLICATION_UPLOADS_DIR.'/'.$id.'/avatar.jpg');
+        $this->getResponse()->clearBody ();
+        $this->getResponse()->setHeader('Content-Type', 'image/jpeg');
+        $this->getResponse()->setBody($image);
+        //header('Content-Type: image/jpeg');
     }
 }
 

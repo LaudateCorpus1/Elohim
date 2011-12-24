@@ -462,6 +462,24 @@ a.rm, a.com {
 /************** User account **************/
 /******************************************/
 
+#user-info
+{
+    margin: 0px auto;
+    padding: 15px;
+    border: solid 1px #AAA;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #D3D3D3;
+    width: 700px;
+}
+
+#user-info img
+{
+    width: 128px;
+    height: 128px;
+}
+
 #user-topics
 {
     width: 650px;
@@ -501,7 +519,7 @@ a.rm, a.com {
 .user-topic-vote
 {
     text-align: center;
-    margin: 10px 10px 0 4px;
+    margin: 10px 10px 8px 4px;
     padding: 0 3px 0 3px;
     -moz-box-shadow: 0 0 3px #888;
     -webkit-box-shadow: 0 0 3px #888;
@@ -529,4 +547,19 @@ a.rm, a.com {
     float: left;
     text-decoration: none;
     color: #222;
+}
+
+/******************************************/
+/*************** Pagination ***************/
+/******************************************/
+
+.pagination a:hover
+{
+    color: #222;
+    text-decoration: none;
+}
+
+.pagination a:hover, .pagination .active a
+{
+    background-color: #F7A922;
 }
