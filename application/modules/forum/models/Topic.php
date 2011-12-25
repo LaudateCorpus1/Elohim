@@ -50,7 +50,8 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                   'userId',
                   'date',
                   'vote',
-                  'status'
+                  'status',
+                  'lastActivity'
                   ))
               ->joinLeft(array('Messages'), 'Topic.topicId=Messages.topicId', null)
               ->join('user', 'Topic.userId = user.id', 'login')
@@ -103,7 +104,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $id));
     }
 
-    public function getMessagesFromTopic($topicId)
+    public function getMessagesFromTopic($topicId, $order = null)
     {
         $topicId = (int)$topicId;
         $query = $this->select();
@@ -122,10 +123,13 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                                 'lastEditDate'
                                 ))
               ->join('user', 'Messages.userId = user.id', array('login', 'avatar')) 
-              ->where($this->getAdapter()->quoteInto('Topic.topicId = ?',$topicId))
-              ->order('Messages.validation DESC')
-              ->order('Messages.date ASC');
-
+              ->where($this->getAdapter()->quoteInto('Topic.topicId = ?',$topicId));
+        
+        if($order != null)
+            $query->order($order);
+        
+        $query->order('Messages.validation DESC');
+        $query->order('Messages.date ASC');
         $res = $this->fetchAll($query);
  
         return $res;
@@ -168,7 +172,8 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                                 'message',
                                 'date',
                                 'vote',
-                                'status'
+                                'status',
+                                'lastActivity'
                                 ))
               ->joinLeft('Messages', 'Topic.topicId=Messages.topicId', null)
               ->join('TopicTag', 'Topic.topicId = TopicTag.topicId',array(
@@ -293,6 +298,14 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                     $res = $this->getUnansweredByTagName($tag_name, $closed_flag, 50, $order);
                 else
                     $res = $this->getUnanswered($closed_flag, 50, $order);
+                break;
+                
+            case 'activity':
+                $order = 'lastActivity DESC';
+                if($tag_name != null)
+                    $res = $this->getTopicsByTagName ($tag_name, $closed_flag, 50, $order);
+                else
+                    $res = $this->getAll($closed_flag, 50, $order);
                 break;
         }
         

@@ -70,27 +70,7 @@ class Forum_IndexController extends Zend_Controller_Action {
         $this->view->headScript()->appendScript("var auth = $autho;");
     }
     
-    public function sortAction()
-    {
-        $sort_type = $this->_getParam('t');
-        $tag_name = $this->_getParam('name');
-        
-        if($sort_type == 'date')
-        {
-            
-            if($tag_name != null)
-                $this->_redirect ('/forum/topic/tag/name/'.$tag_name);
-            else
-                $this->_redirect ('/forum');
-        }
-        else
-        {
-            $model_topic = new Forum_Model_Topic();
-            //$closed_flag = $this->_helper->hasAccess('forum_topic', 'close');
-            $topics_sorted = $model_topic->sortTopics($sort_type, true, $tag_name);
-            $this->_forward('index', 'index', 'forum', array('topics' => $topics_sorted));
-        }
-    }
+    
 
 }
 

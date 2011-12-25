@@ -11,46 +11,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $moduleLoader;
     }
     
-    protected function _initRoutes()
-    {
-        $frontController = Zend_Controller_Front::getInstance();
-        $router = $frontController->getRouter();
-        
-        $router->addRoute('showTopic',
-                          new Zend_Controller_Router_Route('/forum/:topic/:title',
-                                            array('module' => 'forum',
-                                                  'controller' => 'topic',
-                                                  'action' => 'show',
-                                                  'topic' => '1',
-                                                  'title' => ''),
-                                            array('topic' => '\d+'))); 
-        
-        $router->addRoute('indexForum',
-                          new Zend_Controller_Router_Route('/forum',
-                                            array('module' => 'forum',
-                                                  'controller' => 'index',
-                                                  'action' => 'index')));
-        
-        $router->addRoute('showUser',
-                          new Zend_Controller_Router_Route('/users/:id/:username',
-                                            array('module' => 'default',
-                                                  'controller' => 'user',
-                                                  'action' => 'index',
-                                                  'id' => '1',
-                                                  'username' => ''),
-                                            array('id' => '\d+'))); 
-        
-        /*$router->addRoute('showTopic',
-                          new Zend_Controller_Router_Route_Regex('forum/topic/(/d+)',
-                                            array('module' => 'forum',
-                                                  'controller' => 'topic',
-                                                  'action' => 'show')));*/
-        
-        //Zend_Debug::dump($router); exit;
-
-        
-    }
-    
     protected function _initTranslation()
     {
         $translator = new Zend_Translate(

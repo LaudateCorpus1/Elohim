@@ -13,7 +13,7 @@ class Zend_View_Helper_Vote extends Zend_View_Helper_Abstract
 {
     public function vote($messageId, $type)
     {
-        $html = $this->buildHTML($type);
+        $html = $this->buildHTML($type, $messageId);
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
         {
@@ -49,33 +49,29 @@ class Zend_View_Helper_Vote extends Zend_View_Helper_Abstract
         return $html;
     }
     
-    private function buildHTML($type)
+    private function buildHTML($type, $messageId)
     {
         $html = '';
         switch($type)
         {
             case 'UP_MESSAGE':
-                $html = '<a href="'.$this->view->url(array('controller'=>'message',
-                                                     'action'=>'incrementvote'
-                                                    )).'" class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
+                $html = '<a href="'.$this->view->url(array('message' => $messageId
+                                                    ), 'incrementMessageVote').'" class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
                 break;
 
             case 'UP_TOPIC':
-                $html = '<a href="'.$this->view->url(array('controller'=>'topic',
-                                                     'action'=>'incrementvote'
-                                                    )).'" class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
+                $html = '<a href="'.$this->view->url(array('topic' => $messageId
+                                                    ), 'incrementTopicVote').'" class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
                 break;
 
             case 'DOWN_MESSAGE':
-                $html = '<a href="'.$this->view->url(array('controller'=>'message',
-                                                     'action'=>'decrementvote'
-                                                    )).'" class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
+                $html = '<a href="'.$this->view->url(array('message' => $messageId
+                                                    ), 'decrementMessageVote').'" class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
                 break;
 
             case 'DOWN_TOPIC':
-                $html = '<a href="'.$this->view->url(array('controller'=>'topic',
-                                                     'action'=>'decrementvote'
-                                                    )).'" class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
+                $html = '<a href="'.$this->view->url(array('topic' => $messageId
+                                                    ), 'decrementTopicVote').'" class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
                 break;
         }
         return $html;

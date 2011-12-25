@@ -6,10 +6,8 @@
             <div class="tag">
                 <div class="tag-name">
                     <a href="<?php echo $this->url(array(
-                                        'controller' => 'topic',
-                                        'action' => 'tag',
                                         'name' => $this->escape($tag['name'])
-                                    )); ?>"><?php echo $this->escape($tag['name']); ?>
+                                    ), 'taggedTopic', true); ?>"><?php echo $this->escape($tag['name']); ?>
                     </a>
                 </div>  
             </div> 

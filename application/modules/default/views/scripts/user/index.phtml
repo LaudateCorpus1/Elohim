@@ -5,11 +5,8 @@
 <div id="user-info">
     <?php if($this->escape($this->edit)) : ?>
     <a href="<?php echo $this->url(array(
-                                            'module' => 'default',
-                                            'controller'=>'user',
-                                            'action'=>'edit',
-                                            'username'=> $this->escape($this->user->login)
-                                        ), null, true); ?>">Editer mon profil</a><br />
+                                           'username'=> $this->escape($this->user->login)
+                                        ), 'editUser', true); ?>">Editer mon profil</a><br />
     <?php endif; ?>
     
     

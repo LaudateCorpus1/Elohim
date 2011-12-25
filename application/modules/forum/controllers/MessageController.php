@@ -22,7 +22,7 @@ class Forum_MessageController extends Zend_Controller_Action {
         $identity = $auth->getIdentity();
         $decrementMessage = new Forum_Model_Message();
         $messageId = $this->_getParam('message');
-        $this->view->topic = $this->_getParam('topic');
+        $topicId = $this->view->topic = $this->_getParam('topic');
         $model_karma = new Forum_Model_Karma();
         
         $lastAction = $model_karma->getLastAction(array('fromUserId' => $identity->id, 'messageId' => $messageId));
@@ -86,61 +86,16 @@ class Forum_MessageController extends Zend_Controller_Action {
                 
                 $model_karma->addKarmaAction($data);
                 
+                // Mise à jour de l'activité du topic
+                $model_topic = new Forum_Model_Topic();
+                $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+                
                 if ($this->_request->isXmlHttpRequest())
                     echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'DOWN_MESSAGE', 'revote' => $data['cancellation']));
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
         }
-
-        
-        
-        /*if($model_vote->alreadyVoted($identity->id, $messageId, 'DOWN_MESSAGE'))
-        {
-            if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
-            else
-                $this->view->message = 'Vous avez déjà voté';
-        }
-        else
-        {
-            $res = $decrementMessage->decrementVote($messageId, $identity->id);
-            if($res === false)
-            {
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
-                else
-                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
-            }
-            else
-            {
-                $user_model = new Model_User();
-
-                $revote = false;
-                if($model_vote->alreadyVoted($identity->id, $messageId, 'UP_MESSAGE')) 
-                {
-                    $revote = true;
-                    // Il faut annuler l'ancien vote sur ce message
-                    $model_vote->deleteVote($identity->id, $messageId, 'MESSAGE');
-                    $karma = Zend_Registry::getInstance()->constants->vote_message_up_reward;
-                    $user_model->setKarma('-'.$karma, $res->userId);
-                    
-                }
-                else 
-                {
-                    $karma_down_author = Zend_Registry::getInstance()->constants->vote_message_down_author_reward;
-                    $user_model->setKarma($karma_down_author, $res->userId);
-                    $karma_down_voter = Zend_Registry::getInstance()->constants->vote_message_down_voter_reward;
-                    $user_model->setKarma($karma_down_voter, $identity->id);
-                    $model_vote->addVote($identity->id, $messageId, 'DOWN_MESSAGE');
-                }
-
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'DOWN_MESSAGE', 'revote' => $revote));
-                else
-                    $this->view->message = 'Merci d\'avoir voté';
-            }
-        }*/
     }
 
     public function incrementvoteAction() {
@@ -150,7 +105,7 @@ class Forum_MessageController extends Zend_Controller_Action {
         $identity = $auth->getIdentity();
         $incrementMessage = new Forum_Model_Message();
         $messageId = $this->_getParam('message');
-        $this->view->topic = $this->_getParam('topic');
+        $topicId = $this->view->topic = $this->_getParam('topic');
         $model_karma = new Forum_Model_Karma();
         
         $lastAction = $model_karma->getLastAction(array('fromUserId' => $identity->id, 'messageId' => $messageId));
@@ -215,60 +170,16 @@ class Forum_MessageController extends Zend_Controller_Action {
                 
                 $model_karma->addKarmaAction($data);
                 
+                // Mise à jour de l'activité du topic
+                $model_topic = new Forum_Model_Topic();
+                $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+                
                 if ($this->_request->isXmlHttpRequest())
                     echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'UP_MESSAGE', 'revote' => $data['cancellation']));
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
         }
-        
-        /*
-        if($model_vote->alreadyVoted($identity->id, $messageId, 'UP_MESSAGE'))
-        {
-            if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
-            else
-                $this->view->message = 'Vous avez déjà voté';
-        }
-        else
-        {
-            $res = $incrementMessage->incrementVote($messageId, $identity->id);
-            if($res === false)
-            {
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
-                else
-                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
-            }
-            else
-            {
-                $user_model = new Model_User();
-
-                $revote = false;
-
-                if($model_vote->alreadyVoted($identity->id, $messageId, 'DOWN_MESSAGE'))
-                {
-                    $revote = true;
-                    // Il faut supprimer l'ancien vote sur ce message
-                    $model_vote->deleteVote($identity->id, $messageId, 'MESSAGE');
-                    $karma_down_author = Zend_Registry::getInstance()->constants->vote_message_down_author_reward;
-                    $user_model->setKarma(abs(intval($karma_down_author)), $res->userId);
-                    $karma_down_voter = Zend_Registry::getInstance()->constants->vote_message_down_voter_reward;
-                    $user_model->setKarma(abs(intval($karma_down_voter)), $identity->id);
-                }
-                else 
-                {
-                    $karma_up = Zend_Registry::getInstance()->constants->vote_message_up_reward;
-                    $user_model->setKarma($karma_up, $res->userId);
-                    $model_vote->addVote($identity->id, $messageId, 'UP_MESSAGE');
-                }
-
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'UP_MESSAGE', 'revote' => $revote));
-                else
-                    $this->view->message = 'Merci d\'avoir voté';
-            }
-        }*/
     }
 
     public function commentAction() {
@@ -285,7 +196,7 @@ class Forum_MessageController extends Zend_Controller_Action {
                 $formData = $this->getRequest()->getPost();
 
                 if ($commentForm->isValid($formData)) {
-                    $this->_processCommentForm($formData);
+                    $this->_processCommentForm($formData, $topicId);
                 }
             }
             $this->view->commentForm = $commentForm;
@@ -299,11 +210,12 @@ class Forum_MessageController extends Zend_Controller_Action {
         }
     }
 
-    protected function _processCommentForm($data)
+    protected function _processCommentForm($data, $topicId)
     {
         $content = $data['form_comment_content'];
         $messageId = $this->_getParam('message');
         $comment = new Forum_Model_Comment();
+        $model_topic = new Forum_Model_Topic();
         $commentMessage = new Forum_Model_CommentMessage();
         
         $auth = Zend_Auth::getInstance();
@@ -312,11 +224,11 @@ class Forum_MessageController extends Zend_Controller_Action {
             $identity = $auth->getIdentity();
             $commentId = $comment->addComment($identity->id, $content);
             $commentMessage->addRow($commentId, $messageId);
+            $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => '...'));
             } else {
-                $topicId = $this->_getParam('topic');
                 $this->_redirect('/forum/topic/show/topic/' . $topicId);
             }
         }
@@ -425,6 +337,21 @@ class Forum_MessageController extends Zend_Controller_Action {
             } else {
                 $this->view->message = 'Vous n\'avez pas le droit d\'effectuer cette action';
             }
+        }
+    }
+    
+    public function sortAction()
+    {
+        $sort_type = $this->_getParam('t');
+        $topicId = $this->_getParam('topic');
+            
+        if($sort_type == 'date')
+            $this->_redirect('/forum/'.$topicId);
+        else
+        {
+            $model_message = new Forum_Model_Message();
+            $messages_sorted = $model_message->sortMessages($topicId, $sort_type);
+            $this->_forward('show', 'topic', 'forum', array('messages' => $messages_sorted));
         }
     }
 }

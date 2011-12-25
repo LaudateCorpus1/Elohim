@@ -32,10 +32,8 @@
                     <div class="tag">
                         <div class="tag-name">
                             <a href="<?php echo $this->url(array(
-                                                'controller'=>'topic',
-                                                'action'=>'tag',
                                                 'name'=> $this->escape($tag->name)
-                                            ), 'default'); ?>"><?php echo $this->escape($tag->name); ?></a>
+                                            ), 'taggedTopic'); ?>"><?php echo $this->escape($tag->name); ?></a>
                         </div>  
                         <div class="tag-action">
                             <?php echo $this->favoriteTag($this->escape($tag->tag_tagId)); ?>

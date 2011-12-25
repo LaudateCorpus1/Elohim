@@ -51,7 +51,7 @@ $(function()
     {
         if(!submitted)
         {
-            var topicId = url.substring(url.lastIndexOf('/') + 1);
+            var topicId = $('.vote-t').find('input').first().val();
             CKEDITOR.instances.form_message_content.updateElement();
             var content = $('#form_message_content').val();
             if(content == "")
@@ -72,9 +72,9 @@ function addMessage(topicId, content)
 {
     $.ajax({
             type: "POST",
-            url: "/forum/topic/answer",
+            url: "/forum/"+topicId+"/answer",
             dataType: "json",
-            data: { "topic": topicId, "form_message_content": content },
+            data: { "form_message_content": content },
             success: function(response)
             {
                 if(checkSuccess(response))

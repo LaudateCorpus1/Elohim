@@ -58,7 +58,14 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $this->view->edit = true;
             }*/
 
-            $list = $this->view->messages = $topic->getMessagesFromTopic($id);
+            $r = $this->_getParam('messages');
+            if($r != null)
+            {
+                $list = $this->view->messages = $r;
+            }
+            else
+                $list = $this->view->messages = $topic->getMessagesFromTopic($id);
+            
             $this->view->tags = $topic->getTagsFromTopic($id);
             
             if($this->view->topic['status'] != 'closed')
@@ -125,14 +132,15 @@ class Forum_TopicController extends Zend_Controller_Action {
                         $message = new Forum_Model_Message();
                         $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
 
-                        $topic_author = $model_topic->getAuthor($topicId);
-                        if($topic_author->userId != $identity->id)
-                            $this->_helper->notifyUser('Un nouveau message !', $topic_author->userId, $topicId);
+                        $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+                        $topic = $model_topic->getTopic($topicId);
+                        if($topic->userId != $identity->id)
+                            $this->_helper->notifyUser('Un nouveau message !', $topic->userId, $topicId);
                         
                         if($this->_request->isXmlHttpRequest())
                             echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
                         else
-                            $this->_redirect('/forum/topic/show/topic/' . $topicId);
+                            $this->_redirect('/forum/' . $topicId.'/'.$topic->title);
                     }
                 }
             }
@@ -334,7 +342,8 @@ class Forum_TopicController extends Zend_Controller_Action {
                             $title = $form->getValue('form_topic_title');
                             $new_tags = $form->getValue('tagsValues');
 
-                            $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => date('Y-m-d H:i:s', time())), $topicId);
+                            $date = date('Y-m-d H:i:s', time());
+                            $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => $date, 'lastActivity' => $date), $topicId);
                             $this->updateTags($topicId, $new_tags);
                             
                             $this->_redirect('forum/topic/show/topic/' . $topicId);
@@ -567,13 +576,20 @@ class Forum_TopicController extends Zend_Controller_Action {
     public function sortAction()
     {
         $sort_type = $this->_getParam('t');
-            
+        $tag_name = $this->_getParam('name');
+        
         if($sort_type == 'date')
-            $this->_redirect ('/forum');
+        {
+            if($tag_name != null)
+                $this->_redirect ('/forum/topic/tag/name/'.$tag_name);
+            else
+                $this->_redirect ('/forum');
+        }
         else
         {
             $model_topic = new Forum_Model_Topic();
-            $topics_sorted = $model_topic->sortTopics($sort_type);
+            //$closed_flag = $this->_helper->hasAccess('forum_topic', 'close');
+            $topics_sorted = $model_topic->sortTopics($sort_type, true, $tag_name);
             $this->_forward('index', 'index', 'forum', array('topics' => $topics_sorted));
         }
     }

@@ -79,11 +79,7 @@ echo $this->doctype() . PHP_EOL;
                                         'action' => 'add'
                                         ), 'default', true) ?>"><span>Nouveau Topic</span></a></li>
                     
-                    <li><a href="<?php echo $this->url(array(
-                                        'module' => 'forum',
-                                        'controller' => 'tag',
-                                        'action' => 'index'
-                                        ), null, true) ?>"><span>Tags</span></a></li>
+                    <li><a href="<?php echo $this->url(array(), 'showTags', true) ?>"><span>Tags</span></a></li>
                     
                     <li><a href="<?php echo $this->url(array(
                                         'module' => 'forum',

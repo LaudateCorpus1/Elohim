@@ -217,37 +217,20 @@
                                                 <span class="vote-value"><?php echo $this->escape($mess->messages_vote);?></span>
                                                 
                                                 <?php echo $this->vote($this->escape($mess->messageId), 'UP_MESSAGE'); ?>
-                                                
-                                                <!--<a href="<?php echo $this->url(array(
-                                                                    'controller'=>'message',
-                                                                    'action'=>'incrementvote',
-                                                                    'message' => $mess->messageId
-                                                                )); ?>" class="increment" title="Voter pour">+</a>
-                                                <a href="<?php echo $this->url(array(
-                                                                    'controller'=>'message',
-                                                                    'action'=>'decrementvote',
-                                                                    'message' => $mess->messageId
-                                                                )); ?>" class="decrement" title="Voter contre">-</a>-->
                                             </div>
                                         </td>
                                         <td>
                                             <div class="user-avatar">
                                                 <a href="<?php echo $this->url(array(
-                                                                'module' => 'default',
-                                                                'controller'=>'user',
-                                                                'action'=>'index',
                                                                 'username' => $this->escape($mess->login)
-                                                            ), null, true); ?>">
+                                                            ), 'showUser', true); ?>">
                                                             <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($mess->avatar); ?>" />
                                                 </a>
                                             </div>
                                             <div class="user-details">
                                                 <a href="<?php echo $this->url(array(
-                                                                    'module' => 'default',
-                                                                    'controller'=>'user',
-                                                                    'action'=>'index',
                                                                     'username' => $this->escape($mess->login)
-                                                                ), null, true); ?>"><?php echo $this->escape($mess->login); ?></a>
+                                                                ), 'showUser', true); ?>"><?php echo $this->escape($mess->login); ?></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -310,10 +293,8 @@ if($this->escape($this->topic['status']) != 'closed')
 ?>
 <div id="answer-topic" <?php echo $style_answer_topic; ?>>
     <a href="<?php echo $this->url(array(
-                                    'controller'=>'topic',
-                                    'action'=>'answer',
                                     'topic'=>$this->escape($this->topic['topicId'])
-                                )); ?>">R&eacute;pondre</a>
+                                ), 'answerTopic', true); ?>">R&eacute;pondre</a>
 </div>
 
 <div id="block-quick-answer">

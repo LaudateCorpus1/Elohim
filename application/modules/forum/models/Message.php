@@ -53,6 +53,7 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
 
     public function updateMessage(array $data, $messageId, $topicId = null)
     {
+        $data['lastActivity'] = date('Y-m-d H:i:s', time());
         $where = array();
         $where[] = $this->getAdapter()->quoteInto('messageId = ?', $messageId);
         if($topicId != null)
@@ -131,6 +132,26 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
         $res = $this->fetchAll($query);
 
         return $res;
+    }
+    
+    public function sortMessages($topicId, $sort_type)
+    {
+        $order = null;
+        $model_topic = new Forum_Model_Topic();
+        
+        switch($sort_type)
+        {
+            case 'votes': 
+                $order = $this->_name.'.vote DESC';
+                break;
+                
+            case 'activity':
+                $order = $this->_name.'.lastActivity DESC';
+                break;
+        }
+        
+        $messages = $model_topic->getMessagesFromTopic($topicId, $order);
+        return $messages;
     }
 }
 ?>

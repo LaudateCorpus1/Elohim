@@ -10,12 +10,12 @@ $(function()
     $('.decrement').removeAttr('href');
     $('.increment').live("click", function()
     {
-        rate('incrementvote', $(this));
+        rate('voteup', $(this));
     });
 
     $('.decrement').live("click", function()
     {
-        rate('decrementvote', $(this));
+        rate('votedown', $(this));
     });
 
     
@@ -198,21 +198,20 @@ function rate(action, object)
 {
     var url;
     var val = object.parent().attr('class');
+    var element = object.parent().find('input').attr('value');
+    var topicId = $('.vote-t').find('input').first().val();
     if(val == 'vote-t')
     {
-        url = "/forum/topic/"+action+"/topic/";
+        url = "/forum/topic/"+element+"/"+action;
     }
     else if(val == 'vote-m')
     {
-        url = "/forum/message/"+action+"/message/";
+        url = "/forum/message/"+element+"/"+action;
     }
-
-    var element = object.parent().find('input').attr('value');
-    url += element;
 
     if(auth)
     {
-        $.post(url, {}, function(response)
+        $.post(url, { 'topic': topicId }, function(response)
         {
             try
             {
