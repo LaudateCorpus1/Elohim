@@ -27,8 +27,8 @@ class Islamine_Controller_Plugin_FavoriteTagModule extends Zend_Controller_Plugi
                 foreach($fav_tags as $fav_tag)
                 {
                     $html .='<li class="favorited-style">
-                                <a href="/forum/topic/tag/name/'.$fav_tag->name.'" class="favorited-'.$fav_tag->tags_tagId.'">'.$fav_tag->name.'</a>
-                                <a href="/forum/tag/favorite/tag/'.$fav_tag->tags_tagId.'" class="close2">x</a>
+                                <a href="/forum/tag/'.$fav_tag->name.'" class="favorited-'.$fav_tag->tags_tagId.'">'.$fav_tag->name.'</a>
+                                <a href="/forum/tag/removefavorited/'.$fav_tag->tags_tagId.'" class="close2">x</a>
                             </li>';
                 }
                 $html .= '</ul>

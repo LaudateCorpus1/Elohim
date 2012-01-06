@@ -308,7 +308,7 @@ class Forum_TopicController extends Zend_Controller_Action {
     }
 
     public function editAction() {
-        $topicId = $this->_getParam('topic');
+        $topicId = $this->_getParam('id');
         $topic = new Forum_Model_Topic();
         $row = $topic->getTopic($topicId);
         
@@ -346,7 +346,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                             $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => $date, 'lastActivity' => $date), $topicId);
                             $this->updateTags($topicId, $new_tags);
                             
-                            $this->_redirect('forum/topic/show/topic/' . $topicId);
+                            $this->_redirect('forum/'.$topicId.'/'.$title);
                         } else {
                             $authorText = new Zend_Form_Element_Textarea('authorText');
                             $authorText->setLabel("Votre texte")

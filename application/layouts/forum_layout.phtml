@@ -17,16 +17,18 @@ echo $this->doctype() . PHP_EOL;
         <?php
         echo $this->headTitle()->toString('		') . PHP_EOL;
         echo $this->headLink()
+                //http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css
                     ->prependStylesheet('/css/smoothness/jquery-ui-1.8.7.custom.css')
-                    ->appendStylesheet('/css/jquery.ui.autocomplete.custom.css')
+                    ->appendStylesheet('/css/jquery.tagit.css')
+                    //->appendStylesheet('/css/tagit/tagit-gradient-blue.css')
                     ->appendStylesheet('/css/bootstrap2.css')
                     ->appendStylesheet('/css/main.css')
                     ->appendStylesheet('/css/forum_orange.css')
                     ->appendStylesheet('/css/form.css');
         
             $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
-            $this->headScript()->prependFile($this->baseUrl().'/js/tag-it.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/script.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/tag-it.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
             //$this->headScript()->prependFile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"); 

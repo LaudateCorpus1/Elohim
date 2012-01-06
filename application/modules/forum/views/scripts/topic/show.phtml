@@ -40,8 +40,8 @@
                         <?php if($this->escape($this->author) && $this->escape($this->topic['status']) != 'closed'): ?>
                         <div id="edit-topic"><a href="<?php echo $this->url(array(
                                                                 'controller'=>'topic',
-                                                                'action'=>'edit'
-                                                            )); ?>">Editer</a>
+                                                                'id' => $this->escape($this->topic['topicId'])
+                                                            ), 'edit', true); ?>">Editer</a>
                         </div>
                         <?php endif; ?>
                     </td>
@@ -70,21 +70,17 @@
                                     <td>
                                         <div class="user-avatar">
                                             <a href="<?php echo $this->url(array(
-                                                            'module' => 'default',
-                                                            'controller'=>'user',
-                                                            'action'=>'index',
+                                                            'id' => $this->escape($this->topic['userId']),
                                                             'username' => $this->escape($this->topic['login'])
-                                                        ), null, true); ?>">
+                                                         ), 'showUser', true); ?>">
                                                         <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($this->topic['avatar']); ?>" />
                                             </a>
                                         </div>
                                         <div class="user-details">
                                             <a href="<?php echo $this->url(array(
-                                                                'module' => 'default',
-                                                                'controller'=>'user',
-                                                                'action'=>'index',
+                                                                'id' => $this->escape($this->topic['userId']),
                                                                 'username' => $this->escape($this->topic['login'])
-                                                            ), null, true); ?>"><?php echo $this->escape($this->topic['login']); ?></a>
+                                                             ), 'showUser', true); ?>"><?php echo $this->escape($this->topic['login']); ?></a>
                                         </div>
                                         
                                     </td>
@@ -100,11 +96,8 @@
                             <div class="tag">
                                 <div class="tag-name">
                                     <a href="<?php echo $this->url(array(
-                                                                'controller'=>'topic',
-                                                                'action'=>'tag',
-                                                                'name'=> $this->escape($tag->name),
-                                                                'topic' => null
-                                                            )); ?>"><?php echo $this->escape($tag->name); ?></a>
+                                                                'name'=> $this->escape($tag->name)
+                                                            ), 'taggedTopic'); ?>"><?php echo $this->escape($tag->name); ?></a>
                                 </div>  
                                 <div class="tag-action">
                                 <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),$this->escape($this->identity)); ?>
@@ -222,6 +215,7 @@
                                         <td>
                                             <div class="user-avatar">
                                                 <a href="<?php echo $this->url(array(
+                                                                'id' => $this->escape($mess->userId),
                                                                 'username' => $this->escape($mess->login)
                                                             ), 'showUser', true); ?>">
                                                             <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($mess->avatar); ?>" />
@@ -229,6 +223,7 @@
                                             </div>
                                             <div class="user-details">
                                                 <a href="<?php echo $this->url(array(
+                                                                    'id' => $this->escape($mess->userId),
                                                                     'username' => $this->escape($mess->login)
                                                                 ), 'showUser', true); ?>"><?php echo $this->escape($mess->login); ?></a>
                                             </div>

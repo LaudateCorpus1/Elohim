@@ -16,7 +16,7 @@
     <?php $i=0;
     foreach($this->topics as $topic) : 
     ?>
-        <div <?php echo $this->topicContainerClass($topic); ?>>
+        <div <?php echo $this->topicContainerClass($topic, $this->$i); ?>>
             <div class="topic-container">
                 <div class="topic-subject">
                     <?php if($this->escape($topic->status) == 'closed')

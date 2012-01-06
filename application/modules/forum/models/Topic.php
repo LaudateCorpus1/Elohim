@@ -120,7 +120,8 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                                 'messages_date' => 'date',
                                 'messages_vote' => 'vote',
                                 'validation',
-                                'lastEditDate'
+                                'lastEditDate',
+                                'userId'
                                 ))
               ->join('user', 'Messages.userId = user.id', array('login', 'avatar')) 
               ->where($this->getAdapter()->quoteInto('Topic.topicId = ?',$topicId));

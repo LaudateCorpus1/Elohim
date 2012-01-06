@@ -183,12 +183,7 @@ class UserController extends Zend_Controller_Action
                     }
 
                     $user = $adapter->getResultRowObject(null, 'password');
-                    $tag_model = new Forum_Model_Tag();
-                    $fav_tags = $tag_model->getFavoriteTags($user->id)->toArray();
-                    /*$user_model = new Model_User();
-                    $user_votes = $user_model->getVotes($user->id);*/
-                    $extended_user = (object)array_merge((array)$user, array('favtags' => $fav_tags));
-                    $auth->getStorage()->write($extended_user);
+                    $auth->getStorage()->write($user);
                     return true;
                 }
                 return false;

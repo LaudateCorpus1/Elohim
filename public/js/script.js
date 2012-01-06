@@ -27,7 +27,7 @@ $(function()
         var attr = $(this).attr('class');
         var tagId = attr.split("-");
         var action = $(this).find('img').first().attr('class');
-        var url = "/forum/tag/"+action+"favorited/tag/"+tagId[1];
+        var url = "/forum/tag/"+action+"favorited/"+tagId[1];
 
         if(auth)
         {
@@ -35,7 +35,7 @@ $(function()
             {
                 if(checkSuccess(response))
                 {
-                    var html = '<li class="favorited-style"><a href="/forum/topic/tag/name/'+response.tagname+'" class="favorited-'+response.tagid+'">'+response.tagname+'</a>\n\
+                    var html = '<li class="favorited-style"><a href="/forum/tag/'+response.tagname+'" class="favorited-'+response.tagid+'">'+response.tagname+'</a>\n\
                                 <a class="close2">x</a></li>';
 
                     if(response.action == "add")
@@ -67,10 +67,10 @@ $(function()
 
     function deleteTagWithCross()
     {
-        $('.close2').click(function()
+        $('.close2').live("click", function()
         {
             var attr = $(this).parent().find('a').first().attr('class').split('-');
-            url = "/forum/tag/removefavorited/tag/"+attr[1];
+            url = "/forum/tag/removefavorited/"+attr[1];
             $.post(url, {}, function(response)
             {
                 if(checkSuccess(response))
@@ -90,7 +90,10 @@ $(function()
     var tags = $('#tagsValues').val();
     
     $("#tags").tagit({
-            availableTags: "/forum/tag/autocomplete", populateTags: tags
+            tagSource: "/forum/tag/autocomplete"
+            //populateTags: tags,
+            //minLength: 5
+            //maxTags: 5
     });
     
     // Code pour le formulaire des commentaires

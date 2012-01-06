@@ -11,7 +11,7 @@
  */
 class Zend_View_Helper_TopicContainerClass extends Zend_View_Helper_Abstract
 {
-    public function topicContainerClass($topic)
+    public function topicContainerClass($topic, $topic_tags)
     {
         $class = 'class = "topic"';
         if($topic->status == 'closed')
@@ -22,21 +22,16 @@ class Zend_View_Helper_TopicContainerClass extends Zend_View_Helper_Abstract
             if($auth->hasIdentity())
             {
                 $identity = $auth->getIdentity();
-                $model_topic = new Forum_Model_Topic();
-                $topic_tags = $model_topic->getTagsFromTopic($topic->topicId);
+                //$model_topic = new Forum_Model_Topic();
+                //$topic_tags = $model_topic->getTagsFromTopic($topic->topicId);
                 foreach($topic_tags as $topic_tag)
                 {
-                    if(in_array(array('tags_tagId' => $topic_tag->tag_tagId, 'name' => $topic_tag->name, 'FavoritesTags_tagId' => $topic_tag->tag_tagId), $identity->favtags))
+                    if(in_array(array('tagId' => $topic_tag->tag_tagId, 'name' => $topic_tag->name), Zend_Registry::get('user')->favtags))
                     {
                         $class = 'class = "topic interest" title="Ce sujet peut vous intéresser"';
                         return $class;
                     }
                 }
-
-                /*foreach($identity->favtags as $favtag)
-                {
-                    if()
-                }*/
             }
         }
         return $class;

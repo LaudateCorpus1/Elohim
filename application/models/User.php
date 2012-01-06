@@ -4,13 +4,44 @@ class Model_User extends Zend_Db_Table_Abstract
 {
     protected $_name = 'user';
     
-    public function get($id)
+    public function get($id, $tags = false)
     {
-        $id = (int)$id;
-        $where = $this->getAdapter()->quoteInto('id = ?', $id);
-        $row = $this->fetchRow($this->select()->where($where));
+        //if(!$tags)
+        {
+            $where = $this->getAdapter()->quoteInto('id = ?', $id);
+            $row = $this->fetchRow($this->select()->where($where));
+            unset($row->password);
+        }
+        /*else
+        {
+            $query = $this->select()
+                      ->setIntegrityCheck(false)
+                      ->from($this->_name)
+                      ->join('FavoritesTags', 'FavoritesTags.userId = '.$this->_name.'.id', null)
+                      ->join('Tags', 'Tags.tagId = FavoritesTags.tagId', array('name', 'tagId'))
+                      ->where($this->getAdapter()->quoteInto($this->_name.'.id = ?', $id));
+            
+            $row = $this->fetchAll($query);
+        }*/
+        
         if($row == null)
             throw new Exception("Utilisateur introuvable");
+        
+        if($tags)
+        {
+            $query = $this->select()
+                      ->setIntegrityCheck(false)
+                      ->from('Tags',array(
+                                        'tagId',
+                                        'name'
+                                        ))
+                      ->join('FavoritesTags', 'Tags.tagId = FavoritesTags.tagId', null)
+                      ->where('FavoritesTags.userId = ?',$id);
+
+            $fav_tags = $this->fetchAll($query)->toArray();
+            $row = (object)array_merge($row->toArray(), array('favtags' => $fav_tags));
+        }
+        
         return $row;
     }
     
