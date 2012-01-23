@@ -63,6 +63,22 @@ class Forum_Model_Karma extends Zend_Db_Table_Abstract
         return $res;
    }
    
+   public function getTodayVotesCastByUser($userId)
+   {
+       $query = $this->select()
+                      ->from($this->_name, 'count(*) as nbVotesCast')
+                      ->where($this->getAdapter()->quoteInto('fromUserId = ?', $userId))
+                      ->where('date LIKE \''.date('Y-m-d%\''))
+                      ->where('cancellation = 0')
+                      ->group('fromUserId')
+                      ->limit(1);
+       
+        $res = $this->fetchRow($query);
+        if($res == null)
+            return 0;
+        return intval($res->nbVotesCast);
+   }
+   
    /*public function deleteVote($userId, $messageId, $type)
    {
        $this->delete(array('userId = ?' => $userId, 'messageId = ?' => $messageId, 'type LIKE ?' => '%'.$type));

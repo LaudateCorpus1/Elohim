@@ -199,16 +199,19 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
     }
 
     public function incrementVote($topicId, $author_id)
-    {
+    {        
         $this->getAdapter()->beginTransaction();
         
         $data = array('vote' => new Zend_Db_Expr('vote + 1'));
         $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
-        
+   
         $query = $this->select()
                 ->from($this->_name, array('vote', 'userId'))
-                ->where($this->getAdapter()->quoteInto('topicId = ?',$topicId));
+                ->where($this->getAdapter()->quoteInto('topicId = ?', $topicId));
         $res = $this->fetchRow($query);
+        
+        if(!$res)
+            throw new Exception("Could not find row $id");
         
         if($res->userId == $author_id)
         {
@@ -383,6 +386,8 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                 ->from($this->_name, 'status')
                 ->where($this->getAdapter()->quoteInto('topicId = ?',$topic_id));
         $row = $this->fetchRow($query);
+        if (!$row)
+            throw new Exception("Could not find row $topic_id");
         if($row->status == 'closed')
             return true;
         else
@@ -393,6 +398,26 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
     {
         $data = array('views' => new Zend_Db_Expr('views + 1'));
         $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $topicId));
+    }
+    
+    public function getCommentsFromTopic($topicId)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, 'topicId')
+              ->join('commentTopic', 'Topic.topicId = commentTopic.topicId', null)
+              ->join('Comments', 'commentTopic.commentId = Comments.commentId',array(
+                                'commentId',
+                                'userId',
+                                'content',
+                                'date'
+                                ))
+              ->join('user', 'Comments.userId = user.id', array('login'))
+              ->where('Topic.topicId = ?',$topicId);
+
+        $res = $this->fetchAll($query);
+
+        return $res;
     }
 }
 ?>

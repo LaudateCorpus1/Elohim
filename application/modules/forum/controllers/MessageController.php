@@ -10,6 +10,22 @@ class Forum_MessageController extends Zend_Controller_Action {
             $this->_helper->layout->disableLayout();    //disable layout for ajax
         }
     }
+    
+    public function preDispatch()
+    {
+        if($this->_request->getActionName() == 'incrementvote' || $this->_request->getActionName() == 'decrementvote')
+        {
+            $maxVotesCast = intval(Zend_Registry::getInstance()->constants->max_votes_cast_per_day);
+            $auth = Zend_Auth::getInstance();
+            $model_karma = new Forum_Model_Karma();
+            $userVotesCast = $model_karma->getTodayVotesCastByUser($auth->getIdentity()->id);
+            if($userVotesCast >= $maxVotesCast)
+            {
+                $message = 'Vous avez atteint le quota maximum de vote par jour';
+                $this->_forward('karma', 'error', 'forum', array('message' => $message));
+            }
+        }
+    }
 
     public function indexAction() {
         // action body
@@ -198,6 +214,11 @@ class Forum_MessageController extends Zend_Controller_Action {
                 if ($commentForm->isValid($formData)) {
                     $this->_processCommentForm($formData, $topicId);
                 }
+                else
+                {
+                    if($this->_request->isXmlHttpRequest())
+                        echo Zend_Json::encode(array('status' => 'error', 'message' => 'Le commentaire n\'est pas valide'));
+                }
             }
             $this->view->commentForm = $commentForm;
         }
@@ -222,14 +243,15 @@ class Forum_MessageController extends Zend_Controller_Action {
         if($auth->hasIdentity())
         {
             $identity = $auth->getIdentity();
-            $commentId = $comment->addComment($identity->id, $content);
+            $commentDate = date('Y-m-d H:i:s', time());
+            $commentId = $comment->addComment($identity->id, $content, $commentDate);
             $commentMessage->addRow($commentId, $messageId);
             $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
-                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => '...'));
+                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => $commentDate));
             } else {
-                $this->_redirect('/forum/topic/show/topic/' . $topicId);
+                $this->_redirect('/forum/' . $topicId);
             }
         }
     }
@@ -352,6 +374,51 @@ class Forum_MessageController extends Zend_Controller_Action {
             $model_message = new Forum_Model_Message();
             $messages_sorted = $model_message->sortMessages($topicId, $sort_type);
             $this->_forward('show', 'topic', 'forum', array('messages' => $messages_sorted));
+        }
+    }
+    
+    public function editAction()
+    {
+        $messageId = $this->_getParam('id');
+        $model_message = new Forum_Model_Message();
+        $message = $model_message->getMessage($messageId);
+        $model_topic = new Forum_Model_Topic();
+        $closed = $model_topic->isClosed($message->topicId);
+        
+        if(!$closed)
+        {
+            $this->view->headScript()->appendFile("/js/answerEditor.js");
+            $messageForm = new Forum_Form_UserPostMessage();
+            $messageForm->getElement('form_message_content')->setAttrib('class', 'edit_message');
+            $messageForm->populate(array('form_message_content' => $message->content));
+                    
+            if ($this->getRequest()->isPost()) {
+                $formData = $this->getRequest()->getPost();
+
+                if ($messageForm->isValid($formData)) {
+                    $auth = Zend_Auth::getInstance();
+                    if($auth->hasIdentity())
+                    {
+                        $identity = $auth->getIdentity();
+                        $content = $messageForm->getValue('form_message_content');
+
+                        $date = date('Y-m-d H:i:s', time());
+                        $data = array('content' => $content,
+                                      'lastEditDate' => $date,
+                                      'lastActivity' => $date,
+                            );
+                        $model_message->updateMessage($data, $messageId);
+                        $model_topic->updateTopic(array('lastActivity' => $date), $message->topicId);
+                        
+                        $this->_redirect('/forum/' . $message->topicId);
+                    }
+                }
+            }
+            $this->view->messageForm = $messageForm;
+        }
+        else
+        {
+            $this->view->message = 'Ce sujet est fermé, vous ne pouvez pas y écire de commentaire';
         }
     }
 }

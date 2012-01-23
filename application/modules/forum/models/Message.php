@@ -113,15 +113,10 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
     {
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from($this->_name,array(
-                                'message_messageId' => 'messageId'
-                                ))
-              ->join('CommentMessage', 'Messages.messageId = CommentMessage.messageId',array(
-                                'commentMessage_messageId' => 'messageId',
-                                'commentMessage_commentId' => 'commentId'
-                                ))
+              ->from($this->_name,'messageId')
+              ->join('CommentMessage', 'Messages.messageId = CommentMessage.messageId', null)
               ->join('Comments', 'CommentMessage.commentId = Comments.commentId',array(
-                                'comment_commentId' => 'commentId',
+                                'commentId',
                                 'userId',
                                 'content',
                                 'date'

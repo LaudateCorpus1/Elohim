@@ -20,11 +20,22 @@ class Forum_ErrorController extends Zend_Controller_Action
 
     public function karmaAction()
     {
-        //$error = $this->_getParam('error_type');
-        if ($this->_request->isXmlHttpRequest())
-            echo "0";
-        else
-            $this->view->error = "Pas assez de karma";
+        if($this->_getParam('message') != null)
+        {
+            $message = $this->_getParam('message');
+            if($this->_request->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'message' => $message));
+            else
+                $this->view->message = $message;
+        }
+        else 
+        {
+            if ($this->_request->isXmlHttpRequest())
+                echo "0";
+            else
+                $this->view->error = "Pas assez de karma";
+        }
+        
     }
 
 

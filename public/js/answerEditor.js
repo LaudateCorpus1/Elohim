@@ -1,11 +1,66 @@
 $(function()
 {
+    CKEDITOR.on( 'dialogDefinition', function( ev )
+	{
+		// Take the dialog name and its definition from the event
+		// data.
+		var dialogName = ev.data.name;
+		var dialogDefinition = ev.data.definition;
+                var infoTab;
+                
+		// Check if the definition is from the dialog we're
+		// interested on (the "Link" dialog).
+		if ( dialogName == 'link' )
+		{
+			// Get a reference to the "Link Info" tab.
+			infoTab = dialogDefinition.getContents( 'info' );
+
+			// Remove the "Link Type" combo and the "Browser
+			// Server" button from the "info" tab.
+                        infoTab.remove( 'protocol' );
+			infoTab.remove( 'linkType' );
+			infoTab.remove( 'browse' );
+
+			// Remove the "Target" tab from the "Link" dialog.
+			dialogDefinition.removeContents( 'target' );
+                        dialogDefinition.removeContents( 'advanced' );
+                        
+			// Rewrite the 'onFocus' handler to always focus 'url' field.
+			dialogDefinition.onFocus = function()
+			{
+				var urlField = this.getContentElement( 'info', 'url' );
+				urlField.select();
+			};
+		}
+                
+                if ( dialogName == 'image' )
+		{
+                    dialogDefinition.onShow = function () {
+			// This code will open the Upload tab.
+			this.selectPage('Upload');
+                    };
+                    infoTab = dialogDefinition.getContents( 'info' );
+                    dialogDefinition.removeContents( 'Link' );
+                    dialogDefinition.removeContents( 'advanced' );
+                    infoTab.remove( 'browse' );
+                    infoTab.remove( 'txtWidth' );
+                    infoTab.remove( 'txtHeight' );
+                    infoTab.remove( 'ratioLock' );
+                    infoTab.remove( 'txtBorder' );
+                    infoTab.remove( 'txtHSpace' );
+                    infoTab.remove( 'txtVSpace' );
+                    infoTab.remove( 'cmbAlign' );
+                    infoTab.remove( 'htmlPreview' );
+		}
+	});
+
     var url = window.location.pathname;
     
     // Lien répondre à un topic
     $('#answer-topic > a').removeAttr('href');
-    CKEDITOR.replace('form_message_content',{
-		toolbar : [['Bold','Italic','Underline', 'FontSize', '-', 'Image', '-', 'Undo','Redo','-','NumberedList', 'BulletedList','-','Link','Unlink', '-', 'About']],
+    var editor = CKEDITOR.replace('form_message_content',{
+                extraPlugins : 'simpleLink',
+		toolbar : [['Bold','Italic','Underline', 'FontSize', '-', 'Image', '-', 'Undo','Redo','-','NumberedList', 'BulletedList','-', /*'SimpleLink',*/ 'Link','Unlink', '-', 'About']],
                 //filebrowserBrowseUrl: '/simogeo-Filemanager-8b138bc/index.html',
                 language : 'fr',
                 scayt_autoStartup : true,
@@ -38,6 +93,7 @@ $(function()
                     }
                 }
     });
+    CKFinder.setupCKEditor( editor, '/js/ckfinder/' );
     
     
     $('#answer-topic > a').click(function()
@@ -49,6 +105,7 @@ $(function()
     // Lorsque l'utilisateur envoie le message
     $('form[id=form_message]').submit(function()
     {
+        var classT = $(this).find('textarea[name="form_message_content"]').attr('class');
         if(!submitted)
         {
             var topicId = $('.vote-t').find('input').first().val();
@@ -61,10 +118,12 @@ $(function()
             else
             {
                 submitted = true;
-                addMessage(topicId, content);
+                if(classT != 'edit_message')
+                   addMessage(topicId, content);
             }
         }
-        return false;
+        if(classT != 'edit_message')
+            return false;
     });
 });
 

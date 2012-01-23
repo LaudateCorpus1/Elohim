@@ -1,7 +1,61 @@
 $(function()
 {
+    CKEDITOR.on( 'dialogDefinition', function( ev )
+    {
+            // Take the dialog name and its definition from the event
+            // data.
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            var infoTab;
+
+            // Check if the definition is from the dialog we're
+            // interested on (the "Link" dialog).
+            if ( dialogName == 'link' )
+            {
+                    // Get a reference to the "Link Info" tab.
+                    infoTab = dialogDefinition.getContents( 'info' );
+
+                    // Remove the "Link Type" combo and the "Browser
+                    // Server" button from the "info" tab.
+                    infoTab.remove( 'protocol' );
+                    infoTab.remove( 'linkType' );
+                    infoTab.remove( 'browse' );
+
+                    // Remove the "Target" tab from the "Link" dialog.
+                    dialogDefinition.removeContents( 'target' );
+                    dialogDefinition.removeContents( 'advanced' );
+
+                    // Rewrite the 'onFocus' handler to always focus 'url' field.
+                    dialogDefinition.onFocus = function()
+                    {
+                            var urlField = this.getContentElement( 'info', 'url' );
+                            urlField.select();
+                    };
+            }
+
+            if ( dialogName == 'image' )
+            {
+                dialogDefinition.onShow = function () {
+                    // This code will open the Upload tab.
+                    this.selectPage('Upload');
+                };
+                infoTab = dialogDefinition.getContents( 'info' );
+                dialogDefinition.removeContents( 'Link' );
+                dialogDefinition.removeContents( 'advanced' );
+                infoTab.remove( 'browse' );
+                infoTab.remove( 'txtWidth' );
+                infoTab.remove( 'txtHeight' );
+                infoTab.remove( 'ratioLock' );
+                infoTab.remove( 'txtBorder' );
+                infoTab.remove( 'txtHSpace' );
+                infoTab.remove( 'txtVSpace' );
+                infoTab.remove( 'cmbAlign' );
+                infoTab.remove( 'htmlPreview' );
+            }
+    });
+        
     // Nouveau Topic
-    CKEDITOR.replace('form_topic_content',{
+    var editor = CKEDITOR.replace('form_topic_content',{
 		toolbar : [['Bold','Italic','Underline', 'FontSize', '-', 'Image', '-', 'Undo','Redo','-','NumberedList', 'BulletedList','-','Link','Unlink', '-', 'About']],
                 //filebrowserBrowseUrl: '/simogeo-Filemanager-8b138bc/index.html',
                 language : 'fr',
@@ -36,4 +90,6 @@ $(function()
                     }
                 }
     });
+    
+    CKFinder.setupCKEditor( editor, '/js/ckfinder/' );
 });

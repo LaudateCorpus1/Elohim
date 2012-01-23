@@ -8,7 +8,10 @@ CKEDITOR.editorConfig = function( config )
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
-	config.filebrowserImageBrowseUrl = '/var/www/elohim/library/simogeo-Filemanager-8b138bc/index.html';
-	config.filebrowserImageUploadUrl = '/var/www/elohim/library/simogeo-Filemanager-8b138bc/index.html';
-
+	config.filebrowserBrowseUrl = '/js/ckfinder/ckfinder.html';
+	config.filebrowserImageBrowseUrl = '/js/ckfinder/ckfinder.html?type=Images';
+	config.filebrowserFlashBrowseUrl = '/js/ckfinder/ckfinder.html?type=Flash';
+	config.filebrowserUploadUrl = '/js/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files';
+	config.filebrowserImageUploadUrl = '/js/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
+	config.filebrowserFlashUploadUrl = '/js/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
 };

@@ -38,15 +38,15 @@
 
     <hr />
     <p><a href="<?php echo $this->url(array(
-                                'controller'=>'user',
-                                'action'=>'listtopics'
-                            )); ?>">Voir ses <?php echo $this->escape($this->user->amount_topics); ?> sujets</a>
+                                'id'=> $this->escape($this->user->id),
+                                'username'=> $this->escape($this->user->login)
+                            ), 'viewUserTopics', true); ?>">Voir ses <?php echo $this->escape($this->user->amount_topics); ?> sujets</a>
     </p>
 
     <p><a href="<?php echo $this->url(array(
-                                'controller'=>'user',
-                                'action'=>'listmessages'
-                            )); ?>">Voir ses <?php echo $this->escape($this->user->amount_messages); ?> messages</a>
+                                'id'=> $this->escape($this->user->id),
+                                'username'=> $this->escape($this->user->login)
+                            ), 'viewUserMessages', true); ?>">Voir ses <?php echo $this->escape($this->user->amount_messages); ?> messages</a>
     </p>
 
     <!--<p>Tags</p>-->

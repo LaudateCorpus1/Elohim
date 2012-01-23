@@ -39,8 +39,9 @@ class Forum_Form_UserPostComment extends Zend_Form {
     public function addElementsMessageForm() {
         $this->text = new Zend_Form_Element_Textarea('form_comment_content');
         $this->text->setRequired(true)
-                   ->setLabel("Commentaire")
+                   ->setLabel("Commentaire (entre 3 et 500 caratères)")
                    ->setAttribs(array('rows' => '4', 'cols' => '50'))
+                   ->addValidator('StringLength', false, array(3, 500))
                    ->setDecorators($this->elementDecorators);
 
         $this->submit = new Zend_Form_Element_Submit('post_comment');

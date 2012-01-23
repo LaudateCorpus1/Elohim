@@ -8,19 +8,15 @@
         <div class="user-topic">
                 <div class="topic-subject">
                     <a href="<?php echo $this->url(array(
-                                            'module' => 'forum',
-                                            'controller'=>'topic',
-                                            'action'=>'show',
-                                            'topic'=>$this->escape($message->topicId)
-                                        ), null, true); ?>"><?php echo $this->escape($message->title); ?></a>
+                                            'topic' => $this->escape($message->topicId),
+                                            'title' => $this->escape($message->title),
+                                        ), 'showTopic', true); ?>"><?php echo $this->escape($message->title); ?></a>
                 </div>
                 <div class="user-message">
                     <a href="<?php echo $this->url(array(
-                                            'module' => 'forum',
-                                            'controller'=>'topic',
-                                            'action'=>'show',
-                                            'topic'=>$this->escape($message->topicId)
-                                        ), null, true).'#'.$this->escape($message->messageId); ?>"><?php echo $this->purify($this->textWrap($message->content, 300)); ?></a>
+                                            'topic' => $this->escape($message->topicId),
+                                            'title' => $this->escape($message->title),
+                                        ), 'showTopic', true).'#'.$this->escape($message->messageId); ?>"><?php echo $this->purify($this->textWrap($message->content, 300)); ?></a>
                     <div class="user-topic-vote"><?php echo $this->escape($message->vote_message);?> votes</div>
                 </div>
         </div>

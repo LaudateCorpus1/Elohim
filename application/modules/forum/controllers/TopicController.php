@@ -14,6 +14,22 @@ class Forum_TopicController extends Zend_Controller_Action {
             $this->_helper->layout->disableLayout();    //disable layout for ajax
         }
     }
+    
+    public function preDispatch()
+    {
+        if($this->_request->getActionName() == 'incrementvote' || $this->_request->getActionName() == 'decrementvote')
+        {
+            $maxVotesCast = intval(Zend_Registry::getInstance()->constants->max_votes_cast_per_day);
+            $auth = Zend_Auth::getInstance();
+            $model_karma = new Forum_Model_Karma();
+            $userVotesCast = $model_karma->getTodayVotesCastByUser($auth->getIdentity()->id);
+            if($userVotesCast >= $maxVotesCast)
+            {
+                $message = 'Vous avez atteint le quota maximum de vote par jour';
+                $this->_forward('karma', 'error', 'forum', array('message' => $message));
+            }
+        }
+    }
 
     public function indexAction() {
         $this->_forward('index', 'index');
@@ -80,6 +96,8 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $this->view->nb_reopen_votes = $reopen_model->count($id);
             }
 
+            $this->view->topicComments = $topic->getCommentsFromTopic($id);
+            
             foreach ($list as $message) {
                 $this->view->$i = $messages->getCommentsFromMessage($message->messageId);
                 $i++;
@@ -202,7 +220,90 @@ class Forum_TopicController extends Zend_Controller_Action {
     }
 
     public function incrementvoteAction() {
+        $data = array('type' => 'UP_TOPIC');
+        
         $auth = Zend_Auth::getInstance();
+        $identity = $auth->getIdentity();
+        $model_topic = new Forum_Model_Topic();
+        $topicId = $this->view->topic = $this->_getParam('topic');
+        $model_karma = new Forum_Model_Karma();
+        
+        $lastAction = $model_karma->getLastAction(array('fromUserId' => $identity->id, 'topicId' => $topicId));
+        
+        $error = false;
+        if($lastAction == null)
+        {
+           $data['cancellation'] = false;
+        }
+        else
+        {
+            // Si l'action demandée est le contraire de la dernière action
+            // et que la dernière n'était pas une annulation, c'est une annulation
+            if($lastAction->type != $data['type'] && $lastAction->cancellation == false)
+                $data['cancellation'] = true;
+            elseif($lastAction->type != $data['type'] && $lastAction->cancellation == true)
+                $data['cancellation'] = false;
+            // Si l'action demandée est la meme que la dernière et que celle-ci était une annulation
+            elseif($lastAction->type == $data['type'] && $lastAction->cancellation == true)
+                $data['cancellation'] = false;
+            // Si l'action demandée est la meme que la dernière et que celle-ci n'était pas une annulation... impossible, cheater !
+            elseif($lastAction->type == $data['type'] && $lastAction->cancellation == false)
+            {
+                $error = true;
+                 if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
+                else
+                    $this->view->message = 'Vous avez déjà voté';
+            }
+        }
+        
+        if(!$error)
+        {
+            $res = $model_topic->incrementVote($topicId, $identity->id);
+            
+            if($res === false)
+            {
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
+                else
+                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
+            }
+            else
+            {
+                $user_model = new Model_User();
+                if($data['cancellation'])
+                {
+                    // Il faut annuler l'ancien vote sur ce message
+                    $karma_down = Zend_Registry::getInstance()->constants->vote_topic_down_reward;
+                    $user_model->setKarma(abs(intval($karma_down)), $res->userId);
+                }
+                else
+                {
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_up_reward;
+                    $user_model->setKarma($karma_up, $res->userId);
+                }
+                
+                $data['fromUserId'] = $identity->id;
+                $data['toUserId'] = $res->userId;
+                $data['topicId'] = $topicId;
+                
+                $model_karma->addKarmaAction($data);
+                
+                // Mise à jour de l'activité du topic
+                $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+                
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'UP_TOPIC', 'revote' => $data['cancellation']));
+                else
+                    $this->view->message = 'Merci d\'avoir voté';
+            }
+        }
+        
+        
+        
+        
+        
+        /*$auth = Zend_Auth::getInstance();
         $identity = $auth->getIdentity();
         $incrementTopic = new Forum_Model_Topic();
         $this->view->topic = $topicId = $this->_getParam('topic');
@@ -251,11 +352,91 @@ class Forum_TopicController extends Zend_Controller_Action {
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
-        }
+        }*/
     }
 
     public function decrementvoteAction() {
+        $data = array('type' => 'DOWN_TOPIC');
+        
         $auth = Zend_Auth::getInstance();
+        $identity = $auth->getIdentity();
+        $model_topic = new Forum_Model_Topic();
+        $topicId = $this->view->topic = $this->_getParam('topic');
+        $model_karma = new Forum_Model_Karma();
+        
+        $lastAction = $model_karma->getLastAction(array('fromUserId' => $identity->id, 'topicId' => $topicId));
+        
+        $error = false;
+        if($lastAction == null)
+        {
+           $data['cancellation'] = false;
+        }
+        else
+        {
+            // Si l'action demandée est le contraire de la dernière action
+            // et que la dernière n'était pas une annulation, c'est une annulation
+            if($lastAction->type != $data['type'] && $lastAction->cancellation == false)
+                $data['cancellation'] = true;
+            elseif($lastAction->type != $data['type'] && $lastAction->cancellation == true)
+                $data['cancellation'] = false;
+            // Si l'action demandée est la meme que la dernière et que celle-ci était une annulation
+            elseif($lastAction->type == $data['type'] && $lastAction->cancellation == true)
+                $data['cancellation'] = false;
+            // Si l'action demandée est la meme que la dernière et que celle-ci n'était pas une annulation... impossible, cheater !
+            elseif($lastAction->type == $data['type'] && $lastAction->cancellation == false)
+            {
+                $error = true;
+                 if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
+                else
+                    $this->view->message = 'Vous avez déjà voté';
+            }
+        }
+        
+        if(!$error)
+        {
+            $res = $model_topic->decrementVote($topicId, $identity->id);
+            if($res === false)
+            {
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
+                else
+                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
+            }
+            else
+            {
+                $user_model = new Model_User();
+                if($data['cancellation'])
+                {
+                    // Il faut annuler l'ancien vote sur ce message
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_up_reward;
+                    $user_model->setKarma('-'.$karma_up, $res->userId);
+                }
+                else
+                {
+                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_down_reward;
+                    $user_model->setKarma($karma_up, $res->userId);
+                }
+                
+                $data['fromUserId'] = $identity->id;
+                $data['toUserId'] = $res->userId;
+                $data['topicId'] = $topicId;
+                
+                $model_karma->addKarmaAction($data);
+                
+                // Mise à jour de l'activité du topic
+                $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+                
+                if ($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'DOWN_TOPIC', 'revote' => $data['cancellation']));
+                else
+                    $this->view->message = 'Merci d\'avoir voté';
+            }
+        }
+        
+        
+        
+        /*$auth = Zend_Auth::getInstance();
         $identity = $auth->getIdentity();
         $incrementTopic = new Forum_Model_Topic();
         $this->view->topic = $topicId = $this->_getParam('topic');
@@ -304,7 +485,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
-        }
+        }*/
     }
 
     public function editAction() {
@@ -591,6 +772,63 @@ class Forum_TopicController extends Zend_Controller_Action {
             //$closed_flag = $this->_helper->hasAccess('forum_topic', 'close');
             $topics_sorted = $model_topic->sortTopics($sort_type, true, $tag_name);
             $this->_forward('index', 'index', 'forum', array('topics' => $topics_sorted));
+        }
+    }
+    
+    public function commentAction() {
+        
+        $topicId = $this->_getParam('topic');
+        $model_topic = new Forum_Model_Topic();
+        $closed = $model_topic->isClosed($topicId);
+        
+        if(!$closed)
+        {
+            $commentForm = new Forum_Form_UserPostComment();
+
+            if ($this->getRequest()->isPost()) {
+                $formData = $this->getRequest()->getPost();
+
+                if ($commentForm->isValid($formData)) {
+                    $this->_processCommentForm($formData, $topicId);
+                }
+                else
+                {
+                    if($this->_request->isXmlHttpRequest())
+                        echo Zend_Json::encode(array('status' => 'error', 'message' => 'Le commentaire n\'est pas valide'));
+                }
+            }
+            $this->view->commentForm = $commentForm;
+        }
+        else
+        {
+            if($this->_request->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce sujet est fermé, vous ne pouvez pas y écrire de commentaire'));
+            else
+                $this->view->message = 'Ce sujet est fermé, vous ne pouvez pas y écire de commentaire';
+        }
+    }
+
+    protected function _processCommentForm($data, $topicId)
+    {
+        $content = $data['form_comment_content'];
+        $comment = new Forum_Model_Comment();
+        $model_topic = new Forum_Model_Topic();
+        $commentTopic = new Forum_Model_CommentTopic();
+        
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $commentDate = date('Y-m-d H:i:s', time());
+            $commentId = $comment->addComment($identity->id, $content, $commentDate);
+            $commentTopic->addRow($commentId, $topicId);
+            $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+            
+            if ($this->_request->isXmlHttpRequest()) {
+                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => $commentDate));
+            } else {
+                $this->_redirect('/forum/' . $topicId);
+            }
         }
     }
 }

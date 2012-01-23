@@ -1,6 +1,7 @@
 a
 {
     color: #222;
+    cursor: pointer;
 }
 
 #forum-content
@@ -444,7 +445,7 @@ ul#favlist li.favorited-style a.close2
     border-bottom: dotted grey 1px;
 }
 
-#edit-topic
+#edit-topic, #edit-message
 {
     float: right;
     font-size: 11px;
@@ -484,6 +485,7 @@ ul#favlist li.favorited-style a.close2
     font-size: 13.5px;
     width: 660px;
     line-height: 150%;
+    overflow: hidden;
 }
 
 #topic-content ol, #message-content ol, #topic-content ul, #message-content ul
@@ -536,17 +538,12 @@ ul#favlist li.favorited-style a.close2
     float: right;
 }
 
-.increment, .decrement
-{
-    cursor: pointer;
-}
-
-.table-message .comments
+.table-message .comments, #table-topic .comments
 {
     margin: 20px;
 }
 
-.table-message .comment-link
+.table-message .comment-link, #table-topic .comment-link
 {
     margin: 0 20px 10px 20px;
 }
@@ -556,15 +553,14 @@ ul#favlist li.favorited-style a.close2
     float: left;
 }
 
-.table-message .comment-link a
+.table-message .comment-link a, #table-topic .comment-link a
 {
-    cursor: pointer;
     color: #666;
     font-weight: bold;
     font-size: 0.9em;
 }
 
-.table-message .comment
+.table-message .comment, #table-topic .comment
 {
     border: solid #DDD 1px;
     margin-bottom: 5px;

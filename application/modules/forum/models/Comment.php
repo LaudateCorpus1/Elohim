@@ -21,12 +21,12 @@ class Forum_Model_Comment extends Zend_Db_Table_Abstract
 
     public function addComment($userId,$content, $date = null)
     {
-            $data = array(
-                'userId' => $userId,
-                'content' => $content,
-                'date' => $date
-            );
-            return $this->insert($data);
+        $data = array(
+            'userId' => $userId,
+            'content' => $content,
+            'date' => $date
+        );
+        return $this->insert($data);
     }
 
     public function deleteComment($id)
@@ -36,7 +36,7 @@ class Forum_Model_Comment extends Zend_Db_Table_Abstract
 
     public function updateComment(array $data, $id)
     {
-            $this->update($data, array('commentId = ?' => $id));
+        $this->update($data, array('commentId = ?' => $id));
     }
 }
 ?>

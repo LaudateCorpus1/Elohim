@@ -1140,7 +1140,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 								url: editor.config.filebrowserImageBrowseLinkUrl
 							},
 							style : 'float:right',
-							hidden : true,
+							hidden : false,
 							label : editor.lang.common.browseServer
 						},
 						{
@@ -1174,7 +1174,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 				},
 				{
 					id : 'Upload',
-					hidden : true,
 					filebrowser : 'uploadButton',
 					label : editor.lang.image.upload,
 					elements :

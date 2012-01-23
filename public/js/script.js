@@ -17,9 +17,7 @@ $(function()
     {
         rate('votedown', $(this));
     });
-
     
-
     // Code pour la mise en favoris des tags
     $('a[class^="fav-"]').removeAttr('href');
     $('a[class^="fav-"]').click(function()
@@ -29,7 +27,7 @@ $(function()
         var action = $(this).find('img').first().attr('class');
         var url = "/forum/tag/"+action+"favorited/"+tagId[1];
 
-        if(auth)
+        if(typeof auth != "undefined" && auth)
         {
             $.post(url, {}, function(response)
             {
@@ -45,6 +43,15 @@ $(function()
                         {
                             $(this).html('<a class="fav-'+response.tagid+'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>');
                         });
+                        
+                        /*$('.tag-name > a').each(function()
+                        {
+                            if($(this).text() == response.tagname)
+                            {
+                                $(this).parent().parent().parent().parent().parent().attr('class', 'topic interest');
+                                return;
+                            }
+                        });*/
                     }
                     else if(response.action == "remove")
                     {
@@ -53,6 +60,15 @@ $(function()
                         {
                             $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
                         });
+                        
+                        /*$('.tag-name > a').each(function()
+                        {
+                            if($(this).text() == response.tagname)
+                            {
+                                $(this).parent().parent().parent().parent().parent().attr('class', 'topic');
+                                return;
+                            }
+                        });*/
                     }
                 }
             }, 'json');
@@ -70,7 +86,7 @@ $(function()
         $('.close2').live("click", function()
         {
             var attr = $(this).parent().find('a').first().attr('class').split('-');
-            url = "/forum/tag/removefavorited/"+attr[1];
+            var url = "/forum/tag/removefavorited/"+attr[1];
             $.post(url, {}, function(response)
             {
                 if(checkSuccess(response))
@@ -78,8 +94,17 @@ $(function()
                     $('.favorited-'+response.tagid).parent().remove();
                     $('.fav-'+response.tagid).each(function()
                     {
-                        $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="remove" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
+                        $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
                     });
+                    
+                    /*$('.tag-name > a').each(function()
+                    {
+                        if($(this).text() == response.tagname)
+                        {
+                            $(this).parent().parent().parent().parent().parent().attr('class', 'topic');
+                            return;
+                        }
+                    });*/
                 }
             },'json');
         });
@@ -90,35 +115,70 @@ $(function()
     var tags = $('#tagsValues').val();
     
     $("#tags").tagit({
-            tagSource: "/forum/tag/autocomplete"
-            //populateTags: tags,
-            //minLength: 5
-            //maxTags: 5
+            tagSource: "/forum/tag/autocomplete",
+            singleField: true,
+            singleFieldDelimiter: " ",
+            singleFieldNode: $('#tagsValues')
     });
     
+    /*
+     * Commentaires
+     */
+    var editComment = false;
+    var commentId = null;
     // Code pour le formulaire des commentaires
     $('a[class^=comment-link]').removeAttr('href');
     var submitted = false;
     $('a[class^=comment-link]').click(function()
     {
+        editComment = false;
         submitted = false;
         var attr = $(this).attr('class');
         var messageId = attr.substring(attr.lastIndexOf('-') + 1);
-        $('#comment-form-'+messageId).show();
+        var type = attr.split('-');
+        $('#comment-form-'+type[2]+'-'+messageId).find('div').remove('.remaining-char');
+        $('#comment-form-'+type[2]+'-'+messageId).find('div').first().append('<div class="remaining-char">500 caractères restants</div>');
+        $('#comment-form-'+type[2]+'-'+messageId).find('textarea').val('');
+        $('#comment-form-'+type[2]+'-'+messageId).show();
         $(this).hide();
+    });
+    
+    // Compteur des caractères du commentaire
+    $('#form_comment_content').live('keyup', function()
+    {
+        var charLength = $(this).val().length;
+        $('.remaining-char').text(500 - charLength + ' caractères restants');
+    });
+    
+    // Edition d'un commentaire
+    $('a[class^=edit-comment]').removeAttr('href');
+    $('a[class^=edit-comment]').click(function()
+    {
+        editComment = true;
+        submitted = false;
+        
+        var attr = $(this).attr('class');
+        commentId = attr.substring(attr.lastIndexOf('-') + 1);
+        
+        var parentInfo = $(this).parent().parent().attr('id').split('-');
+        var divForm = $('#comment-form-'+parentInfo[1]+'-'+parentInfo[2]);
+        divForm.find('textarea').val($(this).parent().find('.comment-text').text());
+        divForm.find('div').remove('.remaining-char');
+        divForm.find('div').first().append('<div class="remaining-char"></div>');
+        $('.remaining-char').text(500 - divForm.find('textarea').first().val().length + ' caractères restants');
+        divForm.show();
+        
     });
     
     // Lorsque l'utilisateur envoie le commentaire
     $('form[id^=form_comment]').submit(function()
     {
-        if(!submitted)
-        {
-            submitted = true;
-            var id = $(this).attr('id');
-            var messageId = id.substring(id.lastIndexOf('_') + 1);
-            var content = $(this).find('textarea').val();
-            addComment(messageId, content);
-        }
+        var id = $(this).attr('id');
+        var messageId = id.substring(id.lastIndexOf('_') + 1);
+        var content = $(this).find('textarea').val();
+        var type = id.split('_');
+        
+        submitted = saveComment(messageId, content, submitted, type[2], editComment, commentId);
         return false;
     });
     
@@ -212,7 +272,7 @@ function rate(action, object)
         url = "/forum/message/"+element+"/"+action;
     }
 
-    if(auth)
+    if(typeof auth != "undefined" && auth)
     {
         $.post(url, { 'topic': topicId }, function(response)
         {
@@ -460,34 +520,64 @@ function dialogValidateAnswer()
     });
 }
 
-function addComment(messageId, content)
+/*
+ * Params : edit et commentId ne servent que pour l'édition d'un commentaire
+ * messageId est l'id du message ou du topic sur lequel le commentaire est fait
+ * submitted indique si le bouton a bien été cliqué ou pas (pour éviter le spam)
+ */
+function saveComment(messageId, content, submitted, controller, edit, commentId)
 {
+    edit = typeof(edit) != 'undefined' ? edit : false;
+    
     if(content == "")
     {
         alert("Veuillez entrer un commentaire");
     }
     else
     {
-        $.ajax({
-            type: "POST",
-            url: "/forum/message/comment",
-            dataType: "json",
-            data: {"message": messageId, "form_comment_content": content},
-            success: function(response)
+        if(!submitted)
+        {
+            var _url = "/forum/"+controller+"/comment";
+            var postId = messageId;
+            if(edit)
             {
-                if(checkSuccess(response))
-                {
-                    var html = '<div class="comment">'+content+' - le '+response.date+' par '+response.user+'</div>';
-                    $('#comment-form-'+messageId).hide();
-                    $('#comments-'+messageId).append(html);
-                    $('.comment-link-'+messageId).show();
-                    $('#comment-form-'+messageId).find('textarea').val('');
-                }
-            },
-            error: function(a, b, c)
-            {
-                alert(b + " " +c);
+                _url = "/forum/comment/edit/"+commentId;
+                postId = commentId;
             }
-        });
+                
+                
+            var topicId = $('.vote-t').find('input').first().val();
+            $.ajax({
+                type: "POST",
+                url: _url,
+                dataType: "json",
+                data: {"topic": topicId, "message": postId, "form_comment_content": content},
+                success: function(response)
+                {
+                    if(checkSuccess(response))
+                    {
+                        submitted = true;
+                        if(edit)
+                        {
+                            $('.edit-comment-'+commentId).parent().find('.comment-text').text(content);
+                        }
+                        else
+                        {
+                            var html = '<div class="comment">'+content+' - Le '+response.date+' par '+response.user+'</div>';
+                            $('#comments-'+controller+'-'+messageId).append(html);
+                            $('.comment-link-'+controller+'-'+messageId).show();
+                        }
+                        $('#comment-form-'+controller+'-'+messageId).hide();
+                        $('#comment-form-'+controller+'-'+messageId).find('textarea').val('');
+                        
+                    }
+                },
+                error: function(a, b, c)
+                {
+                    alert(b + " " +c);
+                }
+            });
+        }
     }
+    return submitted;
 }

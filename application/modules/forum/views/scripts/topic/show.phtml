@@ -156,6 +156,37 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                        <td>
+                            <div id="comments-topic-<?php echo $this->escape($this->topic['topicId']); ?>" class="comments">
+                                <?php
+                                    foreach($this->topicComments as $topicComment)
+                                    {
+                                        echo '<div class="comment"><span class="comment-text">'.$this->escape($topicComment->content).'</span> - Le '.$this->escape($topicComment->date).' par '.$this->escape($topicComment->login).$this->linkEditComment($this->escape($topicComment->userId), $this->escape($topicComment->commentId), 'topic') .'</div>';
+                                    }
+                                ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="comment-link">
+                                <a class="comment-link-topic-<?php echo $this->escape($this->topic['topicId']); ?>" href="<?php echo $this->url(array(
+                                                    'module' => 'forum',
+                                                    'controller'=>'topic',
+                                                    'action'=>'comment',
+                                                    'topic' => $this->escape($this->topic['topicId'])
+                                                ), 'default', true); ?>" title="Commenter le message">Ajouter un commentaire
+                                </a>
+                                <div id="comment-form-topic-<?php echo $this->escape($this->escape($this->topic['topicId'])); ?>" style="display:none;">
+                                    <?php 
+                                        $this->setFormId($this->commentForm, 'form_comment_topic_'.$this->escape($this->topic['topicId']));
+                                        echo $this->commentForm; 
+                                    ?>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
             </tbody>
         </table>
     </div>
@@ -175,6 +206,7 @@
                                 <div class="message-validation">
                                 <?php if($this->escape($mess->validation)) : $validate = true; ?>
                                     <a class="message-devalidation-link" href="<?php echo $this->url(array(
+                                                                        'module' => 'forum',
                                                                         'controller'=>'message',
                                                                         'action'=>'devalidate',
                                                                         'message' => $this->escape($mess->messageId)
@@ -182,11 +214,20 @@
                                 <?php endif; ?>
                                 <?php if(!$validate): ?>
                                         <a class="message-validation-link" href="<?php echo $this->url(array(
-                                                                            'controller'=>'message',
-                                                                            'action'=>'validate',
+                                                                            'module' => 'forum',
+                                                                            'controller' => 'message',
+                                                                            'action' => 'validate',
                                                                             'message' => $this->escape($mess->messageId)
                                                                         )); ?>">Valider</a>
                                 <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if($this->canEdit($this->escape($mess->messages_userId)) && $this->escape($this->topic['status']) != 'closed'): ?>
+                                <div id="edit-message"><a href="<?php echo $this->url(array(
+                                                                        'controller'=>'message',
+                                                                        'id' => $this->escape($mess->messageId)
+                                                                    ), 'edit', true); ?>">Editer</a>
                                 </div>
                             <?php endif; ?>
                         </td>
@@ -235,11 +276,11 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="comments-<?php echo $this->escape($mess->messageId); ?>" class="comments">
+                            <div id="comments-message-<?php echo $this->escape($mess->messageId); ?>" class="comments">
                                 <?php
                                     foreach($this->$i as $comment)
                                     {
-                                        echo '<div class="comment">'.nl2br($this->escape($comment->content)).' - Le '.$this->escape($comment->date).' par '.$this->escape($comment->login).'</div>';
+                                        echo '<div class="comment"><span class="comment-text">'.$this->escape($comment->content).'</span> - Le '.$this->escape($comment->date).' par '.$this->escape($comment->login).$this->linkEditComment($this->escape($comment->userId), $this->escape($comment->commentId), 'message').'</div>';
                                     }
                                 ?>
                             </div>
@@ -248,16 +289,17 @@
                     <tr>
                         <td>
                             <div class="comment-link">
-                                <a class="comment-link-<?php echo $this->escape($mess->messageId); ?>" href="<?php echo $this->url(array(
+                                <a class="comment-link-message-<?php echo $this->escape($mess->messageId); ?>" href="<?php echo $this->url(array(
+                                                    'module' => 'forum',
                                                     'controller'=>'message',
                                                     'action'=>'comment',
                                                     'message' => $mess->messageId,
                                                     'topic' => $this->topic['topicId']
-                                                )); ?>" title="Commenter le message">Ajouter un commentaire
+                                                ), 'default', true); ?>" title="Commenter le message">Ajouter un commentaire
                                 </a>
-                                <div id="comment-form-<?php echo $this->escape($mess->messageId); ?>" style="display:none;">
+                                <div id="comment-form-message-<?php echo $this->escape($mess->messageId); ?>" style="display:none;">
                                     <?php 
-                                        $this->setFormId($this->commentForm, 'form_comment_'.$mess->messageId);
+                                        $this->setFormId($this->commentForm, 'form_comment_message_'.$mess->messageId);
                                         echo $this->commentForm; 
                                     ?>
                                 </div>

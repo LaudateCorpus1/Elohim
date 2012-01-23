@@ -9,11 +9,9 @@
         <div class="user-topic-subject-date-block">
         <div class="topic-subject">
         <a href="<?php echo $this->url(array(
-                                'module' => 'forum',
-                                'controller'=>'topic',
-                                'action'=>'show',
-                                'topic'=>$this->escape($topic->topicId)
-                            ), null, true); ?>"><?php echo $this->escape($topic->title);?></a>
+                                'topic' => $this->escape($topic->topicId),
+                                'title' => $this->escape($topic->title),
+                            ), 'showTopic', true); ?>"><?php echo $this->escape($topic->title);?></a>
         </div>
         <div class="user-topic-date"><?php echo $this->escape($topic->date);?></div>
         </div>

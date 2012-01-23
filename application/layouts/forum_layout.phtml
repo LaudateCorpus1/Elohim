@@ -19,16 +19,16 @@ echo $this->doctype() . PHP_EOL;
         echo $this->headLink()
                 //http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css
                     ->prependStylesheet('/css/smoothness/jquery-ui-1.8.7.custom.css')
-                    ->appendStylesheet('/css/jquery.tagit.css')
-                    //->appendStylesheet('/css/tagit/tagit-gradient-blue.css')
+                    ->appendStylesheet('/css/tagit/jquery.tagit.css')
                     ->appendStylesheet('/css/bootstrap2.css')
                     ->appendStylesheet('/css/main.css')
                     ->appendStylesheet('/css/forum_orange.css')
                     ->appendStylesheet('/css/form.css');
         
+            $this->headScript()->prependFile($this->baseUrl().'/js/ckfinder/ckfinder.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/script.js');
-            $this->headScript()->prependFile($this->baseUrl().'/js/tag-it.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
             //$this->headScript()->prependFile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"); 
@@ -41,9 +41,10 @@ echo $this->doctype() . PHP_EOL;
                     <div class="logo">
                         <h1><a href="<?php
         echo $this->url(array(
+            'module' => 'default',
             'controller' => 'index',
             'action' => 'index'
-        ),null, true);
+        ), 'default', true);
         ?>"><span>Islamine</span></a></h1>
                     </div>
                 <div id="user-top">
@@ -56,7 +57,7 @@ echo $this->doctype() . PHP_EOL;
                             <li><a href="<?php echo $this->url(array(
                                             'controller' => 'article',
                                             'action' => 'index'
-                                        ), null, true) ?>">Articles</a></li>
+                                        ), 'default', true) ?>">Articles</a></li>
                             
                             <li><a href="<?php echo $this->url(array(
                                             'module' => 'forum',
@@ -124,24 +125,29 @@ echo $this->doctype() . PHP_EOL;
                 </div>
                 
                  <div id="sidebar-right">
-                <div class="module">
-                    <?php echo $this->layout()->module_sort; ?>
+                     <div class="forum-search">
+                         <?php
+                            echo new Forum_Form_Search();
+                         ?>
+                     </div>
+                    <div class="module">
+                        <?php echo $this->layout()->module_sort; ?>
+                    </div>
+
+                     <div class="module">
+                        <?php echo $this->layout()->module_favtags; ?>
+                    </div>
+
+                    <div class="module">
+                        <?php echo $this->layout()->module_description; ?>
+                    </div>
+
+                    <div class="modulep">
+                        <p class="partage">PartageIslam</p>
+                        <p>Vous avez des fichiers sur l'islam que vous voulez faire partager aux autre ?</p>
+                        <p>Envoyez-les nous, et nous les publierons sur le site !</p>
+                    </div>
                 </div>
-                     
-                 <div class="module">
-                    <?php echo $this->layout()->module_favtags; ?>
-                </div>
-                
-                <div class="module">
-                    <?php echo $this->layout()->module_description; ?>
-                </div>
-                
-                <div class="modulep">
-                    <p class="partage">PartageIslam</p>
-                    <p>Vous avez des fichiers sur l'islam que vous voulez faire partager aux autre ?</p>
-                    <p>Envoyez-les nous, et nous les publierons sur le site !</p>
-                </div>
-            </div>
             </div>
         </div>
     </body>
