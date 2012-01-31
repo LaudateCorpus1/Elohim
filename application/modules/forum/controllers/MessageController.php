@@ -249,7 +249,7 @@ class Forum_MessageController extends Zend_Controller_Action {
             $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
-                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => $commentDate));
+                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
             } else {
                 $this->_redirect('/forum/' . $topicId);
             }

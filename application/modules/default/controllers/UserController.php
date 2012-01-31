@@ -25,9 +25,9 @@ class UserController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $username = $this->_getParam('username');
+        $userId = $this->_getParam('id');
         $model_user = new Model_User();
-        $this->view->user = $model_user->getByLogin($username);
+        $this->view->user = $model_user->getById($userId);
         
         $edit = false;
         $auth = Zend_Auth::getInstance();

@@ -38,7 +38,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             return $row;
     }
     
-    public function getAll($closed_flag = true, $count = 50, $order = 'Topic.date DESC')
+    public function getAll($closed_flag = true, $count = 50, $order = 'Topic.date DESC', $where = null)
     {
         $orderby = $order;
         $query = $this->select();
@@ -62,6 +62,9 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         
         if(!$closed_flag)
             $query->where($this->_name.'.status != "closed"');
+        
+        if($where != null)
+            $query->where($where);
 
         $res = $this->fetchAll($query);
         return $res;
@@ -418,6 +421,29 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         $res = $this->fetchAll($query);
 
         return $res;
+    }
+    
+    public function search($term)
+    {
+        /*$filter = function($tag) use ($term)
+        {
+            $tags = explode(" ", $term);
+            $finalterm = end($tags);
+            if(stristr($tag, $finalterm))
+                    return true;
+            return false;
+        };
+        $t = array();
+        $taglist = $this->fetchAll();
+        foreach($taglist as $topic)
+        {
+            $t[] = $topic->title;
+        }
+        return array_filter($t,$filter);*/
+        
+        $where = $this->getAdapter()->quoteInto('title LIKE ?', '%'.$term.'%');
+        
+        return $this->getAll(true, 50, 'Topic.date DESC', $where);
     }
 }
 ?>

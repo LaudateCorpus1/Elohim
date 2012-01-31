@@ -23,7 +23,7 @@ class Forum_Form_Alert extends Zend_Form {
                         'Propos non appropriés' => 'Propos non appropriés',
                         'Autre' => 'Autre'
                     )),
-            $this->createElement('submit', 'Valider')
+            $this->createElement('submit', 'Valider')->setAttrib('class', 'btn primary')
         ));
     }
 

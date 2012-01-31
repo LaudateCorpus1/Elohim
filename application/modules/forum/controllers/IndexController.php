@@ -40,12 +40,12 @@ class Forum_IndexController extends Zend_Controller_Action {
                 $this->view->title .= ' sur \''.$this->_getParam('name').'\'';
             
             
-            $list = $this->view->topics = $r;
+            $list = $r;
         }
         else
         {
             //$closed_flag = $this->_helper->hasAccess('forum_topic', 'close');
-            $list = $this->view->topics = $topics->getAll();
+            $list = $topics->getAll();
         }
         
         foreach ($list as $topic) {
@@ -67,10 +67,22 @@ class Forum_IndexController extends Zend_Controller_Action {
         //        $this->view->favorite = $this->view->favoriteTag("remove");
         }
         
+        $page = Islamine_Paginator::factory($list);
+        $page->setPageRange(5);
+        $page->setCurrentPageNumber($this->_getParam('page',1));
+        $page->setItemCountPerPage(20);
+        $this->view->topics = $page;
+        
         $this->view->headScript()->appendScript("var auth = $autho;");
     }
     
-    
+    public function searchAction()
+    {
+        $model_topic = new Forum_Model_Topic();
+        $res = $model_topic->search($this->_getParam('search_content'));
+        //Zend_Debug::dump($res); exit;
+        $this->_forward('index', 'index', 'forum', array('topics' => $res));
+    }
 
 }
 

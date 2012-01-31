@@ -1,5 +1,14 @@
 $(function()
 {
+    // Input des tags
+    $('.ui-widget-content').attr('value', '5 mots max (ex: mariage)');
+    
+    $('ul.tagit input[type="text"]').css('color','#888');
+    $('ul.tagit input[type="text"]').focus(function() {
+        $(this).val('');
+        $(this).css('color','#333');
+    });
+    
     CKEDITOR.on( 'dialogDefinition', function( ev )
     {
             // Take the dialog name and its definition from the event
@@ -59,6 +68,7 @@ $(function()
 		toolbar : [['Bold','Italic','Underline', 'FontSize', '-', 'Image', '-', 'Undo','Redo','-','NumberedList', 'BulletedList','-','Link','Unlink', '-', 'About']],
                 //filebrowserBrowseUrl: '/simogeo-Filemanager-8b138bc/index.html',
                 language : 'fr',
+                entities : false,
                 scayt_autoStartup : true,
                 scayt_sLang : 'fr_FR',
                 scayt_contextCommands : 'off',

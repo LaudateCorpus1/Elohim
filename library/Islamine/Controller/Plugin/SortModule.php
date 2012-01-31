@@ -38,25 +38,39 @@ class Islamine_Controller_Plugin_SortModule extends Zend_Controller_Plugin_Abstr
         ->getParam('bootstrap')
         ->getResource('view');
         
+        $tagname = '';
+        $route = 'sortTopic';
+        if($this->getRequest()->getParam('name'))
+        {
+            $tagname = $this->getRequest()->getParam('name');
+            $route = 'sortTopicTag';
+        }
+        
         $default_list = sprintf($default_list, 
-                                $view->url(array('t' => 'votes'), 'sortTopic'),
-                                $view->url(array('t' => 'date'), 'sortTopic'),
-                                $view->url(array('t' => 'activity'), 'sortTopic')
+                                $view->url(array('t' => 'votes',
+                                                 'name' => $tagname), $route),
+                                $view->url(array('t' => 'date',
+                                                 'name' => $tagname), $route),
+                                $view->url(array('t' => 'activity',
+                                                 'name' => $tagname), $route)
                                 );
         $return = 'Trier les sujets par
                     <ul>%s</ul>';
         
         $list = $default_list.'
                         <li><img src="/images/icone_unanswered.png" width="12" height="12" alt="sort-unanswered" /> <a href="'.$view->url(array(
-                                                't' => 'unanswered'), 'sortTopic').'">Sans réponse</a></li>
+                                                't' => 'unanswered',
+                                                'name' => $tagname), $route).'">Sans réponse</a></li>
                                                    
                         <li><img src="/images/icone_answers.gif" width="12" height="12" alt="sort-responses" /> <a href="'.$view->url(array(
-                                                't' => 'responses'), 'sortTopic').'">Réponses</a></li>';
+                                                't' => 'responses',
+                                                'name' => $tagname), $route).'">Réponses</a></li>';
             
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
             $list .= '<li><img src="/images/icone_interesting.gif" width="12" height="12" alt="sort-interesting" /> <a href="'.$view->url(array(
-                                                't' => 'interesting'), 'sortTopic').'">Intéressant</a></li>';
+                                                't' => 'interesting',
+                                                'name' => $tagname), $route).'">Intéressant</a></li>';
             
         $return = sprintf($return, $list);
         return $return;

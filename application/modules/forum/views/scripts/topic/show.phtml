@@ -108,18 +108,15 @@
                         <div class="topic-menu">
                             <!-- Lien pour modifier les tags -->
                             <a href="<?php echo $this->url(array(
-                                                            'controller'=>'tag',
-                                                            'action'=>'retag',
-                                                            'topic'=> $this->escape($this->topic['topicId'])
-                                                        )); ?>
-                                   ">Modifier tags</a>
+                                                            'topic' => $this->escape($this->topic['topicId']),
+                                                            'title' => $this->escape($this->topic['title'])
+                                                         ), 'retagTopic', true); ?>
+                                   ">Modifier mots-clés</a>
                             -
                             <!-- Lien pour avertir un modérateur -->
                             <a href="<?php echo $this->url(array(
-                                                            'controller'=>'topic',
-                                                            'action'=>'alert',
                                                             'topic'=> $this->escape($this->topic['topicId'])
-                                                        )); ?>" target="_blank">Avertir un modérateur</a>
+                                                         ), 'alertTopic', true); ?>" target="_blank">Avertir un modérateur</a>
                             
                             <?php  if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
                             -
@@ -162,7 +159,15 @@
                                 <?php
                                     foreach($this->topicComments as $topicComment)
                                     {
-                                        echo '<div class="comment"><span class="comment-text">'.$this->escape($topicComment->content).'</span> - Le '.$this->escape($topicComment->date).' par '.$this->escape($topicComment->login).$this->linkEditComment($this->escape($topicComment->userId), $this->escape($topicComment->commentId), 'topic') .'</div>';
+                                        echo '<div class="comment">
+                                                   <span class="comment-text">'.$this->escape($topicComment->content).'</span> - 
+                                                       Le '.$this->escape($topicComment->date).' par
+                                                           <a href="'.$this->url(array(
+                                                                                'id' => $this->escape($topicComment->userId),
+                                                                                'username' => $this->escape($topicComment->login)
+                                                                             ), 'showUser', true).'">'.$this->escape($topicComment->login).'</a>'
+                                                           .$this->linkEditComment($this->escape($topicComment->userId), $this->escape($topicComment->commentId), 'topic') .'
+                                              </div>';
                                     }
                                 ?>
                             </div>
@@ -280,7 +285,17 @@
                                 <?php
                                     foreach($this->$i as $comment)
                                     {
-                                        echo '<div class="comment"><span class="comment-text">'.$this->escape($comment->content).'</span> - Le '.$this->escape($comment->date).' par '.$this->escape($comment->login).$this->linkEditComment($this->escape($comment->userId), $this->escape($comment->commentId), 'message').'</div>';
+                                        echo '<div class="comment">
+                                                   <span class="comment-text">'.$this->escape($comment->content).'</span> - 
+                                                       Le '.$this->escape($comment->date).' par
+                                                           <a href="'.$this->url(array(
+                                                                                'id' => $this->escape($comment->userId),
+                                                                                'username' => $this->escape($comment->login)
+                                                                             ), 'showUser', true).'">'.$this->escape($comment->login).'</a>'
+                                                           .$this->linkEditComment($this->escape($comment->userId), $this->escape($comment->commentId), 'message') .'
+                                              </div>';
+                                        
+                                        //echo '<div class="comment"><span class="comment-text">'.$this->escape($comment->content).'</span> - Le '.$this->escape($comment->date).' par '.$this->escape($comment->login).$this->linkEditComment($this->escape($comment->userId), $this->escape($comment->commentId), 'message').'</div>';
                                     }
                                 ?>
                             </div>
@@ -317,6 +332,7 @@
         </div>
     <?php $i++; endforeach; ?>
     </div>
+    <?php echo $this->paginationControl($this->messages, 'Sliding', '/partials/pagination.phtml'); ?>
 </div>
 
 <?php 
@@ -336,7 +352,6 @@ if($this->escape($this->topic['status']) != 'closed')
 
 <div id="block-quick-answer">
     <?php echo $this->messageForm; ?>
-    <a name="answer"></a>
 </div>
 
 <?php if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>

@@ -152,7 +152,7 @@ $(function()
     
     // Edition d'un commentaire
     $('a[class^=edit-comment]').removeAttr('href');
-    $('a[class^=edit-comment]').click(function()
+    $('a[class^=edit-comment]').live('click', function()
     {
         editComment = true;
         submitted = false;
@@ -167,6 +167,14 @@ $(function()
         divForm.find('div').first().append('<div class="remaining-char"></div>');
         $('.remaining-char').text(500 - divForm.find('textarea').first().val().length + ' caractères restants');
         divForm.show();
+        
+        if(!checkVisible(divForm))
+        {
+            $('html, body').animate(
+            {
+                scrollTop: divForm.offset().top
+            }, 1000);
+        }
         
     });
     
@@ -221,38 +229,6 @@ function checkSuccess(response)
         return false;
     }
     return true;
-    /*try
-    {
-        alert("teAAs");
-        var obj = null;
-        alert(typeof(response));
-        if(typeof(response) != 'object')
-        {
-            alert("tesQQs");
-            obj = jQuery.parseJSON(response);
-            if(obj.status == 'error')
-            {
-                alert("tess");
-                alert(obj.message);
-                return false;
-            }
-        }
-        else
-        {
-            alert("teALLOOAs");
-            if(response.error_message != null)
-            {
-                alert(response.error_message);
-                return false;
-            }
-        }
-        return true;
-    }
-    catch(e)
-    {
-        alert("tes");
-        return true;
-    }*/
 }
 
 
@@ -563,7 +539,7 @@ function saveComment(messageId, content, submitted, controller, edit, commentId)
                         }
                         else
                         {
-                            var html = '<div class="comment">'+content+' - Le '+response.date+' par '+response.user+'</div>';
+                            var html = '<div class="comment"><span class="comment-text">'+content+'</span> - Le '+response.date+' par <a href="/users/'+response.userId+'/'+response.user+'">'+response.user+'</a> - <a class="edit-comment-'+response.commentId+'">Editer</a></div>';
                             $('#comments-'+controller+'-'+messageId).append(html);
                             $('.comment-link-'+controller+'-'+messageId).show();
                         }
@@ -580,4 +556,14 @@ function saveComment(messageId, content, submitted, controller, edit, commentId)
         }
     }
     return submitted;
+}
+
+function checkVisible(elm) {
+    var vpH = $(window).height(), // Viewport Height
+        st = $(window).scrollTop(), // Scroll Top
+        y = $(elm).offset().top;
+
+    var invisible = (y > (vpH + st));
+    
+    return !invisible;
 }

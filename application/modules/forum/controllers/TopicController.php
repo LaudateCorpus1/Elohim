@@ -77,10 +77,10 @@ class Forum_TopicController extends Zend_Controller_Action {
             $r = $this->_getParam('messages');
             if($r != null)
             {
-                $list = $this->view->messages = $r;
+                $list = $r;
             }
             else
-                $list = $this->view->messages = $topic->getMessagesFromTopic($id);
+                $list = $topic->getMessagesFromTopic($id);
             
             $this->view->tags = $topic->getTagsFromTopic($id);
             
@@ -119,6 +119,12 @@ class Forum_TopicController extends Zend_Controller_Action {
              */
             $messageForm = new Forum_Form_UserPostMessage();
             $this->view->messageForm = $messageForm;
+            
+            $page = Islamine_Paginator::factory($list);
+            $page->setPageRange(5);
+            $page->setCurrentPageNumber($this->_getParam('page',1));
+            $page->setItemCountPerPage(20);
+            $this->view->messages = $page;
             
             
             $this->view->form = $form;
@@ -609,11 +615,12 @@ class Forum_TopicController extends Zend_Controller_Action {
     public function alertAction()
     {
         $id = $this->_getParam('topic');
-        if ($id > 0) 
+        $auth = Zend_Auth::getInstance();
+        if ($id > 0 && $auth->hasIdentity()) 
         {
             $i = 0;
             $topic_model = new Forum_Model_Topic();
-            $topic = $topic_model->find($id)->current();
+            $topic = $topic_model->getTopic($id);
             
             if($topic != null)
             {
@@ -630,10 +637,17 @@ class Forum_TopicController extends Zend_Controller_Action {
                     $motif = $form->getValue('motif');
                    
                     $mail = new Islamine_Mail('jeremie.paas@gmail.com', '!SSAARRLL22!');
-                    $mail->addTo('jeremie.paas@gmail.com', 'Test');    
-                    $mail->setFrom('jeremie.paas@gmail.com', 'Test');
-                    $mail->setSubject(' Envoyé  emails par connexion SMTP');
-                    $mail->setBodyText(' le Message .éé.............. Motif : '.$motif, 'utf-8');
+                    $mail->addTo('moderation.islamine@gmail.com', 'Modération Islamine');    
+                    $mail->setFrom('jeremie.paas@gmail.com', 'Sujet alerté par '.$auth->getIdentity()->login);
+                    $mail->setSubject('Alerte sur le sujet '.$topic->title);
+                    
+                    $body = 'Le sujet "'.$topic->title.'" posté par '.$topic->login.' contenant le message : 
+
+'.strip_tags(($topic->message)).'
+    
+a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
+                    
+                    $mail->setBodyText($body, 'utf-8');
                     $mail->send();
                     
                     $this->view->message = 'Votre demande a été prise en compte.';
@@ -825,7 +839,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
-                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => $commentDate));
+                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
             } else {
                 $this->_redirect('/forum/' . $topicId);
             }

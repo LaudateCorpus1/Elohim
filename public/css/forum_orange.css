@@ -540,7 +540,7 @@ ul#favlist li.favorited-style a.close2
 
 .table-message .comments, #table-topic .comments
 {
-    margin: 20px;
+    margin: 20px 20px 0 20px;
 }
 
 .table-message .comment-link, #table-topic .comment-link
@@ -652,11 +652,16 @@ form ul, form ol
     padding-top: 15px;
 }
 
-.add-topic-tips
+.tips
 {
     font-size: 14px;
     margin-bottom: 45px;
     width: 700px;
+}
+
+.tips ol
+{
+    margin-left: 40px;
 }
 
 /******************************************/
@@ -665,6 +670,18 @@ form ul, form ol
 
 #tags-table td
 {
-    
     padding: 0 40px 40px 0;
+}
+
+/******************************************/
+/****************** Tagit *****************/
+/******************************************/
+#tags
+{
+    width: 600px;
+}
+
+#tags input
+{
+    box-shadow: none;
 }

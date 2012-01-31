@@ -14,22 +14,10 @@ class Forum_Form_Search extends Zend_Form {
 
     private $text;
     private $submit;
-
-    private $elementDecorators = array(
-        'ViewHelper',
-        array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'element')),
-        'Label',
-        array(array('row' => 'HtmlTag'), array('tag' => 'li'))
-    );
-    
-    private $buttonDecorators = array(
-        'ViewHelper',
-        array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'button')),
-        array(array('row' => 'HtmlTag'), array('tag' => 'li')),
-    );
     
     public function init() {
         $this->setAttrib('id', 'form_search_forum')
+                ->setAction('/forum/search')
                 ->setMethod('GET')
                 ->setName('form_search_forum');
 
@@ -37,7 +25,7 @@ class Forum_Form_Search extends Zend_Form {
     }
 
     public function addElementsSearchForm() {
-        $this->text = new Zend_Form_Element_Text('form_search_content');
+        $this->text = new Zend_Form_Element_Text('search_content');
         $this->text->setRequired(true)
                    ->setLabel('Rechercher')
                    ->setAttrib('size', '18');
@@ -54,7 +42,7 @@ class Forum_Form_Search extends Zend_Form {
 
         $this->submit = new Zend_Form_Element_Submit('post_message');
         $this->submit->setLabel('Go');
-                     //->setAttrib('class', 'btn primary')
+                     //->setAttrib('class', 'btn');
                      //->setDecorators($this->buttonDecorators);
         
         $this->submit->setDecorators(array(

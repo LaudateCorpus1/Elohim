@@ -63,6 +63,7 @@ $(function()
 		toolbar : [['Bold','Italic','Underline', 'FontSize', '-', 'Image', '-', 'Undo','Redo','-','NumberedList', 'BulletedList','-', /*'SimpleLink',*/ 'Link','Unlink', '-', 'About']],
                 //filebrowserBrowseUrl: '/simogeo-Filemanager-8b138bc/index.html',
                 language : 'fr',
+                entities : false,
                 scayt_autoStartup : true,
                 scayt_sLang : 'fr_FR',
                 scayt_contextCommands : 'off',
@@ -99,7 +100,10 @@ $(function()
     $('#answer-topic > a').click(function()
     {
         $('#block-quick-answer').show();
-        $('a[name=answer]').offset().top;
+        $('html, body').animate(
+        {
+            scrollTop: $("#block-quick-answer").offset().top
+        }, 2000);
     });
     var submitted = false;
     // Lorsque l'utilisateur envoie le message
