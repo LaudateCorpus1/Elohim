@@ -105,7 +105,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             $resource = $controller ;
         else
             $resource = $module.'_'.$controller ;
-
+        
         // est-ce que la ressource existe ?
         if (!$this->_acl->has($resource)) 
         {
@@ -180,6 +180,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     {
         if(is_object($body))
             $body = $body->toArray();
+        $body['status'] = 'error';
         $json = Zend_Json::encode($body);
 
         // Prepare response

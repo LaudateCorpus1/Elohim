@@ -1,1 +1,6 @@
-<?php echo $this->form; ?>
+<?php 
+if(isset($this->message)) 
+    echo $this->message;
+else
+    echo $this->form; 
+?>

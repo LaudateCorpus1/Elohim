@@ -26,14 +26,17 @@ class Forum_ErrorController extends Zend_Controller_Action
             if($this->_request->isXmlHttpRequest())
                 echo Zend_Json::encode(array('status' => 'error', 'message' => $message));
             else
-                $this->view->message = $message;
+                $this->view->error = $message;
         }
-        else 
+        else if($this->_getParam('privilege') != null)
         {
+            $privilege = $this->_getParam('privilege');
             if ($this->_request->isXmlHttpRequest())
-                echo "0";
+            {
+                echo Zend_Json::encode(array('status' => 'error', 'message' => $privilege->message));
+            }
             else
-                $this->view->error = "Pas assez de karma";
+                $this->view->error = $privilege->message;
         }
         
     }

@@ -178,7 +178,7 @@ class Default_Form_UserEdit extends Zend_Form {
         $submit = new Zend_Form_Element_Submit('editbtn', array(
                     'decorators' => $this->buttonDecorators,
                     'label' => 'Valider',
-                    'class' => 'btn primary'
+                    'class' => 'btn btn-primary'
                 ));
 
 

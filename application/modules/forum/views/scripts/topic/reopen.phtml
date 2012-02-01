@@ -1,3 +1,9 @@
-Confirmer le vote pour réouvrir le sujet ?
+<?php if(isset($this->message)) : 
+    echo $this->message;
+else :
+?>
+    Confirmer le vote pour réouvrir le sujet ?
 
-<?php echo $this->form; ?>
+    <?php echo $this->form; ?>
+<?php
+endif;

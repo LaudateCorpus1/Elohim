@@ -26,14 +26,29 @@ class Model_Notification extends Zend_Db_Table_Abstract
                  ->from($this->_name)
                  ->join('Topic', 'Topic.topicId='.$this->_name.'.topicId', 'title')
                  ->where($this->getAdapter()->quoteInto('toUserId = ?', $userId))
-                 ->where('beenRead = 0');
+                 ->where('beenRead = 0')
+                 ->where('type IS NULL');
          //Zend_Debug::dump($query->__toString()); exit;
+        return $this->fetchAll($query);
+    }
+    
+    public function getPrivilegeNotifications($userId)
+    {
+        $query = $this->select()
+                 ->setIntegrityCheck(false)
+                 ->from($this->_name)
+                 ->where($this->getAdapter()->quoteInto('toUserId = ?', $userId))
+                 ->where('beenRead = 0')
+                 ->where('type = "GAINED-PRIVILEGE"')
+                 ->orWhere('type = "LOST-PRIVILEGE"');
+        
         return $this->fetchAll($query);
     }
     
     public function addNotification(array $data)
     {
         $data['beenRead'] = false;
+        $data['date'] = date('Y-m-d H:i:s', time());
         return $this->insert($data);
     }
     

@@ -45,7 +45,7 @@ class Forum_Form_UserPostMessage extends Zend_Form {
 
         $this->submit = new Zend_Form_Element_Submit('post_message');
         $this->submit->setLabel('Envoyer')
-                     ->setAttrib('class', 'btn primary')
+                     ->setAttrib('class', 'btn btn-primary')
                      ->setDecorators($this->buttonDecorators);
         
         $this->addElements(array($this->text, $this->submit));

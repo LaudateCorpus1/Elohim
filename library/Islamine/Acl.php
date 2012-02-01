@@ -120,7 +120,9 @@ class Islamine_Acl extends Zend_Acl
             foreach($this->_karma_privileges as $privilege)
             {
                 if(intval($user->karma) >= $privilege->karma_needed)
+                {
                     $this->allow($role, $privilege->module.'_'.$privilege->resource, $privilege->privilege);
+                }
             }
         }
     }

@@ -37,7 +37,7 @@ class Forum_Form_UserRetagTopic extends Zend_Form {
         $this->addElements(array(
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
-            $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn primary')
+            $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn btn-primary')
         ));
     }
     

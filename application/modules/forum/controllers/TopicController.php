@@ -667,15 +667,23 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             {
                 $data = $this->getRequest()->getPost();
                 $motif_model = new Forum_Model_CloseMotif();
-                $motif_model->addMotif($data['topic_id'], $data['close_motif'], $identity->id);
-                $count = $motif_model->countMotif($data['topic_id']);
-                if($count == 7)
+                if($motif_model->hasAlreadyVoted($identity->id, $data['topic_id']))
                 {
-                    $model_topic->updateTopic(array('status' => 'closed'), $data['topic_id']);
-                    $reopen_model = new Forum_Model_ReopenTopic();
-                    $reopen_model->deleteByTopic($data['topic_id']);
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
                 }
-                echo $count;
+                else
+                {
+                    $motif_model->addMotif($data['topic_id'], $data['close_motif'], $identity->id);
+                    $count = $motif_model->countMotif($data['topic_id']);
+                    if($count == 7)
+                    {
+                        $model_topic->updateTopic(array('status' => 'closed'), $data['topic_id']);
+                        $reopen_model = new Forum_Model_ReopenTopic();
+                        $reopen_model->deleteByTopic($data['topic_id']);
+                    }
+                    echo Zend_Json::encode(array('status' => 'ok', 'count' => $count ));
+                }
+                
             }
             else
             {
@@ -685,24 +693,29 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                 $form->populate(array('topic_id' => $topic_id, 'username' => $identity->login));
                 $this->view->form = $form;
 
-                if ($this->getRequest()->isPost()) 
+                $motif_model = new Forum_Model_CloseMotif();
+                if($motif_model->hasAlreadyVoted($identity->id, $topic_id))
+                        $this->view->message = 'Vous avez déjà voté';
+                else
                 {
-                    $formData = $this->getRequest()->getPost();
-                    if($form->isValid($formData)) 
+                    if ($this->getRequest()->isPost()) 
                     {
-                        $data = $this->getRequest()->getPost();
-                        $motif_model = new Forum_Model_CloseMotif();
-
-                        $topic_id = $form->getValue('topic_id');
-                        $motif_model->addMotif($topic_id, $form->getValue('close_motif'), $identity->id);
-                        $count = $motif_model->countMotif($data['topic_id']);
-                        if($count == 7)
+                        $formData = $this->getRequest()->getPost();
+                        if($form->isValid($formData)) 
                         {
-                            $model_topic->updateTopic(array('status' => 'closed'), $data['topic_id']);
-                            $reopen_model = new Forum_Model_ReopenTopic();
-                            $reopen_model->deleteByTopic($topic_id);
+                            $data = $this->getRequest()->getPost();
+
+                            $topic_id = $form->getValue('topic_id');
+                            $motif_model->addMotif($topic_id, $form->getValue('close_motif'), $identity->id);
+                            $count = $motif_model->countMotif($data['topic_id']);
+                            if($count == 7)
+                            {
+                                $model_topic->updateTopic(array('status' => 'closed'), $data['topic_id']);
+                                $reopen_model = new Forum_Model_ReopenTopic();
+                                $reopen_model->deleteByTopic($topic_id);
+                            }
+                            $this->_redirect('/forum/topic/show/topic/' . $topic_id);
                         }
-                        $this->_redirect('/forum/topic/show/topic/' . $topic_id);
                     }
                 }
             }
@@ -730,38 +743,51 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             {
                 $data = $this->getRequest()->getPost();
                 $reopen_model = new Forum_Model_ReopenTopic();
-                $reopen_model->addRow($data['topic_id'], $identity->id);
-                $count = $reopen_model->count($data['topic_id']);
-                if($count == 7)
+                if($reopen_model->hasAlreadyVoted($identity->id, $data['topic_id']))
                 {
-                    $model_topic->updateTopic(array('status' => ''), $data['topic_id']);
-                    $close_model = new Forum_Model_CloseMotif();
-                    $close_model->deleteByTopic($data['topic_id']);
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
                 }
-                echo $count;
+                else
+                {
+                    $reopen_model->addRow($data['topic_id'], $identity->id);
+                    $count = $reopen_model->count($data['topic_id']);
+                    if($count == 7)
+                    {
+                        $model_topic->updateTopic(array('status' => ''), $data['topic_id']);
+                        $close_model = new Forum_Model_CloseMotif();
+                        $close_model->deleteByTopic($data['topic_id']);
+                    }
+                    echo Zend_Json::encode(array('status' => 'ok', 'count' => $count ));
+                }
             }
             else
             {
                 $form = new Forum_Form_ReopenTopic();
                 $topic_id = $this->_getParam('topic');
-                $this->view->form = $form;
-
-                if ($this->getRequest()->isPost()) 
+                $reopen_model = new Forum_Model_ReopenTopic();
+                if($reopen_model->hasAlreadyVoted($identity->id, $topic_id))
+                        $this->view->message = 'Vous avez déjà voté';
+                else
                 {
-                    $formData = $this->getRequest()->getPost();
-                    if($form->isValid($formData)) 
+                    $this->view->form = $form;
+
+                    if ($this->getRequest()->isPost()) 
                     {
-                        $data = $this->getRequest()->getPost();
-                        $reopen_model = new Forum_Model_ReopenTopic();
-                        $reopen_model->addRow($topic_id, $identity->id);
-                        $count = $reopen_model->count($topic_id);
-                        if($count == 7)
+                        $formData = $this->getRequest()->getPost();
+                        if($form->isValid($formData)) 
                         {
-                            $model_topic->updateTopic(array('status' => ''), $topic_id);
-                            $close_model = new Forum_Model_CloseMotif();
-                            $close_model->deleteByTopic($topic_id);
+                            $data = $this->getRequest()->getPost();
+                            
+                            $reopen_model->addRow($topic_id, $identity->id);
+                            $count = $reopen_model->count($topic_id);
+                            if($count == 7)
+                            {
+                                $model_topic->updateTopic(array('status' => ''), $topic_id);
+                                $close_model = new Forum_Model_CloseMotif();
+                                $close_model->deleteByTopic($topic_id);
+                            }
+                            $this->_redirect('/forum/topic/show/topic/' . $topic_id);
                         }
-                        $this->_redirect('/forum/topic/show/topic/' . $topic_id);
                     }
                 }
             }

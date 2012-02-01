@@ -117,7 +117,7 @@ class Default_Form_UserRegister extends Zend_Form {
         $submit = new Zend_Form_Element_Submit('registerbtn', array(
                     'decorators' => $this->buttonDecorators,
                     'label' => 'S\'inscrire',
-                    'class' => 'btn primary'
+                    'class' => 'btn btn-primary'
                 ));
 
 

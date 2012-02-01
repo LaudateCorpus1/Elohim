@@ -20,7 +20,7 @@ echo $this->doctype() . PHP_EOL;
                 //http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css
                     ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
                     ->appendStylesheet('/css/tagit/jquery.tagit.css')
-                    ->appendStylesheet('/css/bootstrap2.css')
+                    ->appendStylesheet('/css/bootstrap.css')
                     ->appendStylesheet('/css/main.css')
                     ->appendStylesheet('/css/forum_orange.css')
                     ->appendStylesheet('/css/form.css');
@@ -36,6 +36,16 @@ echo $this->doctype() . PHP_EOL;
         ?>
     </head>
     <body>
+        <noscript>
+            <div id="noscript-padding">
+            </div>
+        </noscript>
+        
+        <div>
+            <div id="bg-header-top"></div>
+            <div id="bg-header-bottom"></div>
+        </div>
+        
         <div class="main">
             <div class="header">
                     <div class="logo">
@@ -150,5 +160,15 @@ echo $this->doctype() . PHP_EOL;
                 </div>
             </div>
         </div>
+        
+        <?php echo $this->layout()->privilegeNotifications; ?>
+
+        
+        <noscript>
+            <div id="notify-message-script">
+                <span>Islamine fonctionne mieux avec JavaScript activé</span>
+            </div>
+        </noscript>
+        
     </body>
 </html>

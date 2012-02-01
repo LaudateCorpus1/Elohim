@@ -91,7 +91,7 @@ class Default_Form_UserLogin extends Zend_Form
         $submit = new Zend_Form_Element_Submit('login-btn', array(
             'decorators' => $this->buttonDecorators,
             'label' => 'Connexion',
-            'class' => 'btn primary'
+            'class' => 'btn btn-primary'
         ));
   
         $this->addElements(array(

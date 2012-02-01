@@ -9,7 +9,7 @@ body {
 html {
 	padding:0;
 	margin:0;
-	background: #fefefe /*#E6EBEA /*#E3EDE1 /*#A4D49F /*#9acc9a*/ url(../images/bg_islam5.png) top repeat-x;
+	background: #fefefe /*#E6EBEA /*#E3EDE1 /*#A4D49F /*#9acc9a*/ /*url(../images/bg_islam5.png) top repeat-x;*/
 }
 
 .main
@@ -98,14 +98,97 @@ a.rm, a.com {
 }
 .header {
     margin:0 auto;
-	padding:3px 0 0 0;
-	width:970px;
+    padding:3px 0 0 0;
+    width: 970px;
+}
+
+#bg-header-top
+{
+    background-color: #201414;
+    height: 76px;
+}
+
+#bg-header-bottom
+{
+    background-color: #6599ff;
+    height: 38px;
+    margin-bottom: -114px; /* 76 + 38 px */
 }
 
 form ul li
 {
     margin-bottom: 5px;
 }
+
+input, textarea, select
+{
+    width: inherit;
+}
+
+/******************************************/
+/*************** Notify bar ***************/
+/******************************************/
+#notify-message-script
+{
+    font-family:Arial,Helvetica,sans-serif;
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:100%;
+    z-index:105;
+    text-align:center;
+    font-weight:bold;
+    font-size:140%;
+    color:white;
+    padding:5px 0px 5px 0px;
+    background-color:#8E1609;
+}
+
+#notify-message
+{
+    font-family:Arial,Helvetica,sans-serif;
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:100%;
+    z-index:105;
+    text-align:center;
+    font-weight:bold;
+    font-size:140%;
+    color:white;
+    padding:5px 0px 5px 0px;
+    background-color: #F7A922;
+}
+
+#notify-message span, #notify-message-script span 
+{
+    text-align: center;
+    width: 95%;
+    float:left;
+}
+
+.close-notify 
+{
+    white-space: nowrap;
+    float:right;
+    margin-right:10px;
+    color:#fff;
+    text-decoration:none;
+    border:2px #fff solid;
+    padding-left:3px;
+    padding-right:3px
+}
+
+.close-notify a 
+{
+    color: #fff;
+}
+
+#noscript-padding
+{
+    padding-top: 33px;
+}
+
 
 
 /******************************************/
@@ -117,6 +200,11 @@ form ul li
     float: right;
     margin: 0 auto;
     width: 600px;
+}
+
+#user-top input
+{
+    margin-bottom: 4px;
 }
 
 #user-top #username, #user-top #password

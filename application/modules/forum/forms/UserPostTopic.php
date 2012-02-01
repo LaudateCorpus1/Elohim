@@ -44,7 +44,7 @@ class Forum_Form_UserPostTopic extends Zend_Form {
 //            $autoComplete,
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
-            $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn primary')
+            $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn btn-primary')
         ));
     }
     

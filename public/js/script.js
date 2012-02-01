@@ -3,6 +3,12 @@ var mouse_is_inside = false;
 
 $(function()
 {
+    $("#notify-message").fadeIn("slow");
+    $("#notify-message a.close-notify").click(function() {
+        $("#notify-message").fadeOut("slow");
+        return false;
+    });
+
     var urlSplit = url.split('/');
     
     // Code pour voter sur un topic/message
@@ -193,7 +199,8 @@ $(function()
     dialogCloseTopic();
     dialogCloseMotif();    
     dialogReopenTopic();
-    dialogValidateAnswer();
+    // La dévalidation en ajax n'est pas utilisée'
+    dialogValidateAnswer(true);
     
     
     /*
@@ -315,19 +322,20 @@ $('#dialog-form').dialog({
                                         $.ajax({
                                             type: "POST",
                                             url: "/forum/topic/close",
+                                            dataType: "json",
                                             data: data,
                                             success: function(response)
                                             {
                                                 if(checkSuccess(response))
                                                 {
-                                                    if(response == '1')
+                                                    if(response.count == '1')
                                                         $('.close-motif').show();//$('#topic-menu').append('<a href="#" >('+response+')</a>');
 
-                                                        $('.close-motif').text('('+response+')');
+                                                    $('.close-motif').text('('+response.count+')');
 
                                                     $('#dialog-motif > ol').append("<li>" + $('input[name=close_motif]').val() + " par <strong>" + $('input[name=username]').val() + "</strong></li>");
 
-                                                    if(response == '7')
+                                                    if(response.count == '7')
                                                     {
                                                         $('#answer-topic').hide();
                                                         $('#topic-header > h1').prepend('<span class="topic-status">[fermé]</span>');
@@ -384,7 +392,7 @@ function dialogReopenTopic()
     $( "#dialog-reopen-form" ).dialog({
                 autoOpen: false,
                 resizable: false,
-                height:180,
+                height:200,
                 width: 350,
                 modal: true,
                 buttons: {
@@ -393,12 +401,13 @@ function dialogReopenTopic()
                             $.ajax({
                                 type: "POST",
                                 url: "/forum/topic/reopen",
+                                dataType: "json",
                                 data: {"topic_id": topic_id},
                                 success: function(response)
                                 {
                                     if(checkSuccess(response))
                                     {
-                                        var count = parseInt(response);
+                                        var count = parseInt(response.count);
                                         var diff = 6;
                                         if(count != 7)
                                             diff = 6 - count;
@@ -407,8 +416,8 @@ function dialogReopenTopic()
 
                                         if(count == 1)
                                             $('.nb-reopen-votes').show();//$('#topic-menu').append('<span class="nb-reopen-votes">('+response+')</span>');
-
-                                            $('.nb-reopen-votes').text('('+response+')');
+                                            $('.nb-reopen-votes').attr('title', response.count+' personnes ont déjà voté');
+                                            $('.nb-reopen-votes').text('('+response.count+')');
 
                                         if(count == 7)
                                         {
@@ -442,13 +451,16 @@ function dialogReopenTopic()
     });
 }
 
-function dialogValidateAnswer()
+function dialogValidateAnswer(validation)
 {
-    var topicId = url.substring(url.lastIndexOf('/') + 1);
-    $( "#dialog-validate-message" ).dialog({
+    var ac = 'validate';
+    if(!validation)
+        ac = 'devalidate'
+    var topicId = $('.vote-t').find('input').first().val();
+    $( "#dialog-"+ac+"-message" ).dialog({
                 autoOpen: false,
                 resizable: false,
-                height:180,
+                height:200,
                 width: 350,
                 modal: true,
                 buttons: {
@@ -456,7 +468,7 @@ function dialogValidateAnswer()
                             var messageId = $(this).data('messageId');
                             $.ajax({
                                 type: "POST",
-                                url: "/forum/message/validate",
+                                url: "/forum/message/"+ac,
                                 dataType: "json",
                                 data: {"message": messageId, "topic": topicId},
                                 success: function(response)
@@ -464,12 +476,16 @@ function dialogValidateAnswer()
                                     if(checkSuccess(response))
                                     {
                                         $('.message-validation').hide();
-                                        $('#message-'+messageId).find('.message-validation').html('<a href="/forum/message/devalidate/topic/'+topicId+'/message/'+messageId+'">Annuler validation</a>');
+                                        $('#message-'+messageId).find('.message-validation').html('<a href="/forum/message/devalidate/topic/'+topicId+'/message/'+messageId+'" class="message-devalidate-link label">Annuler validation</a>');
                                         $('#message-'+messageId).find('.message-validation').show();
-                                        //$('#messages').prepend($('#message-'+messageId)).hide().slideDown('slow');
                                         $('#message-'+messageId).hide().prependTo("#messages").fadeIn(1000);
                                         $('#message-'+messageId).css('background-color', '#9F9');
-                                        $(window).scrollTop($('#message-'+messageId).position().top)
+                                        
+                                        $('html, body').animate(
+                                        {
+                                            scrollTop: $('#message-'+messageId).offset().top
+                                        }, 500);
+                                        //$(window).scrollTop($('#message-'+messageId).position().top)
                                     }
                                 },
                                 error: function(a, b, c)
@@ -485,14 +501,15 @@ function dialogValidateAnswer()
                 }
         });
                 
-    $('.message-validation-link').removeAttr('href');
+    $('.message-'+ac+'-link').removeAttr('href');
     
-    $('.message-validation-link').click(function(e) {
+    $('.message-'+ac+'-link').click(function(e) {
         //Cancel the link behavior
         e.preventDefault();
         var _id = $(this).parents('div:eq(1)').attr('id');
         var messageId = _id.substring(_id.lastIndexOf('-') + 1);
-        $('#dialog-validate-message').data('messageId', messageId).dialog('open');
+        // On passe la variable messageId au modal dialog
+        $('#dialog-'+ac+'-message').data('messageId', messageId).dialog('open');
     });
 }
 

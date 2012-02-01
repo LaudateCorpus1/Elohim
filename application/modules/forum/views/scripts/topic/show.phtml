@@ -41,7 +41,7 @@
                         <div id="edit-topic"><a href="<?php echo $this->url(array(
                                                                 'controller'=>'topic',
                                                                 'id' => $this->escape($this->topic['topicId'])
-                                                            ), 'edit', true); ?>">Editer</a>
+                                                            ), 'edit', true); ?>" class="label">Editer</a>
                         </div>
                         <?php endif; ?>
                     </td>
@@ -106,43 +106,52 @@
                             <?php endforeach; ?>
                         </div>
                         <div class="topic-menu">
+                            <?php if($this->hasAccess($this->module.'_'.$this->controller, 'alert')): ?>
+                            <!-- Lien pour avertir un modérateur -->
+                            <a href="<?php echo $this->url(array(
+                                                            'topic'=> $this->escape($this->topic['topicId'])
+                                                         ), 'alertTopic', true); ?>" target="_blank">Avertir un modérateur</a>
+                            
+                            <?php endif; ?>
+                            
+                            <?php if($this->hasAccess($this->module.'_tag', 'retag')): ?>
+                            -
                             <!-- Lien pour modifier les tags -->
                             <a href="<?php echo $this->url(array(
                                                             'topic' => $this->escape($this->topic['topicId']),
                                                             'title' => $this->escape($this->topic['title'])
                                                          ), 'retagTopic', true); ?>
                                    ">Modifier mots-clés</a>
-                            -
-                            <!-- Lien pour avertir un modérateur -->
-                            <a href="<?php echo $this->url(array(
-                                                            'topic'=> $this->escape($this->topic['topicId'])
-                                                         ), 'alertTopic', true); ?>" target="_blank">Avertir un modérateur</a>
+                            <?php endif; ?>
                             
-                            <?php  if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
+                            <?php if($this->hasAccess($this->module.'_'.$this->controller, 'close')): ?>
                             -
                             <!-- Lien pour voter pour réouvrir / fermer le sujet -->
                             <a href="<?php echo $this->url(array(
+                                                            'module' => 'forum',
                                                             'controller'=>'topic',
                                                             'action'=>'reopen',
                                                             'topic'=> $this->escape($this->topic['topicId'])
-                                                        )); ?>" class="reopen-modal-confirm" <?php echo $style_reopen_modal_confirm; ?>>Réouvrir</a>
+                                                        ), 'default', true); ?>" class="reopen-modal-confirm" <?php echo $style_reopen_modal_confirm; ?> title="Voter pour réouvrir le sujet">Réouvrir</a>
                                                         
                             <a href="<?php echo $this->url(array(
+                                                            'module' => 'forum',
                                                             'controller'=>'topic',
                                                             'action'=>'close',
                                                             'topic'=> $this->escape($this->topic['topicId'])
-                                                        )); ?>" class="close-modal-form" <?php echo $style_close_modal_form; ?>>Fermer</a>
+                                                        ), 'default', true); ?>" class="close-modal-form" <?php echo $style_close_modal_form; ?> title="Voter pour fermer le sujet">Fermer</a>
                             <?php endif; ?>
                                                    
                             <?php  if($this->hasAccess($this->module.'_'.$this->controller, 'motifs')): ?>
                             <!-- Lien pour afficher le motifs des votants -->
-                            <span class="nb-reopen-votes" <?php echo $style_nb_reopen_votes; ?>>(<?php echo $this->escape($this->nb_reopen_votes); ?>)</span>
+                            <span class="nb-reopen-votes" <?php echo $style_nb_reopen_votes; ?> title="<?php echo $this->escape($this->nb_reopen_votes); ?> personnes ont déjà voté">(<?php echo $this->escape($this->nb_reopen_votes); ?>)</span>
         
                             <a href="<?php echo $this->url(array(
+                                                            'module' => 'forum',
                                                             'controller'=>'topic',
                                                             'action'=>'motifs',
                                                             'topic'=> $this->escape($this->topic['topicId'])
-                                                        )); ?>" class="close-motif" <?php echo $style_close_motif; ?>>(<?php echo $this->escape($this->nb_close_votes); ?>)</a>
+                                                        ), 'default', true); ?>" class="close-motif" <?php echo $style_close_motif; ?> title="Voir le motif des autres votants">(<?php echo $this->escape($this->nb_close_votes); ?>)</a>
                            <?php endif; ?>
                         </div>
                         <div class="topic-info">
@@ -210,20 +219,22 @@
                             <?php if($this->escape($this->author) && ($this->escape($mess->messages_userId) != $this->escape($this->topic['userId']))): ?>
                                 <div class="message-validation">
                                 <?php if($this->escape($mess->validation)) : $validate = true; ?>
-                                    <a class="message-devalidation-link" href="<?php echo $this->url(array(
+                                    <a class="message-devalidate-link label" href="<?php echo $this->url(array(
                                                                         'module' => 'forum',
                                                                         'controller'=>'message',
                                                                         'action'=>'devalidate',
-                                                                        'message' => $this->escape($mess->messageId)
-                                                                    )); ?>">Annuler validation</a>
+                                                                        'message' => $this->escape($mess->messageId),
+                                                                        'topic' => $this->escape($this->topic['topicId'])
+                                                                    ), 'default', true); ?>">Annuler validation</a>
                                 <?php endif; ?>
                                 <?php if(!$validate): ?>
-                                        <a class="message-validation-link" href="<?php echo $this->url(array(
+                                        <a class="message-validate-link label label-success" href="<?php echo $this->url(array(
                                                                             'module' => 'forum',
                                                                             'controller' => 'message',
                                                                             'action' => 'validate',
-                                                                            'message' => $this->escape($mess->messageId)
-                                                                        )); ?>">Valider</a>
+                                                                            'message' => $this->escape($mess->messageId),
+                                                                           'topic' => $this->escape($this->topic['topicId'])
+                                                                        ), 'default', true); ?>" title="Cette réponse est la plus utile">Valider</a>
                                 <?php endif; ?>
                                 </div>
                             <?php endif; ?>
@@ -232,7 +243,7 @@
                                 <div id="edit-message"><a href="<?php echo $this->url(array(
                                                                         'controller'=>'message',
                                                                         'id' => $this->escape($mess->messageId)
-                                                                    ), 'edit', true); ?>">Editer</a>
+                                                                    ), 'edit', true); ?>" class="label">Editer</a>
                                 </div>
                             <?php endif; ?>
                         </td>

@@ -73,7 +73,7 @@ class Default_Form_UserLoginTop extends Zend_Form {
 
         $submit = new Zend_Form_Element_Submit('login-btn', array(
                     'label' => 'Connexion',
-                    'class' => 'btn primary'
+                    'class' => 'btn btn-primary'
                 ));
 
         $submit->setDecorators(array(

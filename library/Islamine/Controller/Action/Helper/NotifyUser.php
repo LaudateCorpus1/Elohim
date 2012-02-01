@@ -7,7 +7,7 @@
 
 class Islamine_Controller_Action_Helper_NotifyUser extends Zend_Controller_Action_Helper_Abstract
 {
-    public function direct($message, $toUserId, $topicId = null, $messageId = null)
+    public function direct($message, $toUserId, $topicId = null, $messageId = null, $type = null)
     {
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
@@ -17,7 +17,11 @@ class Islamine_Controller_Action_Helper_NotifyUser extends Zend_Controller_Actio
                 $data['topicId'] = $topicId;
             if($messageId != null)
                 $data['messageId'] = $messageId;
-            $identity = $auth->getIdentity();
+            if($type != null)
+                $data['type'] = $type;
+            
+            $data['fromUserId'] = $auth->getIdentity()->id;
+            
             $model_notification = new Model_Notification();
             $model_notification->addNotification($data);
         }

@@ -45,5 +45,18 @@ class Forum_Model_ReopenTopic extends Zend_Db_Table_Abstract
         $where = $this->getAdapter()->quoteInto('topic_id = ?', $topic_id);
         $this->delete($where);
     }
+    
+    public function hasAlreadyVoted($user_id, $topic_id)
+    {
+        $select = $this->select()
+                       ->from($this->_name)
+                       ->where($this->getAdapter()->quoteInto('topic_id = ?',$topic_id))
+                       ->where($this->getAdapter()->quoteInto('user_id = ?',$user_id));
+        $row = $this->fetchRow($select);
+        if(!$row)
+            return false;
+        else
+            return true;
+    }
 }
 ?>

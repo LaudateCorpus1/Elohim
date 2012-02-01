@@ -33,7 +33,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             $row = $this->fetchRow($query);
             if (!$row)
             {
-                    throw new Exception("Could not find row $id");
+                    throw new Exception("Could not find topic $id");
             }
             return $row;
     }
@@ -70,16 +70,16 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         return $res;
     }
     
-    public function getAuthor($id)
+    public function getAuthor($topicId)
     {
         $query = $this->select()
                 ->from($this->_name, 'userId')
-                ->where($this->getAdapter()->quoteInto('topicId = ?',$id));
+                ->where($this->getAdapter()->quoteInto('topicId = ?', $topicId));
         $row = $this->fetchRow($query);
         
         if (!$row)
         {
-            throw new Exception("Could not find row $id");
+            throw new Exception("Could not find topic $id");
         }
         return $row;
     }
