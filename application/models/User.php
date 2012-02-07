@@ -186,7 +186,7 @@ class Model_User extends Zend_Db_Table_Abstract
     public function setKarma($karma, $user_id)
     {
         $model_privileges = new Model_Privileges();
-        $karma_privileges = $model_privileges->getAll();
+        $karma_privileges = $model_privileges->getDistinct();
         
         // Il faut vérifier si l'utilisateur gagne ou perd un privilège
         $currentKarma = $this->get($user_id)->karma;
@@ -197,6 +197,12 @@ class Model_User extends Zend_Db_Table_Abstract
             {
                 Zend_Controller_Action_HelperBroker::getStaticHelper('NotifyUser')
                         ->direct($privilege->gained_message, $user_id, null, null, 'GAINED-PRIVILEGE');
+            }
+            // Il perd un privilège
+            else if((intval($currentKarma) > $privilege->karma_needed)  && ((intval($currentKarma) + intval($karma)) < $privilege->karma_needed))
+            {
+                Zend_Controller_Action_HelperBroker::getStaticHelper('NotifyUser')
+                        ->direct($privilege->lost_message, $user_id, null, null, 'LOST-PRIVILEGE');
             }
         }
         

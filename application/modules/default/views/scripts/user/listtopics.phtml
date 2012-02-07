@@ -1,4 +1,6 @@
-<?php $this->headTitle('Sujets postés par '.$this->escape($this->user->login)); ?>
+<?php $this->headTitle('Sujets postés par '.$this->escape($this->user->login)); 
+$purifyHelper = $this->getHelper('Purify');
+?>
 
 <h2><?php echo $this->escape($this->user->login); ?></h2>
 
@@ -10,7 +12,7 @@
         <div class="topic-subject">
         <a href="<?php echo $this->url(array(
                                 'topic' => $this->escape($topic->topicId),
-                                'title' => $this->escape($topic->title),
+                                'title' => $purifyHelper->purifyTitle($this->escape($topic->title)),
                             ), 'showTopic', true); ?>"><?php echo $this->escape($topic->title);?></a>
         </div>
         <div class="user-topic-date"><?php echo $this->escape($topic->date);?></div>

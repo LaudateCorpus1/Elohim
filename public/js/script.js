@@ -3,9 +3,31 @@ var mouse_is_inside = false;
 
 $(function()
 {
+    /*
+     * Barre de notifications lors d'un(e) gain/perte de privilège
+     */
+    $('.lost-notify-message').css('background-color', '#8E1609')
+    $("#notification-padding").show();
     $("#notify-message").fadeIn("slow");
     $("#notify-message a.close-notify").click(function() {
-        $("#notify-message").fadeOut("slow");
+        var id = $(this).attr('id');
+        var notificationId = id.substring(id.lastIndexOf('-') + 1);
+        var parent = $(this).parent();
+        var prev = $(this).prev('span');
+        $.post('/index/updatenotifbar', { 'notificationId': notificationId }, function(response)
+        {
+            if(checkSuccess(response))
+            {
+                parent.fadeOut("slow");
+                var isLast = prev.attr('class');
+                if(isLast == 'lastnotif')
+                    $('#notification-padding').hide();
+                else
+                    parent.next('div').fadeIn("slow");
+            }
+
+        }, "json");
+        
         return false;
     });
 
@@ -32,7 +54,7 @@ $(function()
         var tagId = attr.split("-");
         var action = $(this).find('img').first().attr('class');
         var url = "/forum/tag/"+action+"favorited/"+tagId[1];
-
+        
         if(typeof auth != "undefined" && auth)
         {
             $.post(url, {}, function(response)
@@ -270,7 +292,7 @@ function rate(action, object)
                     {
                         if(response.revote)
                         {
-                            object = $('a[class=disabled]');
+                            object = object.parent().find('.disabled');//$('a[class = disabled]');
                             html = '<a class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
                         }
                         else
@@ -280,7 +302,7 @@ function rate(action, object)
                     {
                         if(response.revote)
                         {
-                            object = $('a[class=disabled]');
+                            object = object.parent().find('.disabled');
                             html = '<a class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
                         }
                         else

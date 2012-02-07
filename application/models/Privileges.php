@@ -28,5 +28,14 @@ class Model_Privileges extends Zend_Db_Table_Abstract
                 //throw new Exception("Privilege introuvable");
         return $row;
     }
+    
+    public function getDistinct()
+    {
+        $query = $this->select()
+                 ->distinct()
+                 ->from($this->_name, array('message', 'privilege', 'karma_needed', 'gained_message', 'lost_message'));
+        
+        return $this->fetchAll($query);
+    }
 }
 

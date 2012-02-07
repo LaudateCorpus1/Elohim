@@ -1,4 +1,6 @@
-<?php $this->headTitle($this->escape($this->title)); ?>
+<?php $this->headTitle($this->escape($this->title)); 
+$purifyHelper = $this->getHelper('Purify');
+?>
 
 <div id="topics-top">
     <div id="topic-container-top">
@@ -20,11 +22,11 @@
             <div class="topic-container">
                 <div class="topic-subject">
                     <?php if($this->escape($topic->status) == 'closed')
-                            echo '[fermé]';
+                            echo '[Fermé]';
                     ?>
                     <a href="<?php echo $this->url(array(
                                             'topic' => $this->escape($topic->topicId),
-                                            'title' => strtolower(str_replace(' ', '-', $this->escape($topic->title)))
+                                            'title' => $purifyHelper->purifyTitle($this->escape($topic->title))
                                         ), 'showTopic'); ?>"><?php echo $this->escape($topic->title);?></a></div>
                 <div class="tags">
                     <?php
@@ -51,7 +53,14 @@
             <div class="topic-stats">
                 <div class="vote-response-block">
                 <div class="topic-vote"><?php echo $this->escape($topic->vote);?> votes</div>
-                <div class="topic-response-number"><?php echo $this->escape($topic->amount_messages); ?> réponses</div>
+                <?php
+                $class = '';
+                if($this->escape($topic->status) == 'resolved')
+                        $class = 'resolved';
+                else if(intval($this->escape($topic->amount_messages)) > 0)
+                        $class = 'answered';
+                ?>
+                <div class="topic-response-number <?php echo $class; ?>"><?php echo $this->escape($topic->amount_messages); ?> réponses</div>
                 </div>
                 <div class="topic-date"><?php echo $this->escape($topic->date);?></div>
             </div>

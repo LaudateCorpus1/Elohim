@@ -341,6 +341,18 @@ a
     background-color: /*#FFCC66;*/ #74C2E1;
 }
 
+.topic-response-number.answered
+{
+    background-color: #46a546;
+    color: #FFF;
+}
+
+.topic-response-number.resolved
+{
+    background-color: #46a546;
+    color: #fc6;
+}
+
 #topic-date-top
 {
     float: left;

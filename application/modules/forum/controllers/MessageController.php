@@ -251,7 +251,7 @@ class Forum_MessageController extends Zend_Controller_Action {
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
             } else {
-                $this->_redirect('/forum/' . $topicId);
+                $this->_redirect('/forum/sujet/'.$topicId);
             }
         }
     }
@@ -283,6 +283,16 @@ class Forum_MessageController extends Zend_Controller_Action {
                 $karma_up_validator = Zend_Registry::getInstance()->constants->message_validation_validator_reward;
                 $user_model->setKarma($karma_up_validator, $identity->id);
                 $user_model->setKarma($karma_up_author, $message_author->userId);
+                
+                $model_karma = new Forum_Model_Karma();
+                $data = array(
+                    'type' => 'VALIDATE_MESSAGE',
+                    'toUserId' => $message_author->userId,
+                    'fromUserId' => $identity->id,
+                    'messageId' => $messageId,
+                    'topicId' => $topicId
+                );
+                $model_karma->addKarmaAction($data);
 
                 if ($this->_request->isXmlHttpRequest()) {
                         echo Zend_Json::encode(array('status' => 'ok'));
@@ -336,6 +346,16 @@ class Forum_MessageController extends Zend_Controller_Action {
                 $karma_up_validator = Zend_Registry::getInstance()->constants->message_validation_validator_reward;
                 $user_model->setKarma('-'.$karma_up_validator, $identity->id);
                 $user_model->setKarma('-'.$karma_up_author, $message->userId);
+                
+                $model_karma = new Forum_Model_Karma();
+                $data = array(
+                    'type' => 'DEVALIDATE_MESSAGE',
+                    'toUserId' => $message->userId,
+                    'fromUserId' => $identity->id,
+                    'messageId' => $messageId,
+                    'topicId' => $topicId
+                );
+                $model_karma->addKarmaAction($data);
 
                 if ($this->_request->isXmlHttpRequest()) {
                         echo Zend_Json::encode(array('status' => 'ok'));
@@ -368,7 +388,7 @@ class Forum_MessageController extends Zend_Controller_Action {
         $topicId = $this->_getParam('topic');
             
         if($sort_type == 'date')
-            $this->_redirect('/forum/'.$topicId);
+            $this->_redirect('/forum/sujet/'.$topicId);
         else
         {
             $model_message = new Forum_Model_Message();
@@ -410,7 +430,7 @@ class Forum_MessageController extends Zend_Controller_Action {
                         $model_message->updateMessage($data, $messageId);
                         $model_topic->updateTopic(array('lastActivity' => $date), $message->topicId);
                         
-                        $this->_redirect('/forum/' . $message->topicId);
+                        $this->_redirect('/forum/sujet/'.$message->topicId.'#'.$messageId);
                     }
                 }
             }

@@ -164,7 +164,10 @@ class Forum_TopicController extends Zend_Controller_Action {
                         if($this->_request->isXmlHttpRequest())
                             echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'topicId' => $topicId, 'message' => $content));
                         else
-                            $this->_redirect('/forum/' . $topicId.'/'.$topic->title);
+                        {
+                            $purifyHelper = $this->view->getHelper('Purify');
+                            $this->_redirect('/forum/sujet/'.$topicId.'/'.$purifyHelper->purifyTitle($topic->title));
+                        }
                     }
                 }
             }
@@ -209,7 +212,9 @@ class Forum_TopicController extends Zend_Controller_Action {
                     }
                 }
 
-                $this->_redirect('/forum/topic/show/topic/' . $topicId);
+                $purifyHelper = $this->view->getHelper('Purify');
+                $title = $purifyHelper->purifyTitle($title);
+                $this->_redirect('/forum/sujet/'.$topicId.'/'.$title);
             }
         }
         $this->view->topicForm = $topicForm;
@@ -533,7 +538,10 @@ class Forum_TopicController extends Zend_Controller_Action {
                             $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => $date, 'lastActivity' => $date), $topicId);
                             $this->updateTags($topicId, $new_tags);
                             
-                            $this->_redirect('forum/'.$topicId.'/'.$title);
+                            $purifyHelper = $this->view->getHelper('Purify');
+                            $title = $purifyHelper->purifyTitle($title);
+                            
+                            $this->_redirect('forum/sujet/'.$topicId.'/'.$title);
                         } else {
                             $authorText = new Zend_Form_Element_Textarea('authorText');
                             $authorText->setLabel("Votre texte")
@@ -714,7 +722,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                                 $reopen_model = new Forum_Model_ReopenTopic();
                                 $reopen_model->deleteByTopic($topic_id);
                             }
-                            $this->_redirect('/forum/topic/show/topic/' . $topic_id);
+                            $this->_redirect('/forum/sujet/' . $topic_id);
                         }
                     }
                 }
@@ -786,7 +794,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                                 $close_model = new Forum_Model_CloseMotif();
                                 $close_model->deleteByTopic($topic_id);
                             }
-                            $this->_redirect('/forum/topic/show/topic/' . $topic_id);
+                            $this->_redirect('/forum/sujet/'.$topic_id);
                         }
                     }
                 }
@@ -867,7 +875,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
             } else {
-                $this->_redirect('/forum/' . $topicId);
+                $this->_redirect('/forum/sujet/' . $topicId);
             }
         }
     }

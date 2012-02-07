@@ -35,12 +35,10 @@ class Model_Notification extends Zend_Db_Table_Abstract
     public function getPrivilegeNotifications($userId)
     {
         $query = $this->select()
-                 ->setIntegrityCheck(false)
-                 ->from($this->_name)
+                 ->from($this->_name, array('id', 'message', 'type'))
                  ->where($this->getAdapter()->quoteInto('toUserId = ?', $userId))
                  ->where('beenRead = 0')
-                 ->where('type = "GAINED-PRIVILEGE"')
-                 ->orWhere('type = "LOST-PRIVILEGE"');
+                 ->where('(type = "GAINED-PRIVILEGE" OR type = "LOST-PRIVILEGE")');
         
         return $this->fetchAll($query);
     }
@@ -58,10 +56,12 @@ class Model_Notification extends Zend_Db_Table_Abstract
         $this->update($data, $where);
     }
     
-    public function updateNotifications(array $data, $topicId)
+    public function updateNotifications(array $data, array $aWhere)
     {
         $where = array();
-        $where[] = $this->getAdapter()->quoteInto('topicId = ?', $topicId);
+        foreach($aWhere as $column => $value)
+            $where[] = $this->getAdapter()->quoteInto($column. '= ?', $value);
+ 
         $where[] = 'beenRead = 0';
         $this->update($data, $where);
     }

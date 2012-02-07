@@ -242,7 +242,8 @@
                             <?php if($this->canEdit($this->escape($mess->messages_userId)) && $this->escape($this->topic['status']) != 'closed'): ?>
                                 <div id="edit-message"><a href="<?php echo $this->url(array(
                                                                         'controller'=>'message',
-                                                                        'id' => $this->escape($mess->messageId)
+                                                                        'id' => $this->escape($mess->messageId),
+                                                                        'title' => $this->escape($this->topic['title'])
                                                                     ), 'edit', true); ?>" class="label">Editer</a>
                                 </div>
                             <?php endif; ?>

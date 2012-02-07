@@ -41,6 +41,8 @@ echo $this->doctype() . PHP_EOL;
             </div>
         </noscript>
         
+        <?php echo $this->layout()->privilegeNotifPadding; ?>
+        
         <div>
             <div id="bg-header-top"></div>
             <div id="bg-header-bottom"></div>
@@ -65,15 +67,17 @@ echo $this->doctype() . PHP_EOL;
                 <div id="nav">
                         <ul>
                             <li><a href="<?php echo $this->url(array(
+                                            'controller' => 'conference',
+                                            'action' => 'index'
+                                        ), 'default', true) ?>">Conférences</a></li>
+                            
+                            <li><a href="<?php echo $this->url(array(
                                             'controller' => 'article',
                                             'action' => 'index'
                                         ), 'default', true) ?>">Articles</a></li>
                             
                             <li><a href="<?php echo $this->url(array(
-                                            'module' => 'forum',
-                                            'controller' => 'index',
-                                            'action' => 'index'
-                                        ), 'default', true) ?>">Forum</a></li>
+                                        ), 'indexForum', true) ?>">Forum</a></li>
                             
                             <li><a href="">Annonces</a></li>
                             
@@ -92,7 +96,7 @@ echo $this->doctype() . PHP_EOL;
                                         'action' => 'add'
                                         ), 'default', true) ?>"><span>Nouveau Topic</span></a></li>
                     
-                    <li><a href="<?php echo $this->url(array(), 'showTags', true) ?>"><span>Tags</span></a></li>
+                    <li><a href="<?php echo $this->url(array(), 'showTags', true) ?>"><span>Mots-clés</span></a></li>
                     
                     <li><a href="<?php echo $this->url(array(
                                         'module' => 'forum',

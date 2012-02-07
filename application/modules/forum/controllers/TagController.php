@@ -57,6 +57,7 @@ class Forum_TagController extends Zend_Controller_Action
             $tag = new Forum_Model_Tag();
             $tagId = $this->_getParam('tag');
             $favoriteTag = new Forum_Model_FavoriteTags();
+            
             if($tag->alreadyFavorited($tagId, $identity->id))
             {
                 if($this->_request->isXmlHttpRequest())
@@ -163,7 +164,7 @@ class Forum_TagController extends Zend_Controller_Action
                     $topic_tag_model->addRow($id, $tag_id);
                 }
                 
-                $this->_redirect('/forum/topic/show/topic/' . $id);
+                $this->_redirect('/forum/sujet/' . $id);
             }
         }
     }
