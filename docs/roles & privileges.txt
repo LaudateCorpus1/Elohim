@@ -25,6 +25,7 @@ Vote pour supprimer ou réouvrir un topic : 5000 (au bout de 7 votes, l'action e
 Supprimer ses messages: 250
 Supprimer ses topics: 500
 Partager un topic/message par mail/FB/Twitter: 1
+créer mot clé : 700
 
 
 Récompenses:

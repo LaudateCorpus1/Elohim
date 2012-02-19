@@ -6,26 +6,12 @@ class Model_User extends Zend_Db_Table_Abstract
     
     public function get($id, $tags = false)
     {
-        //if(!$tags)
-        {
-            $where = $this->getAdapter()->quoteInto('id = ?', $id);
-            $row = $this->fetchRow($this->select()->where($where));
-            unset($row->password);
-        }
-        /*else
-        {
-            $query = $this->select()
-                      ->setIntegrityCheck(false)
-                      ->from($this->_name)
-                      ->join('FavoritesTags', 'FavoritesTags.userId = '.$this->_name.'.id', null)
-                      ->join('Tags', 'Tags.tagId = FavoritesTags.tagId', array('name', 'tagId'))
-                      ->where($this->getAdapter()->quoteInto($this->_name.'.id = ?', $id));
-            
-            $row = $this->fetchAll($query);
-        }*/
+        $where = $this->getAdapter()->quoteInto('id = ?', $id);
+        $row = $this->fetchRow($this->select()->where($where));
+        unset($row->password);
         
         if($row == null)
-            throw new Exception("Utilisateur introuvable");
+            throw new Exception("Utilisateur introuvable : $id");
         
         if($tags)
         {
@@ -77,7 +63,7 @@ class Model_User extends Zend_Db_Table_Abstract
         //Zend_Debug::dump($query->__toString()); exit;
         $row = $this->fetchRow($query);
         if($row == null)
-            throw new Exception("Utilisateur introuvable");
+            throw new Exception("Utilisateur introuvable : $login");
         
         return $row;
     }
@@ -113,7 +99,7 @@ class Model_User extends Zend_Db_Table_Abstract
         
         $row = $this->fetchRow($query);
         if($row == null)
-            throw new Exception("Utilisateur introuvable");
+            throw new Exception("Utilisateur introuvable : $id");
         
         return $row;
     }
@@ -215,8 +201,8 @@ class Model_User extends Zend_Db_Table_Abstract
     {
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from($this->_name,null)
-              ->join('vote', 'vote.userId = user.id',array(
+              ->from($this->_name, null)
+              ->join('vote', 'vote.userId = user.id', array(
                                 'messageId',
                                 'type'
                                 ))

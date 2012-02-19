@@ -33,7 +33,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             $row = $this->fetchRow($query);
             if (!$row)
             {
-                    throw new Exception("Could not find topic $id");
+                    throw new Exception("Topic introuvable : $id");
             }
             return $row;
     }
@@ -79,7 +79,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         
         if (!$row)
         {
-            throw new Exception("Could not find topic $id");
+            throw new Exception("Topic introuvable : $id");
         }
         return $row;
     }
@@ -104,7 +104,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
 
     public function updateTopic(array $data, $id)
     {
-            $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $id));
+        $this->update($data, $this->getAdapter()->quoteInto('topicId = ?', $id));
     }
 
     public function getMessagesFromTopic($topicId, $order = null)
@@ -214,7 +214,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         $res = $this->fetchRow($query);
         
         if(!$res)
-            throw new Exception("Could not find row $id");
+            throw new Exception("Topic introuvable : $topicId");
         
         if($res->userId == $author_id)
         {
@@ -239,6 +239,9 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                 ->from($this->_name, array('vote', 'userId'))
                 ->where($this->getAdapter()->quoteInto('topicId = ?',$topicId));
         $res = $this->fetchRow($query);
+        
+        if(!$res)
+            throw new Exception("Topic introuvable : $topicId");
 
         if($res->userId == $author_id)
         {
@@ -390,7 +393,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
                 ->where($this->getAdapter()->quoteInto('topicId = ?',$topic_id));
         $row = $this->fetchRow($query);
         if (!$row)
-            throw new Exception("Could not find row $topic_id");
+            throw new Exception("Topic introuvable : $topic_id");
         if($row->status == 'closed')
             return true;
         else

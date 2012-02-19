@@ -78,6 +78,13 @@ h2 {
     color:#595959;
 }
 
+h3
+{
+    font:normal 16px Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
 a {
 	color:#78bbe6;
 	text-decoration:none;

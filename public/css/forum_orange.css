@@ -264,6 +264,12 @@ a
     line-height: 180%;
 }
 
+#tags-table .tag
+{
+    /* Override tag font-size property */
+    font-size: 1em;
+}
+
 .tag:hover
 {
     background-color: #7F9FB6;
@@ -696,4 +702,13 @@ form ul, form ol
 #tags input
 {
     box-shadow: none;
+}
+
+/******************************************/
+/****************** FAQ *******************/
+/******************************************/
+#faq
+{
+    width: 650px;
+    text-align: justify;
 }

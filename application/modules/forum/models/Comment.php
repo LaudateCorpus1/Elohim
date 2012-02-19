@@ -14,7 +14,7 @@ class Forum_Model_Comment extends Zend_Db_Table_Abstract
             $row = $this->fetchRow(array('commentId = ?' => $id));
             if (!$row)
             {
-                    throw new Exception("Could not find row $id");
+                throw new Exception("Commentaire introuvable : $id");
             }
             return $row->toArray();
     }

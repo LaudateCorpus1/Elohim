@@ -11,7 +11,7 @@ class Default_Model_Comment extends Zend_Db_Table_Abstract
         $row = $this->fetchRow($this->select()->where($where));
         if($row == null)
         {
-                throw new Exception("Commentaire introuvable");
+                throw new Exception("Commentaire introuvable : $id");
         }
         return $row;
     }

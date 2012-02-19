@@ -10,7 +10,7 @@ class Model_Article extends Zend_Db_Table_Abstract
         $where = $this->getAdapter()->quoteInto('id = ?', $id);
         $row = $this->fetchRow($this->select()->where($where));
         if($row == null)
-                throw new Exception("Article introuvable");
+                throw new Exception("Article introuvable : $id");
         return $row;
     }
     
@@ -22,8 +22,6 @@ class Model_Article extends Zend_Db_Table_Abstract
     public function getByCategory($id_category)
     {
         $rows = $this->fetchAll($this->select()->where('id_category = ?', $id_category));
-        if($rows == null)
-                throw new Exception("Article introuvable");
         return $rows;
     }
     
@@ -49,13 +47,13 @@ class Model_Article extends Zend_Db_Table_Abstract
     
     public function addArticle($title, $content, $category_id)
     {
-            $data = array(
-                'title' => $title,
-                'content' => $content,
-                'id_category' => $category_id,
-                'date_posted' => time()
-            );
-            return $this->insert($data);
+        $data = array(
+            'title' => $title,
+            'content' => $content,
+            'id_category' => $category_id,
+            'date_posted' => time()
+        );
+        return $this->insert($data);
     }
 
     public function deleteArticle($id)

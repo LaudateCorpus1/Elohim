@@ -132,15 +132,18 @@ class Forum_TagController extends Zend_Controller_Action
             $formData = $this->getRequest()->getPost();
             if($form->isValid($formData)) 
             {
+                $auth = Zend_Auth::getInstance();
                 $tag_model = new Forum_Model_Tag();
                 $aTags = array();
                 $new_tags = $form->getValue('tagsValues');
+                $new_tags = mb_strtolower($new_tags);
                 $aTags = explode(" ", $new_tags);
                 
                 $aDiff_tags_old = array_diff($aOld_tag_name, $aTags);
                 $aDiff_tags_new = array_diff($aTags, $aOld_tag_name);
                 
                 $topic_tag_model = new Forum_Model_TopicTag();
+                $tag_model->getAdapter()->beginTransaction();
                 
                 foreach ($aDiff_tags_old as $tag) 
                 {
@@ -151,20 +154,36 @@ class Forum_TagController extends Zend_Controller_Action
                     }
                 }
                 
+                $error = false;
                 foreach ($aDiff_tags_new as $tag) 
                 {
                     if (($tag_model->doesExist($tag)) !== false) 
                     {
                         $tag_id = $tag_model->incrementTag($tag);
+                        $topic_tag_model->addRow($id, $tag_id);
                     } 
                     else 
                     {
-                        $tag_id = $tag_model->addTag($tag, '1');
+                        $createTagsKarma = intval(Zend_Registry::getInstance()->constants->create_tags_karma);
+                        if(intval($auth->getIdentity()->karma) < intval($createTagsKarma))
+                        {
+                            $tag_model->getAdapter()->rollBack();
+                            $error = true;
+                            $this->_forward('karma', 'error', 'forum', array('message' => 'Vous n\'avez pas le privilège pour créer des mots-clés'));
+                        }
+                        else
+                        {
+                            $tag_id = $tag_model->addTag($tag, '1');
+                            $topic_tag_model->addRow($id, $tag_id);
+                        }
+                        
                     }
-                    $topic_tag_model->addRow($id, $tag_id);
                 }
-                
-                $this->_redirect('/forum/sujet/' . $id);
+                if(!$error)
+                {
+                    $tag_model->getAdapter()->commit();
+                    $this->_redirect('/forum/sujet/' . $id);
+                }
             }
         }
     }

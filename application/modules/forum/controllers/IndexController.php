@@ -84,5 +84,14 @@ class Forum_IndexController extends Zend_Controller_Action {
         $this->_forward('index', 'index', 'forum', array('topics' => $res));
     }
 
+    public function faqAction()
+    {
+        
+    }
+    
+    public function rulesAction()
+    {
+        
+    }
 }
 

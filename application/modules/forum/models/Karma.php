@@ -15,34 +15,7 @@ class Forum_Model_Karma extends Zend_Db_Table_Abstract
 
    public function addKarmaAction(array $data)
    {
-       /*$lastAction = null;
-       switch ($date['type'])
-       {
-           case 'DOWN_MESSAGE':
-           case 'UP_MESSAGE':
-               $lastAction = $this->getLastAction(array('fromUserId' => $data['fromUserId'], 'messageId' => $data['messageId']));
-               break;
-               
-       }
-       
-       if($lastAction == null)
-           $data['cancellation'] = false;
-       else
-       {
-           // Si l'action demandée est le contraire de la dernière action, c'est une annulation
-           if($lastAction->type != $data['type'])
-               $data['cancellation'] = true;
-           // Si l'action demandée est la meme que la dernière et que celle-ci était une annulation
-           elseif($lastAction->type == $data['type'] && $lastAction->cancellation == true)
-               $data['cancellation'] = false;
-           // Si l'action demandée est la meme que la dernière et que celle-ci n'était pas une annulation... impossible, cheater !
-           elseif($lastAction->type == $data['type'] && $lastAction->cancellation == false)
-               return false;
-       }*/
-       
        $this->insert($data);
-       
-       //return true;
    }
    
    /*

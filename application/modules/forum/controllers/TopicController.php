@@ -194,27 +194,41 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $title = $topicForm->getValue('form_topic_title');
                 $message = $topicForm->getValue('form_topic_content');
                 $tags = $topicForm->getValue('tagsValues');
+                $tags = mb_strtolower($tags);
                 $tagArray = explode(" ", $tags);
                 $topic = new Forum_Model_Topic();
                 $tag = new Forum_Model_Tag();
                 $topicTag = new Forum_Model_TopicTag();
                 $auth = Zend_Auth::getInstance();
                 
+                $tag->getAdapter()->beginTransaction();
+                
                 $topicId = $topic->addTopic($auth->getIdentity()->id, $title, $message, $_SERVER['REMOTE_ADDR']);
-
+                $error = false;
                 foreach ($tagArray as $t) {
                     if ($tag->doesExist($t) !== false) {
                         $tagId = $tag->incrementTag($t);
                         $topicTag->addRow($topicId, $tagId);
                     } else {
-                        $tagId = $tag->addTag($t, '1');
-                        $topicTag->addRow($topicId, $tagId);
+                        $createTagsKarma = intval(Zend_Registry::getInstance()->constants->create_tags_karma);
+                        if(intval($auth->getIdentity()->karma) < intval($createTagsKarma)) {
+                            $tag->getAdapter()->rollBack();
+                            $error = true;
+                            $this->_forward('karma', 'error', 'forum', array('message' => 'Vous n\'avez pas le privilège pour créer des mots-clés'));
+                        }
+                        else {
+                            $tagId = $tag->addTag($t, '1');
+                            $topicTag->addRow($topicId, $tagId);
+                        }
                     }
                 }
+                if(!$error) {
+                    $tag->getAdapter()->commit();
 
-                $purifyHelper = $this->view->getHelper('Purify');
-                $title = $purifyHelper->purifyTitle($title);
-                $this->_redirect('/forum/sujet/'.$topicId.'/'.$title);
+                    $purifyHelper = $this->view->getHelper('Purify');
+                    $title = $purifyHelper->purifyTitle($title);
+                    $this->_redirect('/forum/sujet/'.$topicId.'/'.$title);
+                }
             }
         }
         $this->view->topicForm = $topicForm;

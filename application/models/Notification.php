@@ -9,7 +9,7 @@ class Model_Notification extends Zend_Db_Table_Abstract
         $where = $this->getAdapter()->quoteInto('type = ?', $type);
         $row = $this->fetchRow($this->select()->where($where));
         if($row == null)
-                throw new Exception("Privilege introuvable");
+            throw new Exception("Notification introuvable : $type");
         return $row;
     }
     

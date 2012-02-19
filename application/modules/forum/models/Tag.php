@@ -15,7 +15,7 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
             $row = $this->fetchRow(array('tagId = ?' => $id));
             if (!$row)
             {
-                    throw new Exception("Could not find row $id");
+                throw new Exception("Tag introuvable $id");
             }
             return $row->toArray();
     }
@@ -61,6 +61,10 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
                 ->from($this->_name,array('tagId','amount'))
                 ->where('name = ?',$name);
         $res = $this->fetchRow($query);
+        if (!$res)
+        {
+            throw new Exception("Tag introuvable $name");
+        }
         $amount = (int)$res->amount + 1;
         $data = array('amount' => $amount);
         $this->update($data, $this->getAdapter()->quoteInto('name = ?', (string)$name));
@@ -73,6 +77,10 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
                 ->from($this->_name,array('tagId','amount'))
                 ->where('name = ?',$name);
         $res = $this->fetchRow($query);
+        if (!$res)
+        {
+            throw new Exception("Tag introuvable $name");
+        }
         $amount = (int)$res->amount - 1;
         $data = array('amount' => $amount);
         $this->update($data, $this->getAdapter()->quoteInto('name = ?', (string)$name));
@@ -104,6 +112,10 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
                       ->from($this->_name,'name')
                       ->where('tagId = ?',(int)$id);
         $res = $this->fetchRow($query);
+        if (!$res)
+        {
+            throw new Exception("Tag introuvable $id");
+        }
         return $res->name;
     }
     

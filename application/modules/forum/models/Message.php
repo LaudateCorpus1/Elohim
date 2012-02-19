@@ -14,7 +14,7 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
             $row = $this->fetchRow(array('messageId = ?' => $id));
             if (!$row)
             {
-                    throw new Exception("Could not find row $id");
+                throw new Exception("Message introuvable $id");
             }
             return $row;
     }
@@ -28,7 +28,7 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
         
         if (!$row)
         {
-                throw new Exception("Could not find row $id");
+            throw new Exception("Message introuvable $id");
         }
         return $row;
     }
@@ -72,6 +72,12 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
                 ->from($this->_name, array('vote', 'userId'))
                 ->where($this->getAdapter()->quoteInto('messageId = ?',$messageId));
         $res = $this->fetchRow($query);
+        
+        if (!$res)
+        {
+            $this->getAdapter()->rollBack();
+            throw new Exception("Message introuvable $messageId");
+        }
 
         if($res->userId == $author_id)
         {
@@ -96,6 +102,12 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
                 ->from($this->_name,array('vote', 'userId'))
                 ->where($this->getAdapter()->quoteInto('messageId = ?',$messageId));
         $res = $this->fetchRow($query);
+        
+        if (!$res)
+        {
+            $this->getAdapter()->rollBack();
+            throw new Exception("Message introuvable $messageId");
+        }
 
         if($res->userId == $author_id)
         {

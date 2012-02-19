@@ -99,16 +99,10 @@ echo $this->doctype() . PHP_EOL;
                     <li><a href="<?php echo $this->url(array(), 'showTags', true) ?>"><span>Mots-clés</span></a></li>
                     
                     <li><a href="<?php echo $this->url(array(
-                                        'module' => 'forum',
-                                        'controller' => 'faq',
-                                        'action' => 'index'
-                                        ), null, true) ?>"><span>FAQ</span></a></li>
+                                        ), 'faqForum', true) ?>"><span>FAQ</span></a></li>
                     
                     <li><a href="<?php echo $this->url(array(
-                                        'module' => 'forum',
-                                        'controller' => 'rules',
-                                        'action' => 'index'
-                                        ), null, true) ?>"><span>Règles du forum</span></a></li>
+                                        ), 'rulesForum', true) ?>"><span>Règles du forum</span></a></li>
                 </ul>
 
             </div>

@@ -9,7 +9,7 @@ class Model_Privileges extends Zend_Db_Table_Abstract
         $where = $this->getAdapter()->quoteInto('type = ?', $type);
         $row = $this->fetchRow($this->select()->where($where));
         if($row == null)
-                throw new Exception("Privilege introuvable");
+            throw new Exception("Privilege introuvable: $type");
         return $row;
     }
     

@@ -11,7 +11,7 @@ class Model_Category extends Zend_Db_Table_Abstract
         $row = $this->fetchRow($this->select()->where($where));
         if($row == null)
         {
-                throw new Exception("Categorie introuvable");
+                throw new Exception("Categorie introuvable: $id");
         }
         return $row;
     }
