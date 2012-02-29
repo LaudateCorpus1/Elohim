@@ -9,37 +9,40 @@ class Islamine_Controller_Plugin_Notification extends Zend_Controller_Plugin_Abs
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-        $userNotifications = '';
-        $privilegeNotifications = null;
-        $layout = Zend_Layout::getMvcInstance();
-        $auth = Zend_Auth::getInstance();
-        if($auth->hasIdentity())
+        if (!$request->isXmlHttpRequest()) 
         {
-            $modelNotification = new Model_Notification();
-            if($request->getModuleName() == 'forum' 
-                && $request->getControllerName() == 'topic' 
-                && $request->getActionName() == 'show')
+            $userNotifications = '';
+            $privilegeNotifications = null;
+            $layout = Zend_Layout::getMvcInstance();
+            $auth = Zend_Auth::getInstance();
+            if($auth->hasIdentity())
             {
-                $topicId = $request->getParam('topic');
-                $modelTopic = new Forum_Model_Topic();
-                $topicAuthor = $modelTopic->getAuthor($topicId);
-                if($topicAuthor->userId == $auth->getIdentity()->id)
+                $modelNotification = new Model_Notification();
+                if($request->getModuleName() == 'forum' 
+                    && $request->getControllerName() == 'topic' 
+                    && $request->getActionName() == 'show')
                 {
-                    $modelNotification->updateNotifications(array('beenRead' => true), array('topicId' => $topicId));
+                    $topicId = $request->getParam('topic');
+                    $modelTopic = new Forum_Model_Topic();
+                    $topicAuthor = $modelTopic->getAuthor($topicId);
+                    if($topicAuthor->userId == $auth->getIdentity()->id)
+                    {
+                        $modelNotification->updateNotifications(array('beenRead' => true), array('topicId' => $topicId));
+                    }
                 }
+
+                $notifications = $modelNotification->getAllUnreadByUser($auth->getIdentity()->id);
+                $userNotifications = $notifications;
+
+                $notificationsP = $modelNotification->getPrivilegeNotifications($auth->getIdentity()->id);
+                $privilegeNotifications = $notificationsP;
             }
-            
-            $notifications = $modelNotification->getAllUnreadByUser($auth->getIdentity()->id);
-            $userNotifications = $notifications;
-            
-            $notificationsP = $modelNotification->getPrivilegeNotifications($auth->getIdentity()->id);
-            $privilegeNotifications = $notificationsP;
+
+            $view = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
+            $view->notification = $userNotifications;
+            $layout->privilegeNotifications = $this->buildHtmlPrivilegeNotifications($privilegeNotifications);
+            $layout->privilegeNotifPadding = $this->htmlPrivilegeNotificationsPadding($privilegeNotifications);
         }
-        
-        $view = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
-        $view->notification = $userNotifications;
-        $layout->privilegeNotifications = $this->buildHtmlPrivilegeNotifications($privilegeNotifications);
-        $layout->privilegeNotifPadding = $this->htmlPrivilegeNotificationsPadding($privilegeNotifications);
     }
 
     private function buildHtmlPrivilegeNotifications($privilegeNotifications)

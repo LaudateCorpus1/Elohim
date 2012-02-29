@@ -152,7 +152,7 @@ function addMessage(topicId, content)
             },
             error: function(a, b, c)
             {
-                alert(b + " " +c);
+                alert('Une erreur est survenue');
             }
         });
 }

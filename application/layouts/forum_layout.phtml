@@ -51,13 +51,13 @@ echo $this->doctype() . PHP_EOL;
         <div class="main">
             <div class="header">
                     <div class="logo">
-                        <h1><a href="<?php
+                        <a href="<?php
         echo $this->url(array(
             'module' => 'default',
             'controller' => 'index',
             'action' => 'index'
         ), 'default', true);
-        ?>"><span>Islamine</span></a></h1>
+        ?>">Islamine</a>
                     </div>
                 <div id="user-top">
                     <?php echo $this->login(); ?>
@@ -156,6 +156,19 @@ echo $this->doctype() . PHP_EOL;
                         <p>Envoyez-les nous, et nous les publierons sur le site !</p>
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <div class="clr"></div>
+        <div class="footer">
+            <div class="footer-content">
+                <p>Copyright © 2012</p>
+                <p>
+                    <a href="#">Sitemap</a> | 
+                    <a href="#">Contact</a> | 
+                    <a href="#">Mentions légales</a> | 
+                    <a href="#">Flux RSS</a>
+                </p>
             </div>
         </div>
         

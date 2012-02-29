@@ -57,8 +57,8 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->join('user', 'Topic.userId = user.id', 'login')
               ->group($this->_name.'.topicId')
               ->order($orderby)
-              ->order('Topic.date DESC')
-              ->limit($count);
+              ->order('Topic.date DESC');
+              //->limit($count);
         
         if(!$closed_flag)
             $query->where($this->_name.'.status != "closed"');
@@ -66,8 +66,8 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         if($where != null)
             $query->where($where);
 
-        $res = $this->fetchAll($query);
-        return $res;
+        //$res = $this->fetchAll($query);
+        return $query;
     }
     
     public function getAuthor($topicId)
@@ -79,7 +79,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         
         if (!$row)
         {
-            throw new Exception("Topic introuvable : $id");
+            throw new Exception("Topic introuvable : $topicId");
         }
         return $row;
     }
@@ -134,9 +134,9 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
         
         $query->order('Messages.validation DESC');
         $query->order('Messages.date ASC');
-        $res = $this->fetchAll($query);
+        //$res = $this->fetchAll($query);
  
-        return $res;
+        return $query;
     }
 
     public function getTagsFromTopic($topicId)
@@ -191,14 +191,14 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->where('Tags.name = ?',$name)
               ->group($this->_name.'.topicId')
               ->order($orderby)
-              ->order('Topic.date DESC')
-              ->limit($count);
+              ->order('Topic.date DESC');
+              //->limit($count);
         
         if(!$closed_flag)
             $query->where($this->_name.'.status != "closed"');
 
-        $res = $this->fetchAll($query);
-        return $res;
+        //$res = $this->fetchAll($query);
+        return $query;
     }
 
     public function incrementVote($topicId, $author_id)
@@ -340,14 +340,14 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->join('user', 'Topic.userId = user.id', 'login')
               ->where('Messages.topicId IS NULL')
               ->group($this->_name.'.topicId')
-              ->order($orderby)
-              ->limit($count);
+              ->order($orderby);
+              //->limit($count);
         
         if(!$closed_flag)
             $query->where($this->_name.'.status != "closed"');
 
-        $res = $this->fetchAll($query);
-        return $res;
+        //$res = $this->fetchAll($query);
+        return $query;
     }
     
     public function getUnansweredByTagName($tag_name, $closed_flag, $count = 50, $order = 'Topic.date DESC')
@@ -376,14 +376,14 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
               ->where($this->getAdapter()->quoteInto('Tags.name = ?', $tag_name))
               ->where('Messages.topicId IS NULL')
               ->group($this->_name.'.topicId')
-              ->order($orderby)
-              ->limit($count);
+              ->order($orderby);
+              //->limit($count);
         
         if(!$closed_flag)
             $query->where($this->_name.'.status != "closed"');
 
-        $res = $this->fetchAll($query);
-        return $res;
+        //$res = $this->fetchAll($query);
+        return $query;
     }
     
     public function isClosed($topic_id)

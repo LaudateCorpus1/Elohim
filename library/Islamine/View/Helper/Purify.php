@@ -28,7 +28,11 @@ class Islamine_View_Helper_Purify extends Zend_View_Helper_Abstract
    public function purifyTitle($title)
    {
         $title = strtolower($title);
-        $title = str_replace(' ', '-', $title);
+        $search = array(' ', '!', '?', '.', ',', ';');
+        $replace = array('-', '', '', '', '', '');
+        $title = str_replace($search, $replace, $title);
+        if($title[strlen($title)-1] == '-')
+            $title = substr ($title, 0, -1);
         return $title;
    }
 }

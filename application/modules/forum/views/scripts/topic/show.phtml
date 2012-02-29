@@ -100,7 +100,7 @@
                                                             ), 'taggedTopic'); ?>"><?php echo $this->escape($tag->name); ?></a>
                                 </div>  
                                 <div class="tag-action">
-                                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),$this->escape($this->identity)); ?>
+                                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId), $this->escape($tag->name)); ?>
                                 </div>
                             </div>    
                             <?php endforeach; ?>
@@ -208,22 +208,22 @@
     <div id="messages">
     <?php $i = 0;
     foreach($this->messages as $mess) : ?>
-        <a name="<?php echo $this->escape($mess->messageId); ?>"></a>
-        <div id="message-<?php echo $this->escape($mess->messageId); ?>" class="message">
-            <table class="table-message" <?php if($this->escape($mess->validation)) echo 'id="message-validated"'; ?> >
+        <a name="<?php echo $this->escape($mess['messageId']); ?>"></a>
+        <div id="message-<?php echo $this->escape($mess['messageId']); ?>" class="message">
+            <table class="table-message" <?php if($this->escape($mess['validation'])) echo 'id="message-validated"'; ?> >
                 <tbody>
                     <tr class="message-top">
                         <td>
-                            <div class="message-date">Envoyé le <?php echo $this->escape($mess->messages_date);?></div>
+                            <div class="message-date">Envoyé le <?php echo $this->escape($mess['messages_date']);?></div>
 
-                            <?php if($this->escape($this->author) && ($this->escape($mess->messages_userId) != $this->escape($this->topic['userId']))): ?>
+                            <?php if($this->escape($this->author) && ($this->escape($mess['messages_userId']) != $this->escape($this->topic['userId']))): ?>
                                 <div class="message-validation">
-                                <?php if($this->escape($mess->validation)) : $validate = true; ?>
+                                <?php if($this->escape($mess['validation'])) : $validate = true; ?>
                                     <a class="message-devalidate-link label" href="<?php echo $this->url(array(
                                                                         'module' => 'forum',
                                                                         'controller'=>'message',
                                                                         'action'=>'devalidate',
-                                                                        'message' => $this->escape($mess->messageId),
+                                                                        'message' => $this->escape($mess['messageId']),
                                                                         'topic' => $this->escape($this->topic['topicId'])
                                                                     ), 'default', true); ?>">Annuler validation</a>
                                 <?php endif; ?>
@@ -232,17 +232,17 @@
                                                                             'module' => 'forum',
                                                                             'controller' => 'message',
                                                                             'action' => 'validate',
-                                                                            'message' => $this->escape($mess->messageId),
+                                                                            'message' => $this->escape($mess['messageId']),
                                                                            'topic' => $this->escape($this->topic['topicId'])
                                                                         ), 'default', true); ?>" title="Cette réponse est la plus utile">Valider</a>
                                 <?php endif; ?>
                                 </div>
                             <?php endif; ?>
                             
-                            <?php if($this->canEdit($this->escape($mess->messages_userId)) && $this->escape($this->topic['status']) != 'closed'): ?>
+                            <?php if($this->canEdit($this->escape($mess['messages_userId'])) && $this->escape($this->topic['status']) != 'closed'): ?>
                                 <div id="edit-message"><a href="<?php echo $this->url(array(
                                                                         'controller'=>'message',
-                                                                        'id' => $this->escape($mess->messageId),
+                                                                        'id' => $this->escape($mess['messageId']),
                                                                         'title' => $this->escape($this->topic['title'])
                                                                     ), 'edit', true); ?>" class="label">Editer</a>
                                 </div>
@@ -251,7 +251,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="message-content"><?php echo $this->purify($mess->content);?></div>
+                            <div id="message-content"><?php echo $this->purify($mess['content']);?></div>
                         </td>
                     </tr>
                     <tr>
@@ -261,29 +261,29 @@
                                     <tr>
                                         <td>
                                             <div class="vote-m">
-                                                <input type="hidden" value="<?php echo $mess->messageId; ?>" />
+                                                <input type="hidden" value="<?php echo $mess['messageId']; ?>" />
                                                 
-                                                <?php echo $this->vote($this->escape($mess->messageId), 'DOWN_MESSAGE'); ?>
+                                                <?php echo $this->vote($this->escape($mess['messageId']), 'DOWN_MESSAGE'); ?>
                                                 
-                                                <span class="vote-value"><?php echo $this->escape($mess->messages_vote);?></span>
+                                                <span class="vote-value"><?php echo $this->escape($mess['messages_vote']);?></span>
                                                 
-                                                <?php echo $this->vote($this->escape($mess->messageId), 'UP_MESSAGE'); ?>
+                                                <?php echo $this->vote($this->escape($mess['messageId']), 'UP_MESSAGE'); ?>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="user-avatar">
                                                 <a href="<?php echo $this->url(array(
-                                                                'id' => $this->escape($mess->userId),
-                                                                'username' => $this->escape($mess->login)
+                                                                'id' => $this->escape($mess['userId']),
+                                                                'username' => $this->escape($mess['login'])
                                                             ), 'showUser', true); ?>">
-                                                            <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($mess->avatar); ?>" />
+                                                            <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($mess['avatar']); ?>" />
                                                 </a>
                                             </div>
                                             <div class="user-details">
                                                 <a href="<?php echo $this->url(array(
-                                                                    'id' => $this->escape($mess->userId),
-                                                                    'username' => $this->escape($mess->login)
-                                                                ), 'showUser', true); ?>"><?php echo $this->escape($mess->login); ?></a>
+                                                                    'id' => $this->escape($mess['userId']),
+                                                                    'username' => $this->escape($mess['login'])
+                                                                ), 'showUser', true); ?>"><?php echo $this->escape($mess['login']); ?></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -293,7 +293,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="comments-message-<?php echo $this->escape($mess->messageId); ?>" class="comments">
+                            <div id="comments-message-<?php echo $this->escape($mess['messageId']); ?>" class="comments">
                                 <?php
                                     foreach($this->$i as $comment)
                                     {
@@ -316,25 +316,25 @@
                     <tr>
                         <td>
                             <div class="comment-link">
-                                <a class="comment-link-message-<?php echo $this->escape($mess->messageId); ?>" href="<?php echo $this->url(array(
+                                <a class="comment-link-message-<?php echo $this->escape($mess['messageId']); ?>" href="<?php echo $this->url(array(
                                                     'module' => 'forum',
                                                     'controller'=>'message',
                                                     'action'=>'comment',
-                                                    'message' => $mess->messageId,
+                                                    'message' => $mess['messageId'],
                                                     'topic' => $this->topic['topicId']
                                                 ), 'default', true); ?>" title="Commenter le message">Ajouter un commentaire
                                 </a>
-                                <div id="comment-form-message-<?php echo $this->escape($mess->messageId); ?>" style="display:none;">
+                                <div id="comment-form-message-<?php echo $this->escape($mess['messageId']); ?>" style="display:none;">
                                     <?php 
-                                        $this->setFormId($this->commentForm, 'form_comment_message_'.$mess->messageId);
+                                        $this->setFormId($this->commentForm, 'form_comment_message_'.$mess['messageId']);
                                         echo $this->commentForm; 
                                     ?>
                                 </div>
                             </div>
                             <div class="message-info">
                             <?php 
-                                if($this->escape($mess->lastEditDate) != null)
-                                    echo 'Edité le '.$this->escape($mess->lastEditDate); 
+                                if($this->escape($mess['lastEditDate']) != null)
+                                    echo 'Edité le '.$this->escape($mess['lastEditDate']); 
                             ?>
                             </div>
                         </td>

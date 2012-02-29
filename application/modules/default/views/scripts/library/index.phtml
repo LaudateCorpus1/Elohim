@@ -1,0 +1,88 @@
+<?php $this->headTitle('Bibiothèque virtuelle'); 
+$purifyHelper = $this->getHelper('Purify');
+?>
+
+<?php if($this->escape($this->author)) : ?>
+<h2>Ma bibliothèque</h2>
+<h3><a href="<?php echo $this->url(array(), 'completeLibrary'); ?>">
+    Ajouter un document
+</a></h3>
+<?php else : ?>
+<h2>Bibliothèque de <?php echo $this->escape($this->username); ?></h2>
+<?php endif; ?>
+
+<div class="library">
+    <?php $i=0;
+    foreach($this->library as $document) :
+    ?>
+        <div class="library-document">
+            <div class="document-header">
+                <?php if(filter_var($this->escape($document['title']), FILTER_VALIDATE_URL)) : ?>
+                <a href="<?php echo $this->url(array(
+                                        'username' => $this->escape($this->username),
+                                        'document' => $this->escape($document['id']),
+                                        'title' => $this->escape($purifyHelper->purifyTitle($document['title']))
+                                    ), 'showDocument'); ?>"><?php echo $this->escape($document['title']);?>
+                </a> - Aller à sur le site
+                <?php else : ?>
+                <a href="<?php echo $this->url(array(
+                                        'username' => $this->escape($this->username),
+                                        'document' => $this->escape($document['id']),
+                                        'title' => $this->escape($purifyHelper->purifyTitle($document['title']))
+                                    ), 'showDocument'); ?>"><?php echo $this->escape($document['title']);?>
+                </a>
+                <?php endif; ?>
+            </div>
+            <div class="document-description">
+                <?php echo $this->purify($this->textWrap($document['content'], 300));?> 
+            </div>
+            <div class="tags">
+                <?php
+                foreach($this->$i as $tag) : ?>
+                <div class="tag">
+                    <div class="tag-name">
+                        <a href="<?php echo $this->url(array(
+                                            'name'=> $this->escape($tag->name)
+                                        ), 'taggedTopic'); ?>"><?php echo $this->escape($tag->name); ?>
+                        </a>
+                    </div>  
+                    <div class="tag-action">
+                        <?php echo $this->favoriteTag($this->escape($tag->tagId), $this->escape($tag->name)); ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="document-date">
+                Ajouté le <?php echo $this->escape($document['date']); ?>
+            </div>
+            <?php if($this->escape($this->author)) : ?>
+            <div class="document-menu">
+                <div class="label-left">
+                    <?php if(intval($this->escape($document['public']))) : ?>
+                    <span class="label label-success">Publié</span>
+                    <?php endif; ?>
+                    <a class="label" href="<?php echo $this->url(array(
+                                                'id'=> $this->escape($document['id'])
+                                            ), 'editDocument', true); ?>">Editer
+                    </a>
+                </div>
+                <div class="label-right">
+                    <a id="delete-document-link-<?php echo $this->escape($document['id']).'-index'; ?>"
+                       class="label label-important" 
+                       href="<?php echo $this->url(array(
+                                                'id'=> $this->escape($document['id'])
+                                            ), 'deleteDocument', true); ?>">Supprimer
+                    </a>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+    <?php $i++; endforeach; ?>
+    <?php echo $this->paginationControl($this->library, 'Sliding', '/partials/pagination.phtml'); ?>
+</div>
+
+<?php if($this->escape($this->author)) : ?>
+<div id="dialog-delete-document" title="Supprimer un document">
+    Voulez-vous vraiment supprimer ce document ?
+</div>
+<?php endif; ?>

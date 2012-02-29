@@ -1,9 +1,3 @@
-a
-{
-    color: #222;
-    cursor: pointer;
-}
-
 #forum-content
 {
     width: 770px;
@@ -49,17 +43,6 @@ a
 }
 
 /******************************************/
-/***************** Content ****************/
-/******************************************/
-#content
-{
-    /*font-family: "Trebuchet MS", Arial;*/
-    margin: 40px auto;
-    width: 970px; /*700*/
-    float: left;
-}
-
-/******************************************/
 /*********** Sidebar left *****************/
 /******************************************/
 #sidebar-left
@@ -71,51 +54,6 @@ a
     margin: 15px 10px 0 0;
     padding: 5px;
 }
-
-
-/******************************************/
-/*********** Sidebar right *****************/
-/******************************************/
-#sidebar-right
-{
-    float: right;
-    overflow: hidden;
-    width: 185px;
-    margin: auto;
-}
-
-/******************************************/
-/**************** Module ******************/
-/******************************************/
-.module
-{
-    margin: 0 0 15px auto;
-}
-
-/******************************************/
-/************ Sort Module *****************/
-/******************************************/
-#sort-module
-{
-    background-color: #F1F1F1;
-    padding: 10px;
-    /*width: 150px;*/
-    font-weight: bold;
-}
-
-#sort-module ul
-{
-    padding-left: 15px;
-    list-style-type: none;
-    font-weight: normal;
-}
-
-#description-module
-{
-    padding: 0 10px 0 10px;
-    border: #666 dotted 1px;
-}
-
 
 /******************************************/
 /***************** Topics *****************/
@@ -242,66 +180,10 @@ a
     float: right;
 }
 
-.tags
-{
-    padding-left: 15px;
-    padding-top: 6px;
-    float: left;
-}
-
-.tag
-{
-    border-radius:5px 5px 5px 5px;
-    -webkit-border-radius:5px 5px 5px 5px;
-    -moz-border-radius:5px 5px 5px 5px;
-    background-color: #3E6D8E;
-    border:1px #00438a solid;
-    margin-right: 2px;
-    color: #333333; 
-    float: left;
-    padding: 0 3px 0 3px;
-    font-size: 0.9em;
-    line-height: 180%;
-}
-
 #tags-table .tag
 {
     /* Override tag font-size property */
     font-size: 1em;
-}
-
-.tag:hover
-{
-    background-color: #7F9FB6;
-    border-color:#00438a;
-    cursor: pointer;
-}
-
-.tag-name a
-{
-    text-decoration:none;
-    color: #fefefe;
-}
-
-.tag-name:hover
-{
-    color: #222;
-}
-
-.tag-name
-{
-    float: left;
-}
-
-.tag-action
-{
-    padding: 3px 0 0 4px;
-    float: right;
-}
-
-.tag-action img
-{
-    vertical-align: middle;
 }
 
 /*#topic-vote-top, #topic-response-top
@@ -375,57 +257,6 @@ a
     -moz-box-shadow: 0 0 3px #888;
     -webkit-box-shadow: 0 0 3px #888;
     box-shadow: 0 0 3px #888;*/
-}
-
-
-
-/******************************************/
-/***************** Favoris ****************/
-/******************************************/
-
-#favtags
-{
-    overflow: hidden;
-}
-
-#favlist
-{
-    list-style-type : none;
-}
-
-ul#favlist li.favorited-style 
-{
-    border-radius:5px 5px 5px 5px;
-    -moz-border-radius:5px 5px 5px 5px;
-    background-color: #3E6D8E;
-    border:1px #00438a solid;
-    margin-top: 3px;
-    float: left;
-    clear: left;
-}
-
-ul#favlist li.favorited-style:hover
-{
-    background-color: #7F9FB6;
-    border-color:#00438a;
-}
-
-ul#favlist li.favorited-style a
-{
-    text-decoration:none;
-    color: #fefefe;
-    padding:2px 4px 3px;
-}
-
-ul#favlist li.favorited-style a.close2
-{
-    color:#777777;
-    cursor:pointer;
-    font-size:12px;
-    font-weight:bold;
-    outline:medium none;
-    /*padding:2px 0 2px 3px;*/
-    
 }
 
 /******************************************/
@@ -658,12 +489,6 @@ ul#favlist li.favorited-style a.close2
 /******************************************/
 /**************** Add Topic ***************/
 /******************************************/
-
-form ul, form ol
-{
-    list-style: none outside none;
-}
-
 #form_topic ul li label
 {
     display: block;

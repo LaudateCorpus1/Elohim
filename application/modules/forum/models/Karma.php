@@ -52,27 +52,8 @@ class Forum_Model_Karma extends Zend_Db_Table_Abstract
         return intval($res->nbVotesCast);
    }
    
-   /*public function deleteVote($userId, $messageId, $type)
+   public function getTopicVotesByUser($userId, $topicId)
    {
-       $this->delete(array('userId = ?' => $userId, 'messageId = ?' => $messageId, 'type LIKE ?' => '%'.$type));
    }
-   
-   public function alreadyVoted($userId, $messageId, $type)
-   {
-       $query = $this->select()
-                      ->from($this->_name)
-                      ->where($this->getAdapter()->quoteInto('userId = ?', $userId))
-                      ->where($this->getAdapter()->quoteInto('messageId = ?', $messageId))
-                      ->where($this->getAdapter()->quoteInto('type = ?', $type));
-        $res = $this->fetchRow($query);
-        if($res == null)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-   }*/
 }
 ?>

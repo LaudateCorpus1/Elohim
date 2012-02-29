@@ -26,7 +26,8 @@ $(function()
                     parent.next('div').fadeIn("slow");
             }
 
-        }, "json");
+        }, "json")
+        .error(function() { alert("Une erreur est survenue"); });
         
         return false;
     });
@@ -99,7 +100,8 @@ $(function()
                         });*/
                     }
                 }
-            }, 'json');
+            }, 'json')
+            .error(function() { alert("Une erreur est survenue"); });
         }
         else
             alert("Vous devez vous identifier");
@@ -134,7 +136,8 @@ $(function()
                         }
                     });*/
                 }
-            },'json');
+            },'json')
+            .error(function() { alert("Une erreur est survenue"); });
         });
     }
 
@@ -221,8 +224,10 @@ $(function()
     dialogCloseTopic();
     dialogCloseMotif();    
     dialogReopenTopic();
-    // La dévalidation en ajax n'est pas utilisée'
+    // La dévalidation en ajax n'est pas utilisée
     dialogValidateAnswer(true);
+    
+    dialogDeleteDocument()
     
     
     /*
@@ -316,7 +321,8 @@ function rate(action, object)
 
             }
 
-        }, "json");
+        }, "json")
+        .error(function() { alert("Une erreur est survenue"); });
     }
     else
         alert("Vous devez vous identifier");
@@ -369,7 +375,7 @@ $('#dialog-form').dialog({
                                             },
                                             error: function(a, b, c)
                                             {
-                                                alert(b);
+                                                alert('Une erreur est survenue');
                                             }
                                         });
                                         $( this ).dialog('close');
@@ -453,7 +459,7 @@ function dialogReopenTopic()
                                 },
                                 error: function(a, b, c)
                                 {
-                                    alert(b + " " +c);
+                                    alert('Une erreur est survenue');
                                 }
                             });
                             $( this ).dialog( "close" );
@@ -512,7 +518,7 @@ function dialogValidateAnswer(validation)
                                 },
                                 error: function(a, b, c)
                                 {
-                                    alert(b + " " +c);
+                                    alert('Une erreur est survenue');
                                 }
                             });
                             $( this ).dialog( "close" );
@@ -587,9 +593,9 @@ function saveComment(messageId, content, submitted, controller, edit, commentId)
                         
                     }
                 },
-                error: function(a, b, c)
+                error: function(request, status, error)
                 {
-                    alert(b + " " +c);
+                    alert("Une erreur est survenue");
                 }
             });
         }
@@ -605,4 +611,58 @@ function checkVisible(elm) {
     var invisible = (y > (vpH + st));
     
     return !invisible;
+}
+
+
+/**************************/
+/******** Library *********/
+/**************************/
+function dialogDeleteDocument()
+{
+    $( "#dialog-delete-document" ).dialog({
+                autoOpen: false,
+                resizable: false,
+                height:150,
+                width: 350,
+                modal: true,
+                buttons: {
+                        Valider: function() {
+                            var id = $(this).data('id');
+                            var idSplit = id.split('-');
+                            var documentId = idSplit[3];
+                            var action = idSplit[4];
+                            $.ajax({
+                                type: "POST",
+                                url: "/library/doc/delete/"+documentId,
+                                dataType: "json",
+                                success: function(response)
+                                {
+                                    if(checkSuccess(response))
+                                    {
+                                        if(action == 'show')
+                                            window.location = '/library/'+response.username;
+                                        else if(action == 'index')
+                                            $('#'+id).parent().parent().parent().remove();
+                                    }
+                                },
+                                error: function(a, b, c)
+                                {
+                                    alert('Une erreur est survenue');
+                                }
+                            });
+                            $( this ).dialog( "close" );
+                        },
+                        Annuler: function() {
+                                $( this ).dialog( "close" );
+                        }
+                }
+        });
+                
+    $('a[id^=delete-document-link]').removeAttr('href');
+    
+    $('a[id^=delete-document-link]').click(function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $('#dialog-delete-document').data('id', id).dialog('open');
+    });
 }

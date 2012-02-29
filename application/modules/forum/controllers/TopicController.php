@@ -5,10 +5,6 @@ class Forum_TopicController extends Zend_Controller_Action {
     public function init() {
         $this->_helper->layout->setLayout('forum_layout');
         
-        $view = Zend_Layout::getMvcInstance()->getView();
-        $view->addHelperPath(APPLICATION_PATH . '/../library/Islamine/View/Helper', 'Islamine_View_Helper_');
-
-        
         if ($this->_request->isXmlHttpRequest()) {
             $this->_helper->viewRenderer->setNoRender();
             $this->_helper->layout->disableLayout();    //disable layout for ajax
@@ -97,12 +93,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             }
 
             $this->view->topicComments = $topic->getCommentsFromTopic($id);
-            
-            foreach ($list as $message) {
-                $this->view->$i = $messages->getCommentsFromMessage($message->messageId);
-                $i++;
-            }
-            
+   
             /*
              * Mise à jour du nombre de vues
              */
@@ -120,12 +111,16 @@ class Forum_TopicController extends Zend_Controller_Action {
             $messageForm = new Forum_Form_UserPostMessage();
             $this->view->messageForm = $messageForm;
             
-            $page = Islamine_Paginator::factory($list);
+            $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($list));
             $page->setPageRange(5);
             $page->setCurrentPageNumber($this->_getParam('page',1));
             $page->setItemCountPerPage(20);
             $this->view->messages = $page;
             
+            foreach ($page as $message) {
+                $this->view->$i = $messages->getCommentsFromMessage($message['messageId']);
+                $i++;
+            }
             
             $this->view->form = $form;
             $this->view->headScript()->appendScript("var auth = $autho;");
@@ -194,7 +189,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $title = $topicForm->getValue('form_topic_title');
                 $message = $topicForm->getValue('form_topic_content');
                 $tags = $topicForm->getValue('tagsValues');
-                $tags = mb_strtolower($tags);
+                $tags = strtolower($tags);
                 $tagArray = explode(" ", $tags);
                 $topic = new Forum_Model_Topic();
                 $tag = new Forum_Model_Tag();
@@ -534,42 +529,47 @@ class Forum_TopicController extends Zend_Controller_Action {
 
                     if ($form->isValid($formData)) {
                         $message = $form->getValue('form_topic_content');
+                        $new_tags = $form->getValue('tagsValues');
+                        
+                        if($this->_helper->updateTags($topicId, $new_tags))
+                        {
+                            if (!$topic->editConfilct($namespace->mess, $topicId)) {
+                                /*if ($row['type'] == 'wiki') {
+                                    if ($row['lastEditTime'] == null) {
+                                        $date = $row['date'];
+                                    } else {
+                                        $date = $row['lastEditTime'];
+                                    }
+                                    $wiki = new Forum_Model_WikiTopic();
+                                    $wiki->addHistory($topicId, '1', $row['ipAddress'], $row['message'], $date);
+                                }*/
+                                $title = $form->getValue('form_topic_title');
 
-                        if (!$topic->editConfilct($namespace->mess, $topicId)) {
-                            /*if ($row['type'] == 'wiki') {
-                                if ($row['lastEditTime'] == null) {
-                                    $date = $row['date'];
-                                } else {
-                                    $date = $row['lastEditTime'];
-                                }
-                                $wiki = new Forum_Model_WikiTopic();
-                                $wiki->addHistory($topicId, '1', $row['ipAddress'], $row['message'], $date);
-                            }*/
-                            $title = $form->getValue('form_topic_title');
-                            $new_tags = $form->getValue('tagsValues');
+                                $date = date('Y-m-d H:i:s', time());
+                                $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => $date, 'lastActivity' => $date), $topicId);
 
-                            $date = date('Y-m-d H:i:s', time());
-                            $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => $date, 'lastActivity' => $date), $topicId);
-                            $this->updateTags($topicId, $new_tags);
-                            
-                            $purifyHelper = $this->view->getHelper('Purify');
-                            $title = $purifyHelper->purifyTitle($title);
-                            
-                            $this->_redirect('forum/sujet/'.$topicId.'/'.$title);
-                        } else {
-                            $authorText = new Zend_Form_Element_Textarea('authorText');
-                            $authorText->setLabel("Votre texte")
-                                    ->setAttribs(array('rows' => '7', 'cols' => '50'))
-                                    ->setValue($message);
+                                $purifyHelper = $this->view->getHelper('Purify');
+                                $title = $purifyHelper->purifyTitle($title);
 
-                            $this->view->conflict = "Quelqu'un a modifié le texte pendant votre édition.
-                                        Dans la zone de texte ci-dessus se trouve le texte tel qu'il est
-                                        acutellement. Vos modifications se trouvent dans la zone de texte ci-dessous,
-                                        veuillez les apporter dans la zone supérieure. Seule cette zone sera enregistrée.";
+                                $this->_redirect('forum/sujet/'.$topicId.'/'.$title);
+                            } else {
+                                $authorText = new Zend_Form_Element_Textarea('authorText');
+                                $authorText->setLabel("Votre texte")
+                                        ->setAttribs(array('rows' => '7', 'cols' => '50'))
+                                        ->setValue($message);
 
-                            $this->view->authorText = $authorText;
-                            $namespace->mess = $row['message'];
+                                $this->view->conflict = "Quelqu'un a modifié le texte pendant votre édition.
+                                            Dans la zone de texte ci-dessus se trouve le texte tel qu'il est
+                                            acutellement. Vos modifications se trouvent dans la zone de texte ci-dessous,
+                                            veuillez les apporter dans la zone supérieure. Seule cette zone sera enregistrée.";
+
+                                $this->view->authorText = $authorText;
+                                $namespace->mess = $row['message'];
+                            }
                         }
+                        else
+                            $this->_forward('karma', 'error', 'forum', array('message' => 'Vous n\'avez pas le privilège pour créer des mots-clés'));
+
                     }
                 } else {
                     $namespace->mess = $row['message'];
@@ -586,11 +586,11 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $this->view->form = $form;
             }
             else
-                $this->_redirect ('/default/error/error');
+                throw new Exception('Vous n\'avez pas le droit de modifier le topic d\'un autre membre');
         }
     }
 
-    protected function updateTags($topic_id, $new_tags)
+    /*protected function updateTags($topic_id, $new_tags)
     {
         $id = $topic_id;
         $topic = new Forum_Model_Topic();
@@ -600,39 +600,37 @@ class Forum_TopicController extends Zend_Controller_Action {
         {
             $aOld_tag_name[] = $tag['name'];
         }
+        $tag_model = new Forum_Model_Tag();
+        $aTags = array();
+        $aTags = explode(" ", $new_tags);
 
-        
-                $tag_model = new Forum_Model_Tag();
-                $aTags = array();
-                $aTags = explode(" ", $new_tags);
-                
-                $aDiff_tags_old = array_diff($aOld_tag_name, $aTags);
-                $aDiff_tags_new = array_diff($aTags, $aOld_tag_name);
-                
-                $topic_tag_model = new Forum_Model_TopicTag();
-                
-                foreach ($aDiff_tags_old as $tag) 
-                {
-                    if (($tag_id = $tag_model->doesExist($tag)) !== false)
-                    {
-                            $topic_tag_model->deleteRow ($id, $tag_id);
-                            $tag_model->decrementTag($tag);
-                    }
-                }
-                
-                foreach ($aDiff_tags_new as $tag) 
-                {
-                    if (($tag_model->doesExist($tag)) !== false) 
-                    {
-                        $tag_id = $tag_model->incrementTag($tag);
-                    } 
-                    else 
-                    {
-                        $tag_id = $tag_model->addTag($tag, '1');
-                    }
-                    $topic_tag_model->addRow($id, $tag_id);
-                }
-    }
+        $aDiff_tags_old = array_diff($aOld_tag_name, $aTags);
+        $aDiff_tags_new = array_diff($aTags, $aOld_tag_name);
+
+        $topic_tag_model = new Forum_Model_TopicTag();
+
+        foreach ($aDiff_tags_old as $tag) 
+        {
+            if (($tag_id = $tag_model->doesExist($tag)) !== false)
+            {
+                    $topic_tag_model->deleteRow ($id, $tag_id);
+                    $tag_model->decrementTag($tag);
+            }
+        }
+
+        foreach ($aDiff_tags_new as $tag) 
+        {
+            if (($tag_model->doesExist($tag)) !== false) 
+            {
+                $tag_id = $tag_model->incrementTag($tag);
+            } 
+            else 
+            {
+                $tag_id = $tag_model->addTag($tag, '1');
+            }
+            $topic_tag_model->addRow($id, $tag_id);
+        }
+    }*/
     
     public function alertAction()
     {

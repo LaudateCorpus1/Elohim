@@ -38,6 +38,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_HasAccess());
         Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_NotifyUser());
+        Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_UpdateTags());
     }
 
     protected function _initConstants()

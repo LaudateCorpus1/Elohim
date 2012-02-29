@@ -22,7 +22,7 @@
                                             'name'=>$this->escape($tag->name)
                                         )); ?>"><?php echo $this->escape($tag->name); ?></a>
 
-                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId),'1');
+                <?php echo $this->favoriteTag($this->escape($tag->tag_tagId), $this->escape($tag->name));
                 endforeach; ?>
             </td>
         </tr>

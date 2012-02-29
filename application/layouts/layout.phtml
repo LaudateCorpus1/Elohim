@@ -15,60 +15,109 @@ echo $this->doctype() . PHP_EOL;
         <meta name="robots" content="index,follow" />
 
         <?php
-        echo $this->headLink()
-                ->prependStylesheet('/css/style.css')
-                ->appendStylesheet('/css/main.css');
+          echo $this->headLink()
+                    ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
+                    ->appendStylesheet('/css/tagit/jquery.tagit.css')
+                    ->appendStylesheet('/css/bootstrap.css')
+                    ->appendStylesheet('/css/main.css')
+                    ->appendStylesheet('/css/form.css');
+        
+            $this->headScript()->prependFile($this->baseUrl().'/js/ckfinder/ckfinder.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/script.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
+            echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
         ?>
     </head>
     <body>
+        <noscript>
+            <div id="noscript-padding">
+            </div>
+        </noscript>
+        
+        <?php echo $this->layout()->privilegeNotifPadding; ?>
+        
+        <div>
+            <div id="bg-header-top"></div>
+            <div id="bg-header-bottom"></div>
+        </div>
+        
         <div class="main">
             <div class="header">
-                    <div class="logo">
-                        <h1><a href="<?php
-        echo $this->url(array(
-            'controller' => 'index',
-            'action' => 'index'
-        ),null, true);
-        ?>"><img src="/images/logo.png" /></a></h1>
-                    </div>
-                    <div class="menu_nav">
-<?php //echo $this->navigation()->menu() . PHP_EOL;  ?>
-                        
-                    </div>
-                    <div class="clr"></div>
-                    <div id="nav">
-                        <ul>
-                            <li><a href="<?php echo $this->url(array(
-                                            'controller' => 'article',
-                                            'action' => 'index'
-                                        ), null, true) ?>">Articles</a></li>
-                            
-                            <li><a href="<?php echo $this->url(array(
-                                            'module' => 'forum',
-                                            'controller' => 'index',
-                                            'action' => 'index'
-                                        ), null, true) ?>">Forum</a></li>
-                            
-                            <li><a href="">Annonces</a></li>
-                            
-                            <li><a href="">Membres</a></li>
-                            
-                            <li><a href="">Contact</a></li>
-                        </ul>
-                    </div>
+                <div class="logo">
+                    <a href="<?php
+                        echo $this->url(array(
+                            'module' => 'default',
+                            'controller' => 'index',
+                            'action' => 'index'
+                        ), 'default', true);
+                        ?>">Islamine
+                    </a>
+                </div>
+                <div id="user-top">
+                    <?php echo $this->login(); ?>
+                </div>
+                <div class="clr"></div>
+                <div id="nav">
+                    <ul>
+                        <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'conference',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">Conférences</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'article',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">Articles</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'indexForum', true) ?>">Forum</a></li>
+
+                        <li><a href="">Annonces</a></li>
+
+                        <li><a href="">Membres</a></li>
+
+                        <li><a href="">Contact</a></li>
+                    </ul>
+                </div>
             </div>
+            
             <div class="clr"></div>
-            <div class="content">
-                <div class="content_resize">
-                    <div class="mainbar">
-                        
-                        <?php
-                        echo $this->layout()->content . PHP_EOL;
-                        ?>
+            <div id="partner">
+                <!--<img src="/images/pub.png" width="50" height="50"/>-->
+            </div>
+            <div id="content">
+                <div class="library-content">
+                    <?php
+                    echo $this->layout()->content . PHP_EOL;
+                    ?>
+                </div>
+                <div id="sidebar-right">
+                     <div class="forum-search">
+                         <?php
+                            echo new Forum_Form_Search();
+                         ?>
+                     </div>
+                    <div class="module">
+                        <?php echo $this->layout()->module_sort; ?>
                     </div>
-                    <div id="sidebar">
-                        
-                        <ul>
+
+                     <div class="module">
+                        <?php echo $this->layout()->module_favtags; ?>
+                    </div>
+
+                    <div class="module">
+                        <?php echo $this->layout()->module_description; ?>
+                    </div>
+
+                    <div class="modulep">
+                        <p class="partage">PartageIslam</p>
+                        <p>Vous avez des fichiers sur l'islam que vous voulez faire partager aux autre ?</p>
+                        <p>Envoyez-les nous, et nous les publierons sur le site !</p>
+                    </div>
+                </div>
+                        <!--<ul>
                             <li>
                                 <div id="search" >
                                     <form method="get" action="#">
@@ -96,36 +145,29 @@ echo $this->doctype() . PHP_EOL;
                                <?php endforeach;
                                 ?>
                             </li>
-			</ul>
-                        
-                    </div>
-                    <div class="clr"></div>
-                </div>
-            </div>
-            <div class="fbg">
-                <!--<div class="fbg_resize">
-                    <div class="col c1">
-                      <h2><span>Image Gallery</span></h2>
-                      <a href="#"><img src="images/gallery_1.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_2.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_3.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_4.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_5.jpg" width="58" height="58" alt="" /></a> <a href="#"><img src="images/gallery_6.jpg" width="58" height="58" alt="" /></a> </div>
-                    <div class="col c2">
-                      <h2><span>Lorem Ipsum</span></h2>
-                      <p>Lorem ipsum dolor<br />
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero. Suspendisse bibendum. Cras id urna. <a href="#">Morbi tincidunt, orci ac convallis aliquam</a>, lectus turpis varius lorem, eu posuere nunc justo tempus leo. Donec mattis, purus nec placerat bibendum, dui pede condimentum odio, ac blandit ante orci ut diam.</p>
-                    </div>
-                    <div class="col c3">
-                      <h2><span>Contact</span></h2>
-                      <p>Nullam quam lorem, tristique non vestibulum nec, consectetur in risus. Aliquam a quam vel leo gravida gravida eu porttitor dui. Nulla pharetra, mauris vitae interdum dignissim, justo nunc suscipit ipsum. <a href="#">mail@example.com</a><br />
-                        <a href="#">+1 (123) 444-5677</a></p>
-                    </div>
-                    <div class="clr"></div>
-                </div>-->
-                <div class="footer">
-                    Contact
-                  <!--<p class="lf">&copy; Copyright <a href="#">MyWebSite</a>.</p>
-                  <p class="rf">Layout by Cool <a href="http://www.coolwebtemplates.net/">Website Templates</a></p>
-                  <div class="clr"></div>-->
-                </div>
+			</ul>-->
             </div>
         </div>
+        
+        <div class="clr"></div>
+        <div class="footer">
+            <div class="footer-content">
+                <p>Copyright © 2012</p>
+                <p>
+                    <a href="#">Sitemap</a> | 
+                    <a href="#">Contact</a> | 
+                    <a href="#">Mentions légales</a> | 
+                    <a href="#">Flux RSS</a>
+                </p>
+            </div>
+        </div>
+        
+        <?php echo $this->layout()->privilegeNotifications; ?>
+
+        <noscript>
+            <div id="notify-message-script">
+                <span>Islamine fonctionne mieux avec JavaScript activé</span>
+            </div>
+        </noscript>
     </body>
 </html>

@@ -31,14 +31,22 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
             $html = '<div id="user-top-links-log">
                         <div class="user-top-info">
                             <div class="user-account-notif">
-                                <div class="user-account-link"><a href="'.$this->view->url(array(
+                                <div class="user-account-link">
+                                    <a href="'.$this->view->url(array(
                                                                     'username' => $auth->getIdentity()->login
-                                    ), 'showUser', true).'">Mon compte</a></div>
+                                    ), 'showUser', true).'">Mon compte</a>
+                                </div>
                                 <div class="'.$classNotif.'"><a class="notifications-link">'.$count.'</a></div>
                             </div>
-                            <div class="user-top-karma">'.$user->karma.' karma</div>
+                            <div>
+                                <a href="'.$this->view->url(array(
+                                                        'username' => $auth->getIdentity()->login
+                                    ), 'userLibrary', true).'">Ma bibliothèque</a>
+                            </div>
+                            
                         </div>
                         <div class="user-logout-link">
+                            <div class="user-top-karma">'.$user->karma.' karma</div>
                             <a href="/default/user/logout">Se déconnecter</a>
                         </div>
                     </div>'.$this->buildNotificationsDiv($this->view->notification);

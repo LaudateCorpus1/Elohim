@@ -9,16 +9,16 @@
  *
  * @author jeremie
  */
-class Zend_View_Helper_FavoriteTag extends Zend_View_Helper_Abstract
+class Islamine_View_Helper_FavoriteTag extends Zend_View_Helper_Abstract
 {
-    public function favoriteTag($tagId)
+    public function favoriteTag($tagId, $tagName)
     {
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
         {
             $userId = $auth->getIdentity()->id;
             $tags = new Forum_Model_Tag();
-            if($tags->alreadyFavorited($tagId, $userId))
+            if(in_array(array('tagId' => $tagId, 'name' => $tagName), Zend_Registry::get('user')->favtags))
             {
                 //return "-";
                 return '<a href="/forum/tag/removefavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>';

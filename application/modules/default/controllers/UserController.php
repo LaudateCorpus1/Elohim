@@ -5,12 +5,6 @@ class UserController extends Zend_Controller_Action
     public function preDispatch()
     {
         $auth = Zend_Auth::getInstance();
-        
-        /*if (!$auth->hasIdentity()) 
-        {
-            if($this->_request->getActionName() != 'login' && $this->_request->getActionName() != 'register' && $this->_request->getActionName() != 'index')
-                $this->_redirect('/user/login');
-        }*/
     }
 
     public function init()

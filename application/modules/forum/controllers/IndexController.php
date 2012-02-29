@@ -48,11 +48,6 @@ class Forum_IndexController extends Zend_Controller_Action {
             $list = $topics->getAll();
         }
         
-        foreach ($list as $topic) {
-            $this->view->$i = $topics->getTagsFromTopic($topic->topicId);
-            $i++;
-        }
-        
         // si l'utilisateur est connecté
         $auth = Zend_Auth::getInstance();
         $autho = 'false';
@@ -62,16 +57,18 @@ class Forum_IndexController extends Zend_Controller_Action {
             $identity = $auth->getIdentity();
             $favTags = new Forum_Model_Tag();
             $this->view->favTags = $favTags->getFavoriteTags($identity->id);
-
-        //        if($favTags->alreadyFavorited($tagId, '1'))
-        //        $this->view->favorite = $this->view->favoriteTag("remove");
         }
         
-        $page = Islamine_Paginator::factory($list);
+        $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($list));
         $page->setPageRange(5);
         $page->setCurrentPageNumber($this->_getParam('page',1));
         $page->setItemCountPerPage(20);
         $this->view->topics = $page;
+        
+        foreach ($page as $topic) {
+            $this->view->$i = $topics->getTagsFromTopic($topic['topicId']);
+            $i++;
+        }
         
         $this->view->headScript()->appendScript("var auth = $autho;");
     }

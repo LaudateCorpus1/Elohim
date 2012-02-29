@@ -36,11 +36,11 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
         return $res;
     }
 
-    public function addTag($name, $amount)
+    public function addTag($name, $amount, $amountColumn = 'amount')
     {
         $data = array(
             'name' => $name,
-            'amount' => $amount
+            $amountColumn => $amount
         );
         return $this->insert($data);
     }
@@ -55,34 +55,34 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
             $this->update($data, array('tagId = ?' => $id));
     }
 
-    public function incrementTag($name)
+    public function incrementTag($name, $column = 'amount')
     {
         $query = $this->select()
-                ->from($this->_name,array('tagId','amount'))
+                ->from($this->_name,array('tagId', $column))
                 ->where('name = ?',$name);
         $res = $this->fetchRow($query);
         if (!$res)
         {
             throw new Exception("Tag introuvable $name");
         }
-        $amount = (int)$res->amount + 1;
-        $data = array('amount' => $amount);
+        $amount = (int)$res->$column + 1;
+        $data = array($column => $amount);
         $this->update($data, $this->getAdapter()->quoteInto('name = ?', (string)$name));
         return $res->tagId;
     }
     
-    public function decrementTag($name)
+    public function decrementTag($name, $column = 'amount')
     {
         $query = $this->select()
-                ->from($this->_name,array('tagId','amount'))
+                ->from($this->_name,array('tagId', $column))
                 ->where('name = ?',$name);
         $res = $this->fetchRow($query);
         if (!$res)
         {
             throw new Exception("Tag introuvable $name");
         }
-        $amount = (int)$res->amount - 1;
-        $data = array('amount' => $amount);
+        $amount = (int)$res->$column - 1;
+        $data = array($column => $amount);
         $this->update($data, $this->getAdapter()->quoteInto('name = ?', (string)$name));
         return $res->tagId;
     }

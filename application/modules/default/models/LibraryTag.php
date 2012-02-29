@@ -5,15 +5,15 @@
  *
  * @author jeremie
  */
-class Forum_Model_TopicTag extends Zend_Db_Table_Abstract
+class Default_Model_LibraryTag extends Zend_Db_Table_Abstract
 {
-    protected $_name = 'TopicTag';
+    protected $_name = 'libraryTag';
 
     protected $_referenceMap = array(
-        'Topic' => array(
-                'columns'       => array('topicId'),
-                'refTableClass' => 'Forum_Model_Topic',
-                'refColumns'    => array('topicId')
+        'library' => array(
+                'columns'       => array('libraryId'),
+                'refTableClass' => 'Default_Model_Library',
+                'refColumns'    => array('id')
         ),
         'Tag'   => array(
                 'columns'       => array('tagId'),
@@ -21,29 +21,29 @@ class Forum_Model_TopicTag extends Zend_Db_Table_Abstract
                 'refColumns'    => array('tagId')
         ));
 
-   public function addRow($topicId,$tagId)
+   public function addRow($libraryId, $tagId)
    {
        $data = array(
-           'topicId' => $topicId,
+           'libraryId' => $libraryId,
            'tagId'   => $tagId
        );
        $this->insert($data);
    }
    
-   public function deleteRow($topicId, $tagId)
+   public function deleteRow($libraryId, $tagId)
    {
        $where = array();
-       $where[] = $this->getAdapter()->quoteInto('topicId = ?', $topicId);
+       $where[] = $this->getAdapter()->quoteInto('libraryId = ?', $libraryId);
        $where[] = $this->getAdapter()->quoteInto('tagId = ?', $tagId);
        $this->delete($where);
    }
    
-    public function addMultipleTags($topicId, array $tags)
+    public function addMultipleTags($libraryId, array $tags)
     {
         if(count($tags) != 0)
         {
             $data = array(
-                   'topicId' => $topicId
+                   'libraryId' => $libraryId
                 );
             foreach ($tags as $tag)
             {
@@ -53,22 +53,22 @@ class Forum_Model_TopicTag extends Zend_Db_Table_Abstract
         }
     }
     
-    public function deleteMultipleTags($topicId, array $tags)
+    public function deleteMultipleTags($libraryId, array $tags)
     {
         if(count($tags) != 0)
         {
             $where = array();
-            $where[] = $this->getAdapter()->quoteInto('topicId = ?', $topicId);
+            $where[] = $this->getAdapter()->quoteInto('librayId = ?', $libraryId);
             $where[] = $this->getAdapter()->quoteInto('tagId IN(?)', $tags);
             $this->delete($data, $where);
         }
     }
    
-    public function updateRow(array $data, $topic_id, $tag_id)
+    public function updateRow(array $data, $libraryId, $tagId)
     {
         $where = array();
-        $where[] = $this->getAdapter()->quoteInto('topicId = ?', $topic_id);
-        $where[] = $this->getAdapter()->quoteInto('tagId = ?', $tag_id);
+        $where[] = $this->getAdapter()->quoteInto('libraryId = ?', $libraryId);
+        $where[] = $this->getAdapter()->quoteInto('tagId = ?', $tagId);
         $this->update($data, $where);
     }
     

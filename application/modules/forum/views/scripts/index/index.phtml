@@ -16,18 +16,18 @@ $purifyHelper = $this->getHelper('Purify');
 
 <div id="topics">
     <?php $i=0;
-    foreach($this->topics as $topic) : 
+    foreach($this->topics as $topic) :
     ?>
         <div <?php echo $this->topicContainerClass($topic, $this->$i); ?>>
             <div class="topic-container">
                 <div class="topic-subject">
-                    <?php if($this->escape($topic->status) == 'closed')
+                    <?php if($this->escape($topic['status']) == 'closed')
                             echo '[Fermé]';
                     ?>
                     <a href="<?php echo $this->url(array(
-                                            'topic' => $this->escape($topic->topicId),
-                                            'title' => $purifyHelper->purifyTitle($this->escape($topic->title))
-                                        ), 'showTopic'); ?>"><?php echo $this->escape($topic->title);?></a></div>
+                                            'topic' => $this->escape($topic['topicId']),
+                                            'title' => $purifyHelper->purifyTitle($this->escape($topic['title']))
+                                        ), 'showTopic'); ?>"><?php echo $this->escape($topic['title']);?></a></div>
                 <div class="tags">
                     <?php
                     foreach($this->$i as $tag) : ?>
@@ -38,31 +38,31 @@ $purifyHelper = $this->getHelper('Purify');
                                             ), 'taggedTopic'); ?>"><?php echo $this->escape($tag->name); ?></a>
                         </div>  
                         <div class="tag-action">
-                            <?php echo $this->favoriteTag($this->escape($tag->tag_tagId)); ?>
+                            <?php echo $this->favoriteTag($this->escape($tag->tag_tagId), $this->escape($tag->name)); ?>
                         </div>
                     </div>
                     <?php endforeach; ?>
                 </div>
                 <div class="topic-author">
                     <a href="<?php echo $this->url(array(
-                                                'id' => $this->escape($topic->userId),
-                                                'username'=> $this->escape($topic->login)
-                                            ), 'showUser', true); ?>"><?php echo $this->escape($topic->login); ?></a>
+                                                'id' => $this->escape($topic['userId']),
+                                                'username'=> $this->escape($topic['login'])
+                                            ), 'showUser', true); ?>"><?php echo $this->escape($topic['login']); ?></a>
                 </div>
             </div>
             <div class="topic-stats">
                 <div class="vote-response-block">
-                <div class="topic-vote"><?php echo $this->escape($topic->vote);?> votes</div>
+                <div class="topic-vote"><?php echo $this->escape($topic['vote']);?> votes</div>
                 <?php
                 $class = '';
-                if($this->escape($topic->status) == 'resolved')
+                if($this->escape($topic['status']) == 'resolved')
                         $class = 'resolved';
-                else if(intval($this->escape($topic->amount_messages)) > 0)
+                else if(intval($this->escape($topic['amount_messages'])) > 0)
                         $class = 'answered';
                 ?>
-                <div class="topic-response-number <?php echo $class; ?>"><?php echo $this->escape($topic->amount_messages); ?> réponses</div>
+                <div class="topic-response-number <?php echo $class; ?>"><?php echo $this->escape($topic['amount_messages']); ?> réponses</div>
                 </div>
-                <div class="topic-date"><?php echo $this->escape($topic->date);?></div>
+                <div class="topic-date"><?php echo $this->escape($topic['date']);?></div>
             </div>
         </div>
     <?php $i++; endforeach; ?>

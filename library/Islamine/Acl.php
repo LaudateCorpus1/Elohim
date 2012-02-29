@@ -110,7 +110,6 @@ class Islamine_Acl extends Zend_Acl
              */
             $model_user = new Model_User($this->_config);
             $user = $model_user->get($identity->id, true);
-            //Zend_Debug::dump($user); exit;
             Zend_Registry::set('user', $user);
             
             $role = $identity->login.'_'.$identity->id;
