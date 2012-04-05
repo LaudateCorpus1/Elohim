@@ -175,6 +175,17 @@ form ul li
     margin-bottom: 5px;
 }
 
+form ul .chkbx
+{
+    margin-top: 12px;
+    margin-bottom: 9px;
+}
+
+form ul .chkbx label
+{
+    margin-right: 5px;
+}
+
 input, textarea, select
 {
     width: inherit;
@@ -196,7 +207,7 @@ input, textarea, select
 #content
 {
     /*font-family: "Trebuchet MS", Arial;*/
-    margin: 40px auto;
+    margin: auto;
     width: 970px; /*700*/
     float: left;
 }
@@ -644,7 +655,9 @@ input, textarea, select
 
 #partner
 {
-    background:url(../images/pub.png) no-repeat left;
+    width: 770px;
+    margin: 30px auto;
+    /*background:url("../images/banner.jpg") no-repeat left;*/
 }
 
 /******************************************/
@@ -765,6 +778,11 @@ input, textarea, select
     float: left;
 }
 
+.tags2
+{
+    float: left;
+}
+
 .tag
 {
     border-radius:5px 5px 5px 5px;
@@ -875,7 +893,7 @@ ul#favlist li.favorited-style a.close2
 
 .library-content form
 {
-    width: 687px;
+    /*width: 687px;*/
 }
 
 .library
@@ -891,7 +909,7 @@ ul#favlist li.favorited-style a.close2
 {
     background-color: #EEE;
     width: 750px; /*700*/
-    padding : 6px 0 6px 0;
+    padding-bottom : 6px;
     border-bottom: solid #AAA 1px;
     /*background-color: #F1F1F1; /*#e6e6e6;/*#dcdcdd;*/
     float: left;
@@ -902,6 +920,42 @@ ul#favlist li.favorited-style a.close2
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+}
+
+.document-vote
+{
+    background-color: #AAA;
+    color: #fff;
+    font-size: 0.9em;
+    padding: 2px 4px 2px 4px;
+    text-align: center;
+    margin-right: 4px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.document-vote.positive
+{
+    background-color: #281;
+    color: #fff;
+}
+
+.document-vote.negative
+{
+    background-color: #E9322D;
+    color: #fff;
+}
+
+.add-document
+{
+    width: 640px;
+}
+
+.add-document-description
+{
+    margin-bottom: 30px;
+    font-weight: bold;
 }
 
 .document-header a
@@ -924,7 +978,7 @@ ul#favlist li.favorited-style a.close2
 
 .document-header
 {
-    padding-left: 15px;
+    padding: 3px 0 3px 5px;
     width: 735px;
     border-bottom: #555555 dotted 1px;
     overflow: hidden;
@@ -937,7 +991,7 @@ ul#favlist li.favorited-style a.close2
 
 .document
 {
-    width: 630px;
+    width: 700px;
 }
 
 .document-date
@@ -949,20 +1003,38 @@ ul#favlist li.favorited-style a.close2
 .document-show-header
 {
     border-top: #595959 solid 1px;
+    word-wrap: break-word;
 }
 
 .document-show-description
 {
-    border-left: #595959 dashed 1px;
-    padding-left: 15px;
+    /*border-left: #595959 dashed 1px;*/
+    background-color: #eee;
+    padding: 10px;
     text-align: justify;
+    overflow: hidden;
     margin-bottom: 20px;
+    border-radius: 5px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 5px;
+}
+
+.document-show-description ol, .document-show-description ul
+{
+    padding-left: 40px;
 }
 
 .document-show-date
 {
-    margin: 3px 0 0 7px;
+    margin-left: 7px;
     font-size: 0.9em;
+    float: left;
+}
+
+.document-show-source
+{
+    text-align: right;
+    font-style: italic;
 }
 
 .document-menu

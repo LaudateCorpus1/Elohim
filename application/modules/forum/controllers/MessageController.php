@@ -32,7 +32,10 @@ class Forum_MessageController extends Zend_Controller_Action {
     }
 
     public function decrementvoteAction() {
-        $data = array('type' => 'DOWN_MESSAGE');
+        
+        $this->_helper->vote('DOWN_MESSAGE');
+        
+        /*$data = array('type' => 'DOWN_MESSAGE');
         
         $auth = Zend_Auth::getInstance();
         $identity = $auth->getIdentity();
@@ -111,11 +114,14 @@ class Forum_MessageController extends Zend_Controller_Action {
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
-        }
+        }*/
     }
 
     public function incrementvoteAction() {
-        $data = array('type' => 'UP_MESSAGE');
+        
+        $this->_helper->vote('UP_MESSAGE');
+        
+        /*$data = array('type' => 'UP_MESSAGE');
         
         $auth = Zend_Auth::getInstance();
         $identity = $auth->getIdentity();
@@ -195,7 +201,7 @@ class Forum_MessageController extends Zend_Controller_Action {
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
-        }
+        }*/
     }
 
     public function commentAction() {

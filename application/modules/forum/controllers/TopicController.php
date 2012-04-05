@@ -59,8 +59,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                 $this->view->identity = $identity->id;
                 
                 // L'auteur peut éditer son topic
-                if($this->view->topic['userId'] == $identity->id)
-                {
+                if($this->view->topic['userId'] == $identity->id) {
                     $this->view->author = true;
                 }
                 
@@ -71,8 +70,7 @@ class Forum_TopicController extends Zend_Controller_Action {
             }*/
 
             $r = $this->_getParam('messages');
-            if($r != null)
-            {
+            if($r != null) {
                 $list = $r;
             }
             else
@@ -240,7 +238,10 @@ class Forum_TopicController extends Zend_Controller_Action {
     }
 
     public function incrementvoteAction() {
-        $data = array('type' => 'UP_TOPIC');
+        
+        $this->_helper->vote('UP_TOPIC');
+        
+        /*$data = array('type' => 'UP_TOPIC');
         
         $auth = Zend_Auth::getInstance();
         $identity = $auth->getIdentity();
@@ -317,66 +318,14 @@ class Forum_TopicController extends Zend_Controller_Action {
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
-        }
-        
-        
-        
-        
-        
-        /*$auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-        $incrementTopic = new Forum_Model_Topic();
-        $this->view->topic = $topicId = $this->_getParam('topic');
-        $model_vote = new Forum_Model_Vote();
-        
-        if($model_vote->alreadyVoted($identity->id, $topicId, 'UP_TOPIC'))
-        {
-            if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
-            else
-                $this->view->message = 'Vous avez déjà voté';
-        }
-        else
-        {
-            $res = $incrementTopic->incrementVote($topicId, $identity->id);
-            if($res === false)
-            {
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
-                else
-                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
-            }
-            else
-            {
-                $user_model = new Model_User();
-
-                $revote = false;
-
-                if($model_vote->alreadyVoted($identity->id, $topicId, 'DOWN_TOPIC'))
-                {
-                    $revote = true;
-                    // Il faut annuler l'ancien vote
-                    $model_vote->deleteVote($identity->id, $topicId, 'TOPIC');
-                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_down_reward;
-                    $user_model->setKarma(abs(intval($karma_up)), $res->userId);
-                }
-                else 
-                {
-                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_up_reward;
-                    $user_model->setKarma($karma_up, $res->userId);
-                    $model_vote->addVote($identity->id, $topicId, 'UP_TOPIC');
-                }
-
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'UP_TOPIC', 'revote' => $revote));
-                else
-                    $this->view->message = 'Merci d\'avoir voté';
-            }
         }*/
     }
 
     public function decrementvoteAction() {
-        $data = array('type' => 'DOWN_TOPIC');
+        
+        $this->_helper->vote('DOWN_TOPIC');
+        
+        /*$data = array('type' => 'DOWN_TOPIC');
         
         $auth = Zend_Auth::getInstance();
         $identity = $auth->getIdentity();
@@ -449,59 +398,6 @@ class Forum_TopicController extends Zend_Controller_Action {
                 
                 if ($this->_request->isXmlHttpRequest())
                     echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'DOWN_TOPIC', 'revote' => $data['cancellation']));
-                else
-                    $this->view->message = 'Merci d\'avoir voté';
-            }
-        }
-        
-        
-        
-        /*$auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-        $incrementTopic = new Forum_Model_Topic();
-        $this->view->topic = $topicId = $this->_getParam('topic');
-        $model_vote = new Forum_Model_Vote();
-        
-        if($model_vote->alreadyVoted($identity->id, $topicId, 'DOWN_TOPIC'))
-        {
-            if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous avez déjà voté'));
-            else
-                $this->view->message = 'Vous avez déjà voté';
-        }
-        else
-        {
-            $res = $incrementTopic->decrementVote($topicId, $identity->id);
-            if($res === false)
-            {
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Vous ne pouvez pas voter pour vous'));
-                else
-                    $this->view->message = 'Vous ne pouvez pas voter pour vous';
-            }
-            else // OK
-            {
-                $user_model = new Model_User();
-
-                $revote = false;
-
-                if($model_vote->alreadyVoted($identity->id, $topicId, 'UP_TOPIC'))
-                {
-                    $revote = true;
-                    // Il faut annuler l'ancien vote
-                    $model_vote->deleteVote($identity->id, $topicId, 'TOPIC');
-                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_up_reward;
-                    $user_model->setKarma('-'.$karma_up, $res->userId);
-                }
-                else 
-                {
-                    $karma_up = Zend_Registry::getInstance()->constants->vote_topic_down_reward;
-                    $user_model->setKarma($karma_up, $res->userId);
-                    $model_vote->addVote($identity->id, $topicId, 'DOWN_TOPIC');
-                }
-
-                if ($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'ok', 'vote' => $res->vote, 'type' => 'DOWN_TOPIC', 'revote' => $revote));
                 else
                     $this->view->message = 'Merci d\'avoir voté';
             }
@@ -655,20 +551,14 @@ class Forum_TopicController extends Zend_Controller_Action {
                 if($form->isValid($formData)) 
                 {
                     $motif = $form->getValue('motif');
-                   
-                    $mail = new Islamine_Mail('jeremie.paas@gmail.com', '!SSAARRLL22!');
-                    $mail->addTo('moderation.islamine@gmail.com', 'Modération Islamine');    
-                    $mail->setFrom('jeremie.paas@gmail.com', 'Sujet alerté par '.$auth->getIdentity()->login);
-                    $mail->setSubject('Alerte sur le sujet '.$topic->title);
-                    
+                    $subject = 'Alerte sur le sujet '.$topic->title;
                     $body = 'Le sujet "'.$topic->title.'" posté par '.$topic->login.' contenant le message : 
 
 '.strip_tags(($topic->message)).'
     
 a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                     
-                    $mail->setBodyText($body, 'utf-8');
-                    $mail->send();
+                    $this->_helper->alertMail($subject, $body);
                     
                     $this->view->message = 'Votre demande a été prise en compte.';
                 }

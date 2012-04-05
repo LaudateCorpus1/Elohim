@@ -15,6 +15,7 @@ echo $this->doctype() . PHP_EOL;
         <meta name="robots" content="index,follow" />
 
         <?php
+          echo $this->headTitle()->toString('		') . PHP_EOL;
           echo $this->headLink()
                     ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
                     ->appendStylesheet('/css/tagit/jquery.tagit.css')
@@ -85,7 +86,7 @@ echo $this->doctype() . PHP_EOL;
             
             <div class="clr"></div>
             <div id="partner">
-                <!--<img src="/images/pub.png" width="50" height="50"/>-->
+                <img src="/images/banner.png" alt="banner" />
             </div>
             <div id="content">
                 <div class="library-content">
@@ -156,7 +157,10 @@ echo $this->doctype() . PHP_EOL;
                 <p>
                     <a href="#">Sitemap</a> | 
                     <a href="#">Contact</a> | 
-                    <a href="#">Mentions légales</a> | 
+                    <a href="<?php echo $this->url(array(
+                                        'controller' => 'index',
+                                        'action' => 'copyright'
+                                    ), 'default', true) ?>">Mentions légales</a> | 
                     <a href="#">Flux RSS</a>
                 </p>
             </div>

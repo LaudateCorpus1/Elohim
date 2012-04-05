@@ -11,6 +11,14 @@ class Default_Form_CompleteLibrary extends Zend_Form {
         array(array('row' => 'HtmlTag'), array('tag' => 'li'))
     );
     
+    private $checkboxDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div')),
+        array('Errors', array('class' => 'help-error')),
+        array('Label', array('class' => 'label-left')),
+        array(array('row' => 'HtmlTag'), array('tag' => 'li', 'class' => 'chkbx'))
+    );
+    
     private $buttonDecorators = array(
         'ViewHelper',
         array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'button')),
@@ -30,10 +38,12 @@ class Default_Form_CompleteLibrary extends Zend_Form {
         $auto->removeDecorator('Label');
         
         $this->addElements(array(
-            $this->createElement('text', 'form_document_library_header', array('size' => '83'))->setRequired(true)->setLabel('Titre / Adresse d\'un site')->setDecorators($this->elementDecorators),
+            $this->createElement('text', 'form_document_library_header', array('size' => '88'))->setRequired(true)->setLabel('Titre / Adresse d\'un site')->setDecorators($this->elementDecorators),
             $this->createElement('textarea', 'form_document_library_description', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Texte / Description de l\'adresse')->setDecorators($this->elementDecorators),
+            $this->createElement('text', 'form_document_library_source', array('size' => '88'))->setRequired(true)->setLabel('Source (nom de l\'auteur / courant islamique / site de l\'article / origine du texte, etc)')->setDecorators($this->elementDecorators),
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots-clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
+            $this->createElement('checkbox', 'form_document_library_public')->setLabel('Publier')->setDecorators($this->checkboxDecorators),
             $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn btn-primary')
         ));
     }

@@ -39,6 +39,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_HasAccess());
         Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_NotifyUser());
         Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_UpdateTags());
+        Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_AlertMail());
+        Zend_Controller_Action_HelperBroker::addHelper(new Islamine_Controller_Action_Helper_Vote());
     }
 
     protected function _initConstants()

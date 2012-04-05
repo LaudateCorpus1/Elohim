@@ -1,0 +1,50 @@
+<?php $this->headTitle($this->escape('Avertir un modérateur'));  ?>
+
+<h3>Avertir un modérateur</h3>
+
+<?php
+if(isset($this->message)) :
+        echo '<p>'.$this->escape($this->message).'</p>';
+?>
+
+<p><a href="#" onclick="window.close();return false;">Fermer</a></p>
+
+<?php
+else :
+    echo $this->form; 
+?>
+
+<div class="document">
+    <div class="document-top">
+        <div class="label-left">
+            <?php if(intval($this->escape($this->document->public))) : ?>
+            <span class="label label-info">Publié</span>
+            <?php endif; ?>
+        </div>
+        <div class="document-show-date">
+            Ajouté le <?php echo $this->escape($this->document->date); ?>
+        </div>
+        <div class="backtolist">
+            <a href="<?php echo $this->url(array(
+                                        'username' => $this->escape($this->username)
+                                          ), 'userLibrary'); ?>">
+            Retour à la bibliothèque
+            </a>
+        </div>
+    </div>
+    
+    <div class="document-show-header">
+        <h3><?php echo $this->escape($this->document->title);?></h3>
+    </div>
+    <div class="document-show-description">
+        <?php echo $this->purify($this->document->content);?> 
+    </div>
+    <div class="document-show-source">
+        <?php if($this->escape($this->document->source) != null && $this->escape($this->document->source) != '') : ?>
+        Source : <?php echo $this->escape($this->document->source);?> 
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php
+endif;

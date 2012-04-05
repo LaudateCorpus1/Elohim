@@ -45,6 +45,7 @@ class LibraryController extends Zend_Controller_Action
     
     public function addAction()
     {
+        $this->view->headScript()->appendFile("/js/documentEditor.js");
         $form = new Default_Form_CompleteLibrary();
 
         if ($this->getRequest()->isPost()) {
@@ -53,6 +54,8 @@ class LibraryController extends Zend_Controller_Action
                 $tagArray = array();
                 $title = $form->getValue('form_document_library_header');
                 $description = $form->getValue('form_document_library_description');
+                $public = $form->getValue('form_document_library_public');
+                $source = $form->getValue('form_document_library_source');
                 $tags = $form->getValue('tagsValues');
                 $tags = strtolower($tags);
                 $tagArray = explode(" ", $tags);
@@ -63,7 +66,7 @@ class LibraryController extends Zend_Controller_Action
                 
                 $tag->getAdapter()->beginTransaction();
                 
-                $libraryId = $modelLibrary->addDocument($auth->getIdentity()->id, $title, $description, false);
+                $libraryId = $modelLibrary->addDocument($auth->getIdentity()->id, $title, $description, $public, $source);
                 $error = false;
                 foreach ($tagArray as $t) {
                     if ($tag->doesExist($t) !== false) {
@@ -104,12 +107,19 @@ class LibraryController extends Zend_Controller_Action
         $this->view->document = $modelLibrary->get($id);
         $this->view->tags = $modelLibrary->getTags($id);
         
+        // Formulaire d'alerte
+        $this->view->form = new Default_Form_DocumentAlert();
+        
         $this->view->author = false;
+        $autho = 'false';
         if($auth->hasIdentity())
         {
+            $autho = 'true';
             if($auth->getIdentity()->id == $this->view->document->userId)
                 $this->view->author = true;
-        }            
+        }
+        
+        $this->view->headScript()->appendScript("var auth = $autho;");
     }
     
     public function editAction()
@@ -122,6 +132,7 @@ class LibraryController extends Zend_Controller_Action
        // Si c'est bien l'auteur du doc
        if($auth->getIdentity()->id == $document->userId)
        {
+           $this->view->headScript()->appendFile("/js/documentEditor.js");
            $form = new Default_Form_CompleteLibrary();
 
             if ($this->getRequest()->isPost()) {
@@ -130,6 +141,8 @@ class LibraryController extends Zend_Controller_Action
                     
                     $title = $form->getValue('form_document_library_header');
                     $description = $form->getValue('form_document_library_description');
+                    $public = $form->getValue('form_document_library_public');
+                    $source = $form->getValue('form_document_library_source');
                     $newTags = $form->getValue('tagsValues');
                     if($this->_helper->updateTags($id, $newTags, 'library'))
                     {
@@ -138,7 +151,8 @@ class LibraryController extends Zend_Controller_Action
                                                         'title' => $title,
                                                         'content' => $description,
                                                         'lastEditDate' => $date,
-                                                        'public' => false
+                                                        'public' => $public,
+                                                        'source' => $source
                                                      ), $id);
 
                         $purifyHelper = $this->view->getHelper('Purify');
@@ -159,6 +173,8 @@ class LibraryController extends Zend_Controller_Action
             $form->populate(array(
                             'form_document_library_header' => $document->title,
                             'form_document_library_description' => $document->content,
+                            'form_document_library_public' => $document->public,
+                            'form_document_library_source' => $document->source,
                             'tagsValues' => $tags_string
                            ));
             $this->view->form = $form;
@@ -200,6 +216,63 @@ class LibraryController extends Zend_Controller_Action
            return true;
        else
            return false;
+    }
+    
+    public function alertAction()
+    {
+        $id = $this->_getParam('id');
+        if ($id > 0) 
+        {
+            $libraryModel = new Default_Model_Library();
+            $document = $libraryModel->get($id);
+            
+            if ($this->_request->isXmlHttpRequest()) 
+            {
+                $data = $this->getRequest()->getPost();
+                
+                $motif = $data['motif'];
+                $this->flagDocument($motif, $document);
+                echo Zend_Json::encode(array('status' => 'ok', 'message' => 'Votre demande a été prise en compte.'));
+            }
+            else
+            {
+                $this->view->document = $document;
+                $this->view->form = $form = new Default_Form_DocumentAlert();
+
+                if ($this->getRequest()->isPost()) 
+                {
+                    $formData = $this->getRequest()->getPost();
+                    if($form->isValid($formData)) 
+                    {
+                        $motif = $form->getValue('motif');
+                        $this->flagDocument($motif, $document);
+                        $this->view->message = 'Votre demande a été prise en compte.';
+                    }
+                }
+            }
+        }
+    }
+    
+    private function flagDocument($motif, $document)
+    {
+        $auth = Zend_Auth::getInstance();
+        $libraryModel = new Default_Model_Library();
+        $libraryModel->updateDocument(array('flag' => true), $document->id);
+        
+        $subject = 'Alerte sur le document '.$document->id. ' : '.$document->title;
+                        $body = 'Le document "'.$document->title.'" posté par '.$document->login.' contenant le message : 
+'.strip_tags(($document->content)).'
+a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
+
+        $this->_helper->alertMail($subject, $body);
+    }
+    
+    public function incrementvoteAction() {
+        $this->_helper->vote('UP_DOCUMENT');
+    }
+    
+    public function decrementvoteAction() {
+        $this->_helper->vote('DOWN_DOCUMENT');
     }
 }
 

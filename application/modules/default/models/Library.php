@@ -6,8 +6,13 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
     
     public function get($id)
     {
-        $where = $this->getAdapter()->quoteInto('id = ?', $id);
-        $row = $this->fetchRow($this->select()->where($where));
+        $where = $this->getAdapter()->quoteInto($this->_name.'.id = ?', $id);
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name)
+              ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->where($where);
+        $row = $this->fetchRow($query);
         if($row == null)
         {
             throw new Exception("Document introuvable : $id");
@@ -29,13 +34,14 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         return $row->userId;
     }
     
-    public function addDocument($userId, $title, $content, $public)
+    public function addDocument($userId, $title, $content, $public, $source)
     {
         $data = array(
             'userId' => $userId,
             'title' => $title,
             'content' => $content,
-            'public' => $public
+            'public' => $public,
+            'source' => $source
         );
         return $this->insert($data);
     }
@@ -60,7 +66,9 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
                   'lastEditDate',
                   'title',
                   'content',
-                  'public'
+                  'public',
+                  'flag',
+                  'vote'
                   ))
               ->join('user', $this->_name.'.userId = user.id', null)
               ->where($this->getAdapter()->quoteInto('login = ?', $username))
@@ -87,6 +95,66 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         $res = $this->fetchAll($query);
 
         return $res;
+    }
+    
+    public function incrementVote($id, $authorId)
+    {
+        $this->getAdapter()->beginTransaction();
+        
+        $data = array('vote' => new Zend_Db_Expr('vote + 1'));
+        $this->update($data, array('id = ?' => $id));
+        
+        $query = $this->select()
+                ->from($this->_name, array('vote', 'userId'))
+                ->where($this->getAdapter()->quoteInto('id = ?',$id));
+        $res = $this->fetchRow($query);
+        
+        if (!$res)
+        {
+            $this->getAdapter()->rollBack();
+            throw new Exception("Document introuvable $id");
+        }
+
+        if($res->userId == $authorId)
+        {
+            $this->getAdapter()->rollBack();
+            return false;
+        }
+        else
+        {
+            $this->getAdapter()->commit();
+            return $res;
+        }
+    }
+
+    public function decrementVote($id, $authorId)
+    {
+        $this->getAdapter()->beginTransaction();
+        
+        $data = array('vote' => new Zend_Db_Expr('vote - 1'));
+        $this->update($data, array('id = ?' => $id));
+        
+        $query = $this->select()
+                ->from($this->_name,array('vote', 'userId'))
+                ->where($this->getAdapter()->quoteInto('id = ?',$id));
+        $res = $this->fetchRow($query);
+        
+        if (!$res)
+        {
+            $this->getAdapter()->rollBack();
+            throw new Exception("Document introuvable $id");
+        }
+
+        if($res->userId == $authorId)
+        {
+            $this->getAdapter()->rollBack();
+            return false;
+        }
+        else
+        {
+            $this->getAdapter()->commit();
+            return $res;
+        }
     }
 }
 

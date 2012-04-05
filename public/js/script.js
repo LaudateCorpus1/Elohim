@@ -227,7 +227,8 @@ $(function()
     // La dévalidation en ajax n'est pas utilisée
     dialogValidateAnswer(true);
     
-    dialogDeleteDocument()
+    dialogDeleteDocument();
+    dialogAlertDocument();
     
     
     /*
@@ -270,16 +271,23 @@ function checkSuccess(response)
 function rate(action, object)
 {
     var url;
+    var topicId = '';
     var val = object.parent().attr('class');
     var element = object.parent().find('input').attr('value');
-    var topicId = $('.vote-t').find('input').first().val();
-    if(val == 'vote-t')
+    if(val == 'vote-d') 
     {
-        url = "/forum/topic/"+element+"/"+action;
+        url = "/library/doc/"+element+"/"+action;
     }
-    else if(val == 'vote-m')
+    else
     {
-        url = "/forum/message/"+element+"/"+action;
+        topicId = $('.vote-t').find('input').first().val();
+        
+        if(val == 'vote-t') {
+            url = "/forum/topic/"+element+"/"+action;
+        }
+        else if(val == 'vote-m') {
+            url = "/forum/message/"+element+"/"+action;
+        }
     }
 
     if(typeof auth != "undefined" && auth)
@@ -550,8 +558,7 @@ function saveComment(messageId, content, submitted, controller, edit, commentId)
 {
     edit = typeof(edit) != 'undefined' ? edit : false;
     
-    if(content == "")
-    {
+    if(content == "") {
         alert("Veuillez entrer un commentaire");
     }
     else
@@ -664,5 +671,94 @@ function dialogDeleteDocument()
         e.preventDefault();
         var id = $(this).attr('id');
         $('#dialog-delete-document').data('id', id).dialog('open');
+    });
+}
+
+function dialogAlertDocument()
+{
+    $('#dialog-alert-document').dialog({
+        autoOpen: false,
+        height: 210,
+        width: 600,
+        modal: true,
+        buttons: {
+                Valider: function() {
+                    
+                    var id = $(this).data('id');
+                    var motifElement = $('#dialog-alert-document').find('#motif');
+                    if(motifElement.val() == "") {
+                        alert("Veuillez entrer un motif");
+                    }
+                    else
+                    {
+                        var data = $('#form_document_alert').serializeArray();
+                        $('.ui-dialog-buttonset').find('button:first').hide();
+                        motifElement.addClass('ui-autocomplete-loading');
+                        
+                        $.ajax({
+                            type: "POST",
+                            url: "/library/alert/id/"+id,
+                            dataType: "json",
+                            data: data,
+                            success: function(response)
+                            {
+                                if(checkSuccess(response))
+                                {
+                                    motifElement.removeClass('ui-autocomplete-loading');
+                                    $('#dialog-alert-document').append('<div class="message">'+response.message+'</div>');
+                                    $('.ui-dialog-buttonset').find('button:last > span').text('Fermer');
+                                    /*if(response.count == '1')
+                                        $('.close-motif').show();//$('#topic-menu').append('<a href="#" >('+response+')</a>');
+
+                                    $('.close-motif').text('('+response.count+')');
+
+                                    $('#dialog-motif > ol').append("<li>" + $('input[name=close_motif]').val() + " par <strong>" + $('input[name=username]').val() + "</strong></li>");
+
+                                    if(response.count == '7')
+                                    {
+                                        $('#answer-topic').hide();
+                                        $('#topic-header > h1').prepend('<span class="topic-status">[fermé]</span>');
+                                        $('.close-modal-form').hide();
+                                        $('.reopen-modal-confirm').show();
+                                        $('.close-motif').hide();
+                                    }*/
+                                }
+                            },
+                            error: function(a, b, c)
+                            {
+                                alert('Une erreur est survenue');
+                            }
+                        });
+                    }
+                    //$( this ).dialog('close');
+                    //$('#dialog-alert-document').find('#motif').removeClass('ui-autocomplete-loading');
+                },
+                Annuler: function() {
+                        $( this ).dialog('close');
+                }
+        },
+        close: function() {
+                //allFields.val( "" ).removeClass( "ui-state-error" );
+        }
+    });
+                
+    $('.alert-document-link').removeAttr('href');
+    $('#validate_document_alert').parent().parent().remove();
+    
+    
+    $('.alert-document-link').click(function(e) {
+        var _id = $(this).attr('id');
+        var documentId = _id.substring(_id.lastIndexOf('-') + 1);
+        //Cancel the link behavior
+        e.preventDefault();
+        // Si le dialog est ouvert à nouveau après un envoi (sans recharger la page)
+        if ($('#dialog-alert-document > .message').length)
+        {
+            $('.ui-dialog-buttonset').find('button:first').show();
+            $('.ui-dialog-buttonset').find('button:last > span').text('Annuler');
+            $('#dialog-alert-document').find('#motif').val('');
+            $('#dialog-alert-document > .message').remove();
+        }
+        $('#dialog-alert-document').data('id', documentId).dialog('open');
     });
 }
