@@ -17,7 +17,7 @@ $purifyHelper = $this->getHelper('Purify');
     </div>
     
     <div class="user-data">
-        <span class="Bold">Inscrit le <?php echo $this->escape($this->user->date_created); ?></span>
+        <span class="Bold">Inscrit le <?php echo strftime('%d %B %Y', strtotime($this->escape($this->user->date_created))); ?></span>
         <br />
 
         <span class="Bold">Nom : </span>
@@ -42,6 +42,12 @@ $purifyHelper = $this->getHelper('Purify');
         <?php if($this->escape($this->user->location) != null && $this->escape($this->user->location) != '')
                 echo $this->escape($this->user->location);
         ?>
+        
+        <?php if($this->escape($this->edit)) : ?>
+        <p><a href="<?php echo $this->url(array(
+                                ), 'myFavDocs', true); ?>">Mes documents favoris</a>
+        </p>
+        <?php endif; ?>
     </div>
 
 <!--    <hr />
@@ -56,13 +62,7 @@ $purifyHelper = $this->getHelper('Purify');
                                 'username'=> $this->escape($this->user->login)
                             ), 'viewUserMessages', true);*/ ?>">Voir ses <?php //echo $this->escape($this->user->amount_messages); ?> messages</a>
     </p>-->
-    
-    <?php if($this->escape($this->edit)) : ?>
-    <p><a href="<?php echo $this->url(array(
-                            ), 'myFavDocs', true); ?>">Documents favoris</a>
-    </p>
-    <?php endif; ?>
-
+                            
     <!-- Stats Karma -->
     <div class="user-karma">
         <h3>
@@ -74,10 +74,7 @@ $purifyHelper = $this->getHelper('Purify');
         <tr>
             <td class="stats-type"><?php echo $this->karmaTypeConverter($this->escape($stat->type)); ?></td>
             <td class="stats-date">
-                <?php
-                    setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
-                    echo strftime('%d %b', strtotime($this->escape($stat->date)));
-                ?>
+                <?php echo strftime('%d %b', strtotime($this->escape($stat->date))); ?>
             </td>
             <td class="stats-link">
                 <?php if($this->escape($stat->content) != null) : ?>

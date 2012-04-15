@@ -785,6 +785,8 @@ input, textarea, select
 
 #user-info .user-karma {
     border-top: solid #aaa 1px;
+    width: 700px;
+    margin: 0 auto;
 }
 
 #user-info .user-karma h3{

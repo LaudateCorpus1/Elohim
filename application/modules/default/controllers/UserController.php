@@ -94,6 +94,7 @@ class UserController extends Zend_Controller_Action
                           $data['role'] = 'member';
                           $data['status'] = 'pending';
                           $data['avatar'] = 'userpic.gif';
+                          $data['date_created'] = date('Y-m-d H:i:s');
                           
                           $model_user = new Model_User();
                           $model_user->add($data);

@@ -13,6 +13,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initTranslation()
     {
+        setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
         $translator = new Zend_Translate(
           array(
               'adapter' => 'array',
