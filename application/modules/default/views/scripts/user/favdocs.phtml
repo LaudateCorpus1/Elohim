@@ -1,0 +1,24 @@
+<?php $this->headTitle('Mes favoris'); 
+$purifyHelper = $this->getHelper('Purify');
+?>
+
+<h2>Mes favoris</h2>
+<div class="fav-list">
+    <?php foreach($this->documents as $document) : ?>
+        <div class="fav-doc">
+            <h3>
+                <?php echo $this->documentTitle($document, $this->escape($document['login'])); ?>
+            </h3>
+            <div>
+                De 
+                <a href="<?php echo $this->url(array(
+                                'id' => $this->escape($document['authorId']),
+                                'username' => $this->escape($document['login'])
+                             ), 'showUser', true); ?>">
+                <?php echo $this->escape($document['login']); ?></a> |
+                <?php echo $this->escape($document['vote']);?> votes
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <?php echo $this->paginationControl($this->documents, 'Sliding', '/partials/pagination.phtml'); ?>       
+</div>

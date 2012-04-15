@@ -33,6 +33,7 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
                             <div class="user-account-notif">
                                 <div class="user-account-link">
                                     <a href="'.$this->view->url(array(
+                                                                    'id' => $auth->getIdentity()->id,
                                                                     'username' => $auth->getIdentity()->login
                                     ), 'showUser', true).'">Mon compte</a>
                                 </div>

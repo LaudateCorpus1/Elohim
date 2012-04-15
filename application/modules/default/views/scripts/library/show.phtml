@@ -3,7 +3,8 @@
 <div class="document">
     <div class="document-top">
         <div class="label-left">
-            <?php if(intval($this->escape($this->document->public))) : ?>
+            <?php if(intval($this->escape($this->document->public)) &&
+                    $this->escape($this->author)) : ?>
             <span class="label label-info">Publié</span>
             <?php endif; ?>
         </div>
@@ -31,10 +32,11 @@
                         <?php echo $this->documentVote($this->escape($this->document->id), 'DOWN_DOCUMENT'); ?>
                         <span class="vote-value"><?php echo $this->escape($this->document->vote); ?></span>
                         <?php echo $this->documentVote($this->escape($this->document->id), 'UP_DOCUMENT'); ?>
+                        <?php echo $this->favoriteDocument($this->escape($this->document->id)); ?>
                     </div>
                 </div>
             </td>
-            <td>
+            <td class="document-show-description-cell">
                 <div class="document-show-description">
                     <?php echo $this->purify($this->document->content);?> 
                 </div>
@@ -80,8 +82,9 @@
             </a>
             <?php if($this->escape($this->author)) : ?>
             <a class="btn btn-small" href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($this->document->id)
-                                            ), 'editDocument', true); ?>">Editer
+                                                    'id'=> $this->escape($this->document->id),
+                                                    'action' => 'edit'
+                                            ), 'actionDocument', true); ?>">Editer
             </a>
             <?php endif; ?>
         </div>
@@ -90,8 +93,9 @@
             <a id="delete-document-link-<?php echo $this->escape($this->document->id).'-show'; ?>" 
                class="btn btn-danger btn-small" 
                href="<?php echo $this->url(array(
-                                            'id'=> $this->escape($this->document->id)
-                                            ), 'deleteDocument', true); ?>">Supprimer
+                                            'id'=> $this->escape($this->document->id),
+                                            'action' => 'delete'
+                                            ), 'actionDocument', true); ?>">Supprimer
             </a>
         </div>
         <?php endif; ?>

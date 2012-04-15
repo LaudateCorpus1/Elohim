@@ -156,5 +156,23 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             return $res;
         }
     }
+    
+    public function alreadyFavorited($libraryId, $userId)
+    {
+        $query = $this->select()
+                      ->setIntegrityCheck(false)
+                      ->from($this->_name, null)
+                      ->join('favoriteLibrary', 
+                              $this->_name.'.id = favoriteLibrary.libraryId')
+                      ->where('favoriteLibrary.userId = ?', $userId)
+                      ->where('favoriteLibrary.libraryId = ?', $libraryId);
+        $res = $this->fetchRow($query);
+        if($res == null) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }
 

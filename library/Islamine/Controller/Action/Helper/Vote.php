@@ -21,6 +21,7 @@ class Islamine_Controller_Action_Helper_Vote extends Zend_Controller_Action_Help
         {
             $objectModel = new Forum_Model_Message();
             $topicId = Zend_Layout::getMvcInstance()->getView()->topic = $this->getRequest()->getParam('topic');
+            $data['topicId'] = $topicId;
         }
         else if($object == 'topic')
         {
@@ -89,6 +90,9 @@ class Islamine_Controller_Action_Helper_Vote extends Zend_Controller_Action_Help
                 $data['toUserId'] = $res->userId;
                 $data[$field] = $objectId;
                 
+                if($lastAction != null) {
+                    $model_karma->updateRow(array('outdated' => true), array('id' => $lastAction->id)); 
+                }
                 $model_karma->addKarmaAction($data);
                 
                 if($object == 'message' || $object == 'topic')

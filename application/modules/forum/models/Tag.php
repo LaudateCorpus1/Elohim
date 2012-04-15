@@ -52,7 +52,7 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
 
     public function updateTag(array $data, $id)
     {
-            $this->update($data, array('tagId = ?' => $id));
+        $this->update($data, array('tagId = ?' => $id));
     }
 
     public function incrementTag($name, $column = 'amount')
@@ -165,12 +165,10 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
                       ->where('FavoritesTags.userId = ?',$userId)
                       ->where('FavoritesTags.tagId = ?',$tagId);
         $res = $this->fetchRow($query);
-        if($res == null)
-        {
+        if($res == null) {
             return false;
         }
-        else
-        {
+        else {
             return true;
         }
     }

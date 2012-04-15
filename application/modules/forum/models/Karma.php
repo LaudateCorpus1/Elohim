@@ -55,5 +55,13 @@ class Forum_Model_Karma extends Zend_Db_Table_Abstract
    public function getTopicVotesByUser($userId, $topicId)
    {
    }
+   
+   public function updateRow(array $data, array $where)
+   {
+       $aWhere = array();
+       foreach($where as $key => $value)
+            $aWhere[] = $this->getAdapter()->quoteInto($key.' = ?', $value);
+       return $this->update($data, $aWhere);
+   }
 }
 ?>

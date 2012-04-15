@@ -274,5 +274,61 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
     public function decrementvoteAction() {
         $this->_helper->vote('DOWN_DOCUMENT');
     }
+    
+    public function addfavoriteAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $modelLibrary = new Default_Model_Library();
+            $documentId = $this->_getParam('id');
+            $modelFavoriteLibrary = new Default_Model_FavoriteLibrary();
+            
+            if($modelLibrary->alreadyFavorited($documentId, $identity->id))
+            {
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document est déjà en favoris'));
+                else
+                    $this->view->message = 'Ce document est déjà en favoris';
+            }
+            else
+            {
+                $modelFavoriteLibrary->addRow($identity->id, $documentId);
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'action' => 'add', 'documentId' => $documentId));
+                else
+                    $this->view->message = 'Le document a été mis en favoris';
+            }
+        }
+    }
+    
+    public function removefavoriteAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $modelLibrary = new Default_Model_Library();
+            $documentId = $this->_getParam('id');
+            $modelFavoriteLibrary = new Default_Model_FavoriteLibrary();
+            
+            if($modelLibrary->alreadyFavorited($documentId, $identity->id))
+            {
+                $modelFavoriteLibrary->deleteRow($identity->id, $documentId);
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'ok', 'action' => 'remove', 'documentId' => $documentId));
+                else
+                    $this->view->message = 'Le document a été retiré en favoris';
+            }
+            else
+            {
+                if($this->_request->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document n\'est pas en favoris'));
+                else
+                    $this->view->message = 'Ce document n\'est pas en favoris';
+            }
+        }
+    }
 }
 

@@ -9,7 +9,7 @@ class UserController extends Zend_Controller_Action
 
     public function init()
     {
-        $this->_helper->layout->setLayout('forum_layout');
+        $this->_helper->layout->setLayout('layout');
         
         if ($this->_request->isXmlHttpRequest()) {
             $this->_helper->viewRenderer->setNoRender();
@@ -22,6 +22,7 @@ class UserController extends Zend_Controller_Action
         $userId = $this->_getParam('id');
         $model_user = new Model_User();
         $this->view->user = $model_user->getById($userId);
+        $this->view->stats = $model_user->getKarmaStats($userId);
         
         $edit = false;
         $auth = Zend_Auth::getInstance();
@@ -345,6 +346,23 @@ class UserController extends Zend_Controller_Action
         $this->getResponse()->setHeader('Content-Type', 'image/jpeg');
         $this->getResponse()->setBody($image);
         //header('Content-Type: image/jpeg');
+    }
+    
+    public function favdocsAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $model_user = new Model_User();
+            $documents = $model_user->getFavoriteDocuments($identity->id);
+
+            $message_pagination = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
+            $message_pagination->setPageRange(5);
+            $message_pagination->setCurrentPageNumber($this->_getParam('page',1));
+            $message_pagination->setItemCountPerPage(20);
+            $this->view->documents = $message_pagination;
+        }
     }
 }
 

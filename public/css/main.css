@@ -667,13 +667,12 @@ input, textarea, select
 #user-info
 {
     margin: 0px auto;
-    padding: 15px;
-    border: solid 1px #AAA;
+    padding: 4px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    background-color: #D3D3D3;
-    width: 700px;
+    background-color: #eee;
+    float: left;
 }
 
 #user-info img
@@ -749,6 +748,82 @@ input, textarea, select
     float: left;
     text-decoration: none;
     color: #222;
+}
+
+.fav-list h3
+{
+    margin: 0;
+    font-size: 120%;
+}
+
+.fav-doc
+{
+    width: 700px;
+    overflow: hidden;
+    margin-top: 15px;
+    padding: 5px;
+    border-bottom: dotted #AAA 1px;
+}
+
+.fav-doc:hover
+{
+    background-color: #ececec;
+    border-bottom-color: #ececec;
+    -moz-box-shadow: 0 0 1px #888;
+    -webkit-box-shadow: 0 0 1px #888;
+    box-shadow: 0 0 1px #888;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+#user-info .user-avatar, #user-info .user-karma, #user-info .user-data
+{
+    float: left;
+    padding: 20px;
+}
+
+#user-info .user-karma {
+    border-top: solid #aaa 1px;
+}
+
+#user-info .user-karma h3{
+    font-size: 120%;
+    margin: 0;
+}
+
+.stats-karma td
+{
+    padding: 5px;
+}
+
+.stats-type
+{
+    width: 90px;
+}
+
+.stats-date
+{
+    width: 50px;
+}
+
+.stats-link
+{
+    width: 520px;
+}
+
+.stats-type .positive
+{
+    color: #281;
+    font-weight: bold;
+    font-size: 105%;
+}
+
+.stats-type .negative
+{
+    color: #E9322D;
+    font-weight: bold;
+    font-size: 105%;
 }
 
 /******************************************/
@@ -994,9 +1069,19 @@ ul#favlist li.favorited-style a.close2
     width: 700px;
 }
 
+.document table{
+    width: inherit;
+}
+
+.document-show-description-cell
+{
+    width : 95%;
+}
+
 .document-date
 {
-    float: right;
+    float: left;
+    font-size:  0.9em;
     padding: 5px 10px 5px 0;
 }
 
@@ -1039,7 +1124,8 @@ ul#favlist li.favorited-style a.close2
 
 .document-menu
 {
-    clear: both;
+    float: left;
+    width: 735px;
     padding-left: 15px;
 }
 

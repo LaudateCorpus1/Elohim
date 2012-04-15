@@ -223,5 +223,62 @@ class Model_User extends Zend_Db_Table_Abstract
     {
         
     }
+    
+    public function getFavoriteDocuments($userId)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from('favoriteLibrary', null)
+              ->join('library', 'favoriteLibrary.libraryId = library.id',array(
+                                'title',
+                                'vote',
+                                'id'
+                                ))
+              ->join('user', 'library.userId = user.id',array(
+                                'authorId' => 'id',
+                                'login'
+                                ))
+              ->where($this->getAdapter()->quoteInto('favoriteLibrary.userId = ?', $userId));
+        
+        return $query;
+    }
+    
+    public function getKarmaStats($userId)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->distinct()
+              ->from('karma', array(
+                                'type',
+                                'fromUserId',
+                                'libraryId',
+                                'topicId',
+                                'messageId',
+                                'date'
+                                ))
+              ->joinLeft('library', 'karma.libraryId = library.id', array(
+                                'documentTitle' => 'title'
+                                ))
+              ->joinLeft('Topic', 'karma.topicId = Topic.topicId', array(
+                                'topicTitle' => 'title'
+                                ))
+              ->joinLeft('Messages', 'karma.messageId = Messages.messageId', array(
+                                'content'
+                                ))
+              ->joinLeft($this->_name, $this->_name.'.id = library.userId', array(
+                                'login'
+                                ))
+              ->where($this->getAdapter()->quoteInto('karma.toUserId = ?', $userId))
+              ->where('karma.outdated = 0')
+              ->where('karma.cancellation = 0')
+              ->order('karma.date DESC')
+//              ->group('DAY(karma.date)')
+//              ->group('karma.topicId')
+//              ->group('karma.messageId')
+//              ->group('karma.libraryId')
+              ->limit(50);
+        
+        return $this->fetchAll($query);
+    }
 }
 

@@ -6,7 +6,7 @@
  */
 class Default_Model_FavoriteLibrary extends Zend_Db_Table_Abstract
 {
-    protected $_name = 'FavoriteLibrary';
+    protected $_name = 'favoriteLibrary';
 
     protected $_referenceMap = array(
         'User' => array(

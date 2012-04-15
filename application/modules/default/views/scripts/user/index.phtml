@@ -1,4 +1,7 @@
-<?php $this->headTitle('Utilisateur '.$this->escape($this->user->login)); ?>
+<?php 
+$this->headTitle('Utilisateur '.$this->escape($this->user->login));  
+$purifyHelper = $this->getHelper('Purify');
+?>
 
 <h2><?php echo $this->escape($this->user->login); ?></h2>
 
@@ -9,46 +12,95 @@
                                         ), 'editUser', true); ?>">Editer mon profil</a><br />
     <?php endif; ?>
     
+    <div class="user-avatar">
+        <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($this->user->avatar) ?>" />
+    </div>
     
-    <img src="<?php echo $this->baseUrl().'/images/'.$this->escape($this->user->avatar) ?>" />
-    <br />
-    <span class="Bold">Inscrit le <?php echo $this->escape($this->user->date_created); ?></span>
-    <br />
-    <span class="Bold">Karma : </span><?php echo $this->escape($this->user->karma); ?>
-    <br />
-    
-    <?php if($this->escape($this->user->last_name) != null && $this->escape($this->user->last_name) != '') : ?>
-    <span class="Bold">Nom : </span><?php echo $this->escape($this->user->last_name); ?>
-    <br />
-    <?php endif; ?>
-    
-    <?php if($this->escape($this->user->first_name) != null && $this->escape($this->user->first_name) != '') : ?>
-    <span class="Bold">Prénom : </span><?php echo $this->escape($this->user->first_name); ?>
-    <br />
-    <?php endif; ?>
-    
-    <?php if($this->escape($this->user->email) != null && $this->escape($this->user->email) != '') : ?>
-    <span class="Bold">E-mail : </span><?php echo $this->escape($this->user->email); ?>
-    <br />
-    <?php endif; ?>
-    
-    <?php if($this->escape($this->user->location) != null && $this->escape($this->user->location) != '') : ?>
-    <span class="Bold">Lieu : </span><?php echo $this->escape($this->user->location); ?>
-    <?php endif; ?>
+    <div class="user-data">
+        <span class="Bold">Inscrit le <?php echo $this->escape($this->user->date_created); ?></span>
+        <br />
 
-    <hr />
-    <p><a href="<?php echo $this->url(array(
+        <span class="Bold">Nom : </span>
+        <?php if($this->escape($this->user->last_name) != null && $this->escape($this->user->last_name) != '')
+                echo $this->escape($this->user->last_name); 
+        ?>
+        <br />
+
+        <span class="Bold">Prénom : </span>
+        <?php if($this->escape($this->user->first_name) != null && $this->escape($this->user->first_name) != '')
+                echo $this->escape($this->user->first_name); 
+        ?>
+        <br />
+
+        <span class="Bold">E-mail : </span>
+        <?php if($this->escape($this->user->email) != null && $this->escape($this->user->email) != '')
+                echo $this->escape($this->user->email);
+        ?>
+        <br />
+
+        <span class="Bold">Lieu : </span>
+        <?php if($this->escape($this->user->location) != null && $this->escape($this->user->location) != '')
+                echo $this->escape($this->user->location);
+        ?>
+    </div>
+
+<!--    <hr />
+    <p><a href="<?php /*echo $this->url(array(
                                 'id'=> $this->escape($this->user->id),
                                 'username'=> $this->escape($this->user->login)
-                            ), 'viewUserTopics', true); ?>">Voir ses <?php echo $this->escape($this->user->amount_topics); ?> sujets</a>
+                            ), 'viewUserTopics', true);*/ ?>">Voir ses <?php //echo $this->escape($this->user->amount_topics); ?> sujets</a>
     </p>
 
-    <p><a href="<?php echo $this->url(array(
+    <p><a href="<?php /*echo $this->url(array(
                                 'id'=> $this->escape($this->user->id),
                                 'username'=> $this->escape($this->user->login)
-                            ), 'viewUserMessages', true); ?>">Voir ses <?php echo $this->escape($this->user->amount_messages); ?> messages</a>
+                            ), 'viewUserMessages', true);*/ ?>">Voir ses <?php //echo $this->escape($this->user->amount_messages); ?> messages</a>
+    </p>-->
+    
+    <?php if($this->escape($this->edit)) : ?>
+    <p><a href="<?php echo $this->url(array(
+                            ), 'myFavDocs', true); ?>">Documents favoris</a>
     </p>
+    <?php endif; ?>
 
-    <!--<p>Tags</p>-->
-
+    <!-- Stats Karma -->
+    <div class="user-karma">
+        <h3>
+            <span class="Bold"><?php echo $this->escape($this->user->karma); ?></span> Karma
+        </h3>
+        <table class="stats-karma">
+        <tbody>
+        <?php foreach($this->stats as $stat) : ?>
+        <tr>
+            <td class="stats-type"><?php echo $this->karmaTypeConverter($this->escape($stat->type)); ?></td>
+            <td class="stats-date">
+                <?php
+                    setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
+                    echo strftime('%d %b', strtotime($this->escape($stat->date)));
+                ?>
+            </td>
+            <td class="stats-link">
+                <?php if($this->escape($stat->content) != null) : ?>
+                        <a href="<?php echo $this->url(array(
+                                                'topic' => $this->escape($stat->topicId),
+                                                'title' => $purifyHelper->purifyTitle($this->escape($stat->topicTitle)),
+                                            ), 'showTopic', true).'#'.$this->escape($stat->messageId); ?>"><?php echo $this->escape($stat->topicTitle); ?></a>
+                <?php elseif($this->escape($stat->topicTitle) != null) : ?>
+                        <a href="<?php echo $this->url(array(
+                                                'topic' => $this->escape($stat->topicId),
+                                                'title' => $purifyHelper->purifyTitle($this->escape($stat->topicTitle)),
+                                            ), 'showTopic', true); ?>"><?php echo $this->escape($stat->topicTitle); ?></a>
+                <?php elseif($this->escape($stat->documentTitle) != null) : ?>
+                <?php
+                        $document = array('title' => $this->escape($stat->documentTitle),
+                                          'id' => $this->escape($stat->libraryId));
+                        echo $this->documentTitle($document, $this->escape($stat->login));
+                    endif;
+                ?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+        </table>
+    </div>
 </div>
