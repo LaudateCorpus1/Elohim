@@ -14,20 +14,27 @@ class LibraryController extends Zend_Controller_Action
 
     public function indexAction()
     {
+        $library = $this->_getParam('documents');
         $autho = 'false';
+        $author = false;
         $this->view->username = $username = $this->_getParam('username');
+        
         $auth = Zend_Auth::getInstance();
-        $this->view->author = false;
         if($auth->hasIdentity())
         {
             if(strtolower($auth->getIdentity()->login) == strtolower($username))
-                $this->view->author = true;
-            $autho = 'true';
+                $author = true;
+            $autho = 'true'; // Utilisateur authentifié
         }
+        $this->view->author = $author;
         
         $modelLibrary = new Default_Model_Library();
-        $library = $modelLibrary->getByUsername($username);
-
+        $this->view->title = 'Bibliothèque de '.$username;
+        if($this->_getParam('name'))
+            $this->view->title = 'Documents sur '.$this->_getParam('name');
+        if($library == null) {
+            $library = $modelLibrary->getByUsername($username, $author);
+        }
         
         $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($library));
         $page->setPageRange(5);
@@ -101,23 +108,35 @@ class LibraryController extends Zend_Controller_Action
     {
         $auth = Zend_Auth::getInstance();
         $id = $this->_getParam('document');
-        $this->view->username = $username = $this->_getParam('username');
-        
         $modelLibrary = new Default_Model_Library();
         $this->view->document = $modelLibrary->get($id);
-        $this->view->tags = $modelLibrary->getTags($id);
         
-        // Formulaire d'alerte
-        $this->view->form = new Default_Form_DocumentAlert();
-        
-        $this->view->author = false;
+        $author = false;
         $autho = 'false';
         if($auth->hasIdentity())
         {
             $autho = 'true';
             if($auth->getIdentity()->id == $this->view->document->userId)
-                $this->view->author = true;
+                $author = true;
         }
+        $this->view->author = $author;
+        if(!$author && intval($this->view->document->public) == 0)
+            throw new Exception ('Ce document n\'est pas public');
+        
+        $this->view->tags = $modelLibrary->getTags($id);
+        $this->view->comments = $modelLibrary->getComments($id);
+        
+        // Formulaire d'alerte
+        $this->view->form = new Default_Form_DocumentAlert();
+        // Formulaire de commentaire
+        $commentForm = new Default_Form_CommentDocument();
+        if ($this->getRequest()->isPost()) {
+            $formData = $this->getRequest()->getPost();
+            if (isset($formData['post_comment']) && $commentForm->isValid($formData)) {
+                $this->_processComment($formData, $id);
+            }
+        }
+        $this->view->commentForm = $commentForm;
         
         $this->view->headScript()->appendScript("var auth = $autho;");
     }
@@ -157,7 +176,7 @@ class LibraryController extends Zend_Controller_Action
 
                         $purifyHelper = $this->view->getHelper('Purify');
                         $title = $purifyHelper->purifyTitle($title);
-                        $this->_redirect('/library/'.$auth->getIdentity()->login.'/doc/'.$id.'/'.$title);
+                        $this->_redirect('/doc/show/'.$id.'/'.$title);
                     }
                     else
                         throw new Exception ('Vous n\'avez pas le privilège pour créer des mots-clés');
@@ -268,11 +287,31 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
     }
     
     public function incrementvoteAction() {
-        $this->_helper->vote('UP_DOCUMENT');
+        $documentId = $this->getRequest()->getParam('document');
+        $modelLibrary = new Default_Model_Library();
+        if(!$modelLibrary->isPublic($documentId))
+        {
+            if ($this->getRequest()->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document n\'est pas public'));
+            else
+                throw new Exception ('Ce document n\'est pas public');
+        }
+        else
+            $this->_helper->vote('UP_DOCUMENT');
     }
     
     public function decrementvoteAction() {
-        $this->_helper->vote('DOWN_DOCUMENT');
+        $documentId = $this->getRequest()->getParam('document');
+        $modelLibrary = new Default_Model_Library();
+        if(!$modelLibrary->isPublic($documentId))
+        {
+            if ($this->getRequest()->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document n\'est pas public'));
+            else
+                throw new Exception ('Ce document n\'est pas public');
+        }
+        else
+            $this->_helper->vote('DOWN_DOCUMENT');
     }
     
     public function addfavoriteAction()
@@ -285,21 +324,26 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             $documentId = $this->_getParam('id');
             $modelFavoriteLibrary = new Default_Model_FavoriteLibrary();
             
-            if($modelLibrary->alreadyFavorited($documentId, $identity->id))
+            if($modelLibrary->isPublic($documentId))
             {
-                if($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document est déjà en favoris'));
+                if($modelLibrary->alreadyFavorited($documentId, $identity->id))
+                {
+                    if($this->_request->isXmlHttpRequest())
+                        echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document est déjà en favoris'));
+                    else
+                        $this->view->message = 'Ce document est déjà en favoris';
+                }
                 else
-                    $this->view->message = 'Ce document est déjà en favoris';
+                {
+                    $modelFavoriteLibrary->addRow($identity->id, $documentId);
+                    if($this->_request->isXmlHttpRequest())
+                        echo Zend_Json::encode(array('status' => 'ok', 'action' => 'add', 'documentId' => $documentId));
+                    else
+                        $this->view->message = 'Le document a été mis en favoris';
+                }
             }
             else
-            {
-                $modelFavoriteLibrary->addRow($identity->id, $documentId);
-                if($this->_request->isXmlHttpRequest())
-                    echo Zend_Json::encode(array('status' => 'ok', 'action' => 'add', 'documentId' => $documentId));
-                else
-                    $this->view->message = 'Le document a été mis en favoris';
-            }
+                throw new Exception ('Ce document n\'est pas public', 500);
         }
     }
     
@@ -329,6 +373,40 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                     $this->view->message = 'Ce document n\'est pas en favoris';
             }
         }
+    }
+    
+    protected function _processComment($data, $documentId)
+    {
+        $content = $data['form_comment_content'];
+        $modelComment = new Default_Model_CommentLibrary();
+        
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $identity = $auth->getIdentity();
+            $data = array(
+                        'libraryId' => $documentId,
+                        'userId' => $identity->id,
+                        'date' => date('Y-m-d H:i:s', time()),
+                        'content' => $content
+            );
+            $commentId = $modelComment->addComment($data);
+            
+            if ($this->_request->isXmlHttpRequest()) {
+                echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
+            } else {
+                $this->_redirect($this->view->url());
+            }
+        }
+    }
+    
+    public function tagAction() {
+        $modelLibrary = new Default_Model_Library();
+        $name = $this->view->tag = $this->_getParam('name');
+
+        $list = $this->view->documents = $modelLibrary->getDocumentsByTagName($name);
+        
+        $this->_forward('index', 'library', 'default', array('documents' => $list));
     }
 }
 

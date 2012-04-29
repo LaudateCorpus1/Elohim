@@ -274,12 +274,12 @@ $(function()
                     if(response.action == "add")
                     {
                         $('.favdoc-'+response.documentId).
-                            html('<a class="favdoc-'+response.documentId+'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>'); 
+                            html('<a class="favdoc-'+response.documentId+'" title="Retirer des favoris"><img class="remove" src="/images/favorite.png" alt="retirerfavoris"/></a>'); 
                     }
                     else if(response.action == "remove")
                     {
                         $('.favdoc-'+response.documentId).
-                            html('<a class="favdoc-'+response.documentId+'" title="Ajouter aux favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
+                            html('<a class="favdoc-'+response.documentId+'" title="Ajouter aux favoris"><img class="add" src="/images/favorite_grey.png" alt="ajouterfavoris"/></a>');
                     }
                 }
             }, 'json')
@@ -307,14 +307,17 @@ function rate(action, object)
 {
     var url;
     var topicId = '';
-    var val = object.parent().attr('class');
-    var element = object.parent().find('input').attr('value');
+    //var val = object.parent().attr('class');
+    var val = object.closest('div[class^="vote-"]').attr('class');
+    var element;
     if(val == 'vote-d') 
     {
+        element = object.parent().parent().parent().find('input').attr('value');
         url = "/doc/"+element+"/"+action;
     }
     else
     {
+        element = object.parent().find('input').attr('value');
         topicId = $('.vote-t').find('input').first().val();
         
         if(val == 'vote-t') {
@@ -333,28 +336,59 @@ function rate(action, object)
             {
                 if(checkSuccess(response))
                 {
-                    object.parent().find('span').first().text(response.vote);
+                    if(val == 'vote-d')
+                        object.parent().parent().parent().find('span').first().text(response.vote);
+                    else
+                        object.parent().find('span').first().text(response.vote);
                     
                     var html;
                     if(response.type.indexOf('UP') != -1)
                     {
                         if(response.revote)
                         {
-                            object = object.parent().find('.disabled');//$('a[class = disabled]');
-                            html = '<a class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
+                            if(val == 'vote-d')
+                            {
+                                object = object.parent().parent().parent().find('.disabled');
+                                html = '<a class="decrement" title="Voter contre"><img src="/images/arrow_down.png" /></a>';
+                            }
+                                
+                            else
+                            {
+                                object = object.parent().find('.disabled');
+                                html = '<a class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
+                            }
                         }
                         else
-                            html = '<a class="disabled" title="Vous avez déjà voté pour"><img src="/images/arrow_right_grey.png" /></a>';
+                        {
+                            if(val == 'vote-d')
+                                html = '<a class="disabled" title="Vous avez déjà voté pour"><img src="/images/arrow_up_grey.png" /></a>';
+                            else
+                                html = '<a class="disabled" title="Vous avez déjà voté pour"><img src="/images/arrow_right_grey.png" /></a>';
+                        }
+                            
                     }
                     else
                     {
                         if(response.revote)
                         {
-                            object = object.parent().find('.disabled');
-                            html = '<a class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
+                            if(val == 'vote-d')
+                            {    
+                                object = object.parent().parent().parent().find('.disabled');
+                                html = '<a class="increment" title="Voter pour"><img src="/images/arrow_up.png" /></a>';
+                            }
+                            else
+                            {
+                                object = object.parent().find('.disabled');
+                                html = '<a class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
+                            }
                         }
                         else
-                            html = '<a class="disabled" title="Vous avez déjà voté contre"><img src="/images/arrow_left_grey.png" /></a>';
+                        {
+                            if(val == 'vote-d')
+                                html = '<a class="disabled" title="Vous avez déjà voté contre"><img src="/images/arrow_down_grey.png" /></a>';
+                            else
+                                html = '<a class="disabled" title="Vous avez déjà voté contre"><img src="/images/arrow_left_grey.png" /></a>';
+                        } 
                     }
                     object.replaceWith(html);
                 }
@@ -675,7 +709,7 @@ function dialogDeleteDocument()
                             var action = idSplit[4];
                             $.ajax({
                                 type: "POST",
-                                url: "/library/doc/delete/"+documentId,
+                                url: "/doc/"+documentId+"/delete/",
                                 dataType: "json",
                                 success: function(response)
                                 {

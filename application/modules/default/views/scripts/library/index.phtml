@@ -8,7 +8,7 @@ $purifyHelper = $this->getHelper('Purify');
     Ajouter un document
 </a></h3>
 <?php else : ?>
-<h2>Bibliothèque de <?php echo $this->escape($this->username); ?></h2>
+<h2><?php echo $this->escape($this->title); ?></h2>
 <?php endif; ?>
 
 <div class="library">
@@ -25,7 +25,7 @@ $purifyHelper = $this->getHelper('Purify');
                 <span class="document-vote <?php echo $voteClass; ?>">
                     <?php echo $this->escape($document['vote']); ?></span>
                 <span class="document-title">
-                    <?php echo $this->documentTitle($document, $this->escape($this->username)); ?>
+                    <?php echo $this->documentTitle($document); ?>
                 </span>
             </div>
             <div class="document-description">
@@ -38,7 +38,7 @@ $purifyHelper = $this->getHelper('Purify');
                     <div class="tag-name">
                         <a href="<?php echo $this->url(array(
                                             'name'=> $this->escape($tag->name)
-                                        ), 'taggedTopic'); ?>"><?php echo $this->escape($tag->name); ?>
+                                        ), 'taggedDocument'); ?>"><?php echo $this->escape($tag->name); ?>
                         </a>
                     </div>  
                     <div class="tag-action">

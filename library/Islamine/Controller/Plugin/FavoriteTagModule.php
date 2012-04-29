@@ -11,6 +11,16 @@ class Islamine_Controller_Plugin_FavoriteTagModule extends Zend_Controller_Plugi
     {
         if (!$request->isXmlHttpRequest()) 
         {
+            $module = $this->getRequest()->getModuleName();
+            switch ($module)
+            {
+                case 'default': $mod = 'doc';
+                    break;
+                case 'forum': $mod = 'doc';
+                    break;
+                default: $mod = 'doc';
+                    break;
+            }
             $html = '';
             $layout = Zend_Layout::getMvcInstance();
             $auth = Zend_Auth::getInstance();
@@ -27,7 +37,7 @@ class Islamine_Controller_Plugin_FavoriteTagModule extends Zend_Controller_Plugi
                     foreach($fav_tags as $fav_tag)
                     {
                         $html .='<li class="favorited-style">
-                                    <a href="/forum/tagged/'.$fav_tag['name'].'" class="favorited-'.$fav_tag['tagId'].'">'.$fav_tag['name'].'</a>
+                                    <a href="/'.$mod.'/tagged/'.$fav_tag['name'].'" class="favorited-'.$fav_tag['tagId'].'">'.$fav_tag['name'].'</a>
                                     <a href="/forum/tag/removefavorited/'.$fav_tag['tagId'].'" class="close2">x</a>
                                 </li>';
                     }

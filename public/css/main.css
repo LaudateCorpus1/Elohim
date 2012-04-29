@@ -60,16 +60,16 @@ img{
 }
 
 h1 {
-	margin:0;
-	padding:5px 0;
-	width:340px;
-	color:#000;
-	font:normal 24px Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 5px 0;
+    color: #000;
+    font: normal 22px Arial, Helvetica, sans-serif;
 }
+
 h1 a {
-	color:#fff;
-	text-decoration:none;
-	float:left;
+    color:#fff;
+    text-decoration:none;
+    float:left;
 }
 
 h1 a:hover {
@@ -547,7 +547,7 @@ input, textarea, select
 
 .backtolist
 {
-    text-align: right;
+    text-align: center;
     color: #201414;
     font-weight: bold;
 }
@@ -829,6 +829,33 @@ input, textarea, select
 }
 
 /******************************************/
+/*************** Users list ***************/
+/******************************************/
+#user-list .user
+{
+    width: 177px;
+    margin: 7px 7px 20px 7px;
+    float: left;
+}
+
+#user-list .user-avatar
+{
+    float: left;
+}
+
+#user-list .user-data
+{
+    float: left;
+    margin-left: 7px;
+}
+
+#user-list img
+{
+    width: 48px;
+    height: 48px;
+}
+
+/******************************************/
 /*************** Pagination ***************/
 /******************************************/
 
@@ -848,6 +875,10 @@ input, textarea, select
 /******************************************/
 /***************** Tags *******************/
 /******************************************/
+#tags input {
+    box-shadow: none;
+}
+
 .tags
 {
     padding-left: 15px;
@@ -1064,20 +1095,36 @@ ul#favlist li.favorited-style a.close2
 .document-description
 {
     padding: 10px 0 10px 15px;
+    line-height: 120%;
 }
 
 .document
 {
-    width: 700px;
+    width: 750px;
+    overflow: hidden;
 }
 
 .document table{
     width: inherit;
 }
 
-.document-show-description-cell
+.document-show-vote, .document-show-vote-cell {
+    width : 60px;
+    vertical-align: top;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.document-show-vote ul {
+    list-style-type: none;
+}
+
+.vote-value
 {
-    width : 95%;
+    font-size: 170%;
+    font-weight: bold;
+    color: #555;
+    display: block;
 }
 
 .document-date
@@ -1096,10 +1143,15 @@ ul#favlist li.favorited-style a.close2
 .document-show-description
 {
     /*border-left: #595959 dashed 1px;*/
-    background-color: #eee;
-    padding: 10px;
     text-align: justify;
     overflow: hidden;
+}
+
+.document-show-description-cell{
+    
+    vertical-align: baseline;
+    background-color: #f3f3f3;
+    padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
     -moz-border-radius: 10px;
@@ -1113,15 +1165,27 @@ ul#favlist li.favorited-style a.close2
 
 .document-show-date
 {
-    margin-left: 7px;
+    margin-top: 10px;
+    color: #6C6C6C;
+}
+
+.document-show-date.posted
+{
     font-size: 0.9em;
-    float: left;
+}
+
+.document-show-date.edit
+{
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
 .document-show-source
 {
-    text-align: right;
-    font-style: italic;
+    margin: 10px 0 10px 0;
+    color: #6C6C6C;
+    font-size: 120%;
+    font-weight: bold;
 }
 
 .document-menu
@@ -1139,5 +1203,29 @@ ul#favlist li.favorited-style a.close2
 .document-show-menu
 {
     clear: both;
-    margin-top: 77px;
+    margin-top: 30px;
+    padding-top: 10px;
+}
+
+.document-comments
+{
+    clear: both;
+    margin-top: 50px;
+}
+
+.document-comment
+{
+    border: solid #dedede 1px;
+    background-color: #eee;
+    padding: 0 5px 0 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin-bottom: 7px;
+}
+
+.comment-author
+{
+    margin: 0;
+    border-bottom: dotted #aaa 1px;
 }

@@ -1,0 +1,45 @@
+<?php 
+$this->headTitle('Liste des membres');  
+$i = 0;
+?>
+
+<h2>Liste des membres</h2>
+
+<div id="user-list">
+    <table>
+    <?php foreach($this->users as $user) : ?>
+    <?php 
+        if(!fmod($i, 4))
+            echo '<tr>';
+        
+        echo '<td>
+                <div class="user">
+                    <div class="user-avatar">
+                        <a href="'.$this->url(array(
+                                    'id' => $this->escape($user->id),
+                                    'username' => $this->escape($user->login)
+                                 ), 'showUser', true).'">
+                                     <img src="'.$this->baseUrl().'/images/'.$this->escape($user->avatar).'" /></a>
+                        
+                    </div>
+
+                    <div class="user-data">
+                        <a href="'.$this->url(array(
+                                    'id' => $this->escape($user->id),
+                                    'username' => $this->escape($user->login)
+                                 ), 'showUser', true).'">
+                                '.$this->escape($user->login).'</a>
+                        <br />
+                        Karma '.$this->escape($user->karma).'
+                    </div>
+                </div>
+            </td>';
+        
+        if(is_int(fmod($i, 4))) 
+            echo '</tr>';
+      $i++;
+    ?>
+    <?php endforeach; ?>
+    </table>
+    <?php echo $this->paginationControl($this->users, 'Sliding', '/partials/pagination.phtml'); ?>
+</div>

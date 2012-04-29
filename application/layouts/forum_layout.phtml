@@ -27,7 +27,8 @@ echo $this->doctype() . PHP_EOL;
         
             $this->headScript()->prependFile($this->baseUrl().'/js/ckfinder/ckfinder.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
-            $this->headScript()->prependFile($this->baseUrl().'/js/script.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/forum.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/base.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
@@ -69,7 +70,7 @@ echo $this->doctype() . PHP_EOL;
                             <li><a href="<?php echo $this->url(array(
                                             'controller' => 'conference',
                                             'action' => 'index'
-                                        ), 'default', true) ?>">Conférences</a></li>
+                                        ), 'default', true) ?>">Evènements</a></li>
                             
                             <li><a href="<?php echo $this->url(array(
                                             'controller' => 'article',

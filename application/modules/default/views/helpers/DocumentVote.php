@@ -26,11 +26,11 @@ class Zend_View_Helper_DocumentVote extends Zend_View_Helper_Abstract
                 switch($type)
                 {
                     case 'UP_DOCUMENT':
-                        $html = '<a class="disabled" title="Vous avez déjà voté pour"><img src="/images/arrow_right_grey.png" /></a>';
+                        $html = '<a class="disabled" title="Vous avez déjà voté pour"><img src="/images/arrow_up_grey.png" /></a>';
                         break;
                     
                     case 'DOWN_DOCUMENT':
-                        $html = '<a class="disabled" title="Vous avez déjà voté contre"><img src="/images/arrow_left_grey.png" /></a>';
+                        $html = '<a class="disabled" title="Vous avez déjà voté contre"><img src="/images/arrow_down_grey.png" /></a>';
                         break;
                 }
             }
@@ -46,12 +46,12 @@ class Zend_View_Helper_DocumentVote extends Zend_View_Helper_Abstract
         {
             case 'UP_DOCUMENT':
                 $html = '<a href="'.$this->view->url(array('document' => $documentId
-                                                    ), 'incrementDocumentVote').'" class="increment" title="Voter pour"><img src="/images/arrow_right_orange.gif" /></a>';
+                                                    ), 'incrementDocumentVote').'" class="increment" title="Voter pour"><img src="/images/arrow_up.png" /></a>';
                 break;
 
             case 'DOWN_DOCUMENT':
                 $html = '<a href="'.$this->view->url(array('document' => $documentId
-                                                    ), 'decrementDocumentVote').'" class="decrement" title="Voter contre"><img src="/images/arrow_left_orange.gif" /></a>';
+                                                    ), 'decrementDocumentVote').'" class="decrement" title="Voter contre"><img src="/images/arrow_down.png" /></a>';
                 break;
         }
         return $html;

@@ -56,7 +56,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         $this->delete(array('id = ?' => $id));
     }
     
-    public function getByUsername($username)
+    public function getByUsername($username, $flagOwner = false)
     {
         $query = $this->select();
         $query->setIntegrityCheck(false)
@@ -73,6 +73,9 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
               ->join('user', $this->_name.'.userId = user.id', null)
               ->where($this->getAdapter()->quoteInto('login = ?', $username))
               ->order('date DESC');
+        
+        if(!$flagOwner)
+            $query->where('public = 1');
         
         return $query;
     }
@@ -136,7 +139,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         
         $query = $this->select()
                 ->from($this->_name,array('vote', 'userId'))
-                ->where($this->getAdapter()->quoteInto('id = ?',$id));
+                ->where($this->getAdapter()->quoteInto('id = ?', $id));
         $res = $this->fetchRow($query);
         
         if (!$res)
@@ -164,8 +167,8 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
                       ->from($this->_name, null)
                       ->join('favoriteLibrary', 
                               $this->_name.'.id = favoriteLibrary.libraryId')
-                      ->where('favoriteLibrary.userId = ?', $userId)
-                      ->where('favoriteLibrary.libraryId = ?', $libraryId);
+                      ->where($this->getAdapter()->quoteInto('favoriteLibrary.userId = ?', $userId))
+                      ->where($this->getAdapter()->quoteInto('favoriteLibrary.libraryId = ?', $libraryId));
         $res = $this->fetchRow($query);
         if($res == null) {
             return false;
@@ -173,6 +176,60 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         else {
             return true;
         }
+    }
+    
+    public function getComments($id)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, null)
+              ->join('commentLibrary', $this->_name.'.id = commentLibrary.libraryId')
+              ->join('user', 'commentLibrary.userId = user.id', 'login')
+              ->where($this->getAdapter()->quoteInto($this->_name.'.id = ?', $id));
+
+        $res = $this->fetchAll($query);
+        return $res;
+    }
+    
+    public function getDocumentsByTagName($name, $order = 'library.date DESC')
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                                'id',
+                                'date',
+                                'lastEditDate',
+                                'title',
+                                'content',
+                                'public',
+                                'flag',
+                                'vote'
+                                ))
+              ->join('libraryTag', $this->_name.'.id = libraryTag.libraryId',array(
+                                'libraryId',
+                                'tagId'
+                                ))
+              ->join('Tags', 'libraryTag.tagId = Tags.tagId',array(
+                                'name',
+                                'libraryAmount'
+                                ))
+              ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->where('Tags.name = ?', $name)
+              ->where($this->_name.'.public = 1')
+              ->order($order);
+        return $query;
+    }
+    
+    public function isPublic($id)
+    {
+        $query = $this->select();
+        $query->from($this->_name)
+              ->where($this->getAdapter()->quoteInto($this->_name.'.id = ?', $id));
+        $row = $this->fetchRow($query);
+        if(intval($row->public) == 0)
+            return false;
+        else
+            return true;
     }
 }
 

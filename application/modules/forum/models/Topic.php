@@ -33,7 +33,7 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
             $row = $this->fetchRow($query);
             if (!$row)
             {
-                    throw new Exception("Topic introuvable : $id");
+                throw new Exception("Topic introuvable : $id");
             }
             return $row;
     }
@@ -86,15 +86,15 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
 
     public function addTopic($userId, $title, $message, $ipAddress = null, $date = null, $vote = 0)
     {
-            $data = array(
-                'userId' => $userId,
-                'title' => $title,
-                'message' => $message,
-                'date' => $date,
-                'vote' => $vote,
-                'ipAddress' => $ipAddress
-            );
-            return $this->insert($data);
+        $data = array(
+            'userId' => $userId,
+            'title' => $title,
+            'message' => $message,
+            'date' => $date,
+            'vote' => $vote,
+            'ipAddress' => $ipAddress
+        );
+        return $this->insert($data);
     }
 
     public function deleteTopic($id)

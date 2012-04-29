@@ -365,5 +365,17 @@ class UserController extends Zend_Controller_Action
             $this->view->documents = $message_pagination;
         }
     }
+    
+    public function listAction()
+    {
+        $model_user = new Model_User();
+        $users = $model_user->getAll();
+        
+        $user_pagination = Islamine_Paginator::factory($users);
+        $user_pagination->setPageRange(5);
+        $user_pagination->setCurrentPageNumber($this->_getParam('page',1));
+        $user_pagination->setItemCountPerPage(36);
+        $this->view->users = $user_pagination;
+    }
 }
 

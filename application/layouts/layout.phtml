@@ -25,7 +25,8 @@ echo $this->doctype() . PHP_EOL;
         
             $this->headScript()->prependFile($this->baseUrl().'/js/ckfinder/ckfinder.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
-            $this->headScript()->prependFile($this->baseUrl().'/js/script.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/library.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/base.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
@@ -53,7 +54,7 @@ echo $this->doctype() . PHP_EOL;
                             'controller' => 'index',
                             'action' => 'index'
                         ), 'default', true);
-                        ?>">Islamine
+                        ?>"><img src="/images/logo.jpg" height="50"/>
                     </a>
                 </div>
                 <div id="user-top">
@@ -63,9 +64,9 @@ echo $this->doctype() . PHP_EOL;
                 <div id="nav">
                     <ul>
                         <li><a href="<?php echo $this->url(array(
-                                        'controller' => 'conference',
+                                        'controller' => 'event',
                                         'action' => 'index'
-                                    ), 'default', true) ?>">Conférences</a></li>
+                                    ), 'default', true) ?>">Evènements</a></li>
 
                         <li><a href="<?php echo $this->url(array(
                                         'controller' => 'article',
@@ -77,7 +78,10 @@ echo $this->doctype() . PHP_EOL;
 
                         <li><a href="">Annonces</a></li>
 
-                        <li><a href="">Membres</a></li>
+                        <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'user',
+                                        'action' => 'list'
+                                    ), 'default', true) ?>">Membres</a></li>
 
                         <li><a href="">Contact</a></li>
                     </ul>
@@ -100,13 +104,10 @@ echo $this->doctype() . PHP_EOL;
                             echo new Forum_Form_Search();
                          ?>
                      </div>
-                    <div class="module">
-                        <?php echo $this->layout()->module_sort; ?>
-                    </div>
 
                      <div class="module">
                         <?php echo $this->layout()->module_favtags; ?>
-                    </div>
+                     </div>
 
                     <div class="module">
                         <?php echo $this->layout()->module_description; ?>

@@ -11,7 +11,7 @@
  */
 class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
 {
-    public function documentTitle($document, $username)
+    public function documentTitle($document)
     {
         $purifyHelper = $this->view->getHelper('Purify');
         $title = $this->view->escape($purifyHelper->purifyTitle($document['title']));
@@ -30,7 +30,6 @@ class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
         }
         
         $html = '<a href="'.$this->view->url(array(
-                                            'username' => $username,
                                             'document' => $this->view->escape($document['id']),
                                             'title' => $title
                                         ), 'showDocument').'">'.$this->view->escape($document['title']).'

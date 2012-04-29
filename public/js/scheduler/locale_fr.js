@@ -1,0 +1,1 @@
+/var/www/elohim/library/scheduler/js/locale_fr.js

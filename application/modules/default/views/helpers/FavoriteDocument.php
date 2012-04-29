@@ -19,14 +19,14 @@ class Zend_View_Helper_FavoriteDocument extends Zend_View_Helper_Abstract
             $userId = $auth->getIdentity()->id;
             $modelLibrary = new Default_Model_Library();
             if($modelLibrary->alreadyFavorited($documentId, $userId)) {
-                return '<a href="/doc/'.$documentId.'/removefavorite/" class="favdoc-'.$documentId.'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>';
+                return '<a href="/doc/'.$documentId.'/removefavorite/" class="favdoc-'.$documentId.'" title="Retirer des favoris"><img class="remove" src="/images/favorite.png" alt="retirerfavoris"/></a>';
             }
             else {
-                return '<a href="/doc/'.$documentId.'/addfavorite/" class="favdoc-'.$documentId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+                return '<a href="/doc/'.$documentId.'/addfavorite/" class="favdoc-'.$documentId.'" title="Ajouter en favoris"><img class="add" src="/images/favorite_grey.png" alt="ajouterfavoris"/></a>';
             }
         }
         else {
-            return '<a href="/doc/'.$documentId.'/addfavorite/" class="favdoc-'.$documentId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+            return '<a href="/doc/'.$documentId.'/addfavorite/" class="favdoc-'.$documentId.'" title="Ajouter en favoris"><img class="add" src="/images/favorite_grey.png" alt="ajouterfavoris"/></a>';
         }
     }
 }

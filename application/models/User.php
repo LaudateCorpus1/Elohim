@@ -148,7 +148,7 @@ class Model_User extends Zend_Db_Table_Abstract
     
     public function getAll()
     {
-        return $this->fetchAll();
+        return $this->select()->from($this->_name)->order('date_created DESC');
     }
     
     public function add(array $data)
@@ -238,7 +238,8 @@ class Model_User extends Zend_Db_Table_Abstract
                                 'authorId' => 'id',
                                 'login'
                                 ))
-              ->where($this->getAdapter()->quoteInto('favoriteLibrary.userId = ?', $userId));
+              ->where($this->getAdapter()->quoteInto('favoriteLibrary.userId = ?', $userId))
+              ->order('id DESC');
         
         return $query;
     }

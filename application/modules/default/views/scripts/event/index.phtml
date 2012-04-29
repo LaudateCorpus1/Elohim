@@ -1,0 +1,150 @@
+<?php 
+$this->headTitle('Calendrier des évènements');
+echo $this->doctype() . PHP_EOL; 
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
+        <meta name="robots" content="index,follow" />
+
+        <?php
+        echo $this->headTitle()->toString('		') . PHP_EOL;
+        echo $this->headLink()
+                    ->prependStylesheet('/css/scheduler/dhtmlxscheduler_glossy.css');
+        
+            $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/locale_fr.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler_tooltip.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler_serialize.js');
+            echo $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler.js');
+            
+        ?>
+    </head>
+
+<style type="text/css" media="screen">
+	html, body{
+		margin:0px;
+		padding:0px;
+		height:100%;
+		overflow:hidden;
+                font-family: "Helvetica Nueue", Arial;
+	}
+        a{
+            text-decoration: none;
+        }
+	.dhx_cal_navline input{
+		width:80px;
+		position:absolute;
+		top:1px;
+		font-family:Tahoma;
+		font-weight:8pt;
+	}
+</style>
+
+
+<script type="text/javascript" charset="utf-8">
+	function init() {
+                var userId = <?php echo $this->escape($this->userId); ?>;
+                
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
+		scheduler.config.prevent_cache = true;
+		
+		scheduler.config.lightbox.sections=[	
+			{name:"description", height:130, map_to:"text", type:"textarea" , focus:true},
+			{name:"location", height:43, type:"textarea", map_to:"details" },
+			{name:"time", height:72, type:"time", map_to:"auto"}
+		]
+		scheduler.config.first_hour=9;
+		scheduler.locale.labels.section_location="Location";
+		//scheduler.config.details_on_create=true;
+		//scheduler.config.details_on_dblclick=true;
+		
+		scheduler.init('scheduler_here', null,"month");
+		scheduler.setLoadMode("month");
+		scheduler.load("../../../../../../js/scheduler/events.php");
+                
+		var dp = new dataProcessor("../../../../../../js/scheduler/events.php");
+		dp.init(scheduler);	
+                
+                scheduler.attachEvent("onEventAdded", function(event_id, event_object){
+                    event_object.user_id = userId;
+                });
+                
+                scheduler.attachEvent("onBeforeDrag", function (event_id, mode, native_event_object){
+                   return check(event_id, userId);
+                });
+                
+                scheduler.attachEvent("onClick", function (event_id, native_event_object){
+                   return check(event_id, userId);
+                });
+                
+                scheduler.attachEvent("onDblClick", function (event_id, native_event_object){
+                   return check(event_id, userId);
+                });
+                
+                var format=scheduler.date.date_to_str("%d-%m-%Y %H:%i"); 
+                scheduler.templates.tooltip_text = function(start,end,event) {
+                        return "<b>Evèn.:</b> "+event.text+"<br/><b>Date début:</b> "+format(start)+"<br/><b>Date fin:</b> "+format(end)+"<br/><b>Lieu:</b> "+event.details;
+                };
+	}
+        
+        function check(event_id, userId)
+        {
+           var ev = scheduler.getEvent(event_id);
+           if(typeof ev != "undefined")
+           {
+               if(typeof ev.user_id != "undefined")
+               {
+                   if(parseInt(ev.user_id) != userId)
+                       return false; 
+               }
+           }
+           return true;
+        }
+</script>
+
+<body onload="init();">
+    <div style="background-color:#201414; width: 100%">
+        <a href="<?php
+            echo $this->url(array(
+                'module' => 'default',
+                'controller' => 'index',
+                'action' => 'index'
+            ), 'default', true);
+            ?>"><img src="/images/logo.jpg" height="50"/>
+        </a>
+        <?php if(isset($this->backUrl)) : ?>
+        <a href="<?php
+            echo $this->backUrl; ?>" style="color:#fff;">Revenir en arrière
+        </a>
+        <?php else : ?>
+        <a href="<?php
+            echo $this->url(array(
+                'module' => 'default',
+                'controller' => 'index',
+                'action' => 'index'
+            ), 'default', true);
+            ?>" style="color:#fff;">Revenir en arrière
+        </a>
+        <?php endif; ?>
+    </div>
+	
+    <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+        <div class="dhx_cal_navline">
+                <div class="dhx_cal_prev_button">&nbsp;</div>
+                <div class="dhx_cal_next_button">&nbsp;</div>
+                <div class="dhx_cal_today_button"></div>
+                <div class="dhx_cal_date"></div>
+                <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+                <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+                <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+        </div>
+        <div class="dhx_cal_header">
+        </div>
+        <div class="dhx_cal_data">
+        </div>		
+    </div>
+</body>
+
+
