@@ -36,8 +36,8 @@ class Model_User extends Zend_Db_Table_Abstract
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from(array('u' => $this->_name), array(
-                  't.amount_topics',
-                  'm.amount_messages',
+                  //'t.amount_topics',
+                  //'m.amount_messages',
                   'u.date_created',
                   'u.login',
                   'u.karma',
@@ -50,14 +50,14 @@ class Model_User extends Zend_Db_Table_Abstract
                   'u.password',
                   'u.avatar'
                   ))
-              ->joinLeft(array('t' => new Zend_Db_Expr('(SELECT t1.userId, COUNT(t1.topicId) AS amount_topics
+              /*->joinLeft(array('t' => new Zend_Db_Expr('(SELECT t1.userId, COUNT(t1.topicId) AS amount_topics
                                                          FROM Topic t1
                                                          GROUP BY t1.userId)')
                               ), 't.userId = u.id', null)
               ->joinLeft(array('m' => new Zend_Db_Expr('(SELECT m1.userId, COUNT(m1.messageId) AS amount_messages
                                                          FROM Messages m1
                                                          GROUP BY m1.userId)')
-                              ), 'm.userId = u.id', null)
+                              ), 'm.userId = u.id', null)*/
               ->where($this->getAdapter()->quoteInto('u.login = ?', $login));
         
         //Zend_Debug::dump($query->__toString()); exit;
@@ -73,8 +73,8 @@ class Model_User extends Zend_Db_Table_Abstract
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from(array('u' => $this->_name), array(
-                  't.amount_topics',
-                  'm.amount_messages',
+                  //'t.amount_topics',
+                  //'m.amount_messages',
                   'u.date_created',
                   'u.login',
                   'u.karma',
@@ -84,17 +84,16 @@ class Model_User extends Zend_Db_Table_Abstract
                   'location',
                   'u.last_connexion',
                   'u.id',
-                  //'u.password',
                   'u.avatar'
                   ))
-              ->joinLeft(array('t' => new Zend_Db_Expr('(SELECT t1.userId, COUNT(t1.topicId) AS amount_topics
+              /*->joinLeft(array('t' => new Zend_Db_Expr('(SELECT t1.userId, COUNT(t1.topicId) AS amount_topics
                                                          FROM Topic t1
                                                          GROUP BY t1.userId)')
                               ), 't.userId = u.id', null)
               ->joinLeft(array('m' => new Zend_Db_Expr('(SELECT m1.userId, COUNT(m1.messageId) AS amount_messages
                                                          FROM Messages m1
                                                          GROUP BY m1.userId)')
-                              ), 'm.userId = u.id', null)
+                              ), 'm.userId = u.id', null)*/
               ->where($this->getAdapter()->quoteInto('u.id = ?', $id));
         
         $row = $this->fetchRow($query);

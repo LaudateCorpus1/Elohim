@@ -16,7 +16,7 @@ class Islamine_Controller_Plugin_FavoriteTagModule extends Zend_Controller_Plugi
             {
                 case 'default': $mod = 'doc';
                     break;
-                case 'forum': $mod = 'doc';
+                case 'forum': $mod = 'forum';
                     break;
                 default: $mod = 'doc';
                     break;

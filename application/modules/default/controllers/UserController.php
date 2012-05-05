@@ -4,7 +4,6 @@ class UserController extends Zend_Controller_Action
 {
     public function preDispatch()
     {
-        $auth = Zend_Auth::getInstance();
     }
 
     public function init()
@@ -323,7 +322,7 @@ class UserController extends Zend_Controller_Action
                             }
                             
                             $model_user->updateUser($data, $user->id);
-                            $this->_redirect('/default/user/index/username/' . $username);
+                            $this->_redirect('/users/'.$user->id.'/' . $username);
                         }
                     }
                     
@@ -332,6 +331,8 @@ class UserController extends Zend_Controller_Action
                 
                 $this->view->form = $form;
             }
+            else
+                throw new Exception (null, 404);
         }
     }
     

@@ -11,10 +11,25 @@ class LibraryController extends Zend_Controller_Action
             $this->_helper->layout->disableLayout();    //disable layout for ajax
         }
     }
+    
+    public function preDispatch()
+    {
+        if($this->_request->getActionName() == 'incrementvote' || $this->_request->getActionName() == 'decrementvote')
+        {
+            $maxVotesCast = intval(Zend_Registry::getInstance()->constants->max_votes_cast_per_day);
+            $auth = Zend_Auth::getInstance();
+            $model_karma = new Forum_Model_Karma();
+            $userVotesCast = $model_karma->getTodayVotesCastByUser($auth->getIdentity()->id);
+            if($userVotesCast >= $maxVotesCast)
+            {
+                $message = 'Vous avez atteint le quota maximum de vote par jour';
+                $this->_forward('karma', 'error', 'forum', array('message' => $message));
+            }
+        }
+    }
 
     public function indexAction()
     {
-        $library = $this->_getParam('documents');
         $autho = 'false';
         $author = false;
         $this->view->username = $username = $this->_getParam('username');
@@ -30,11 +45,7 @@ class LibraryController extends Zend_Controller_Action
         
         $modelLibrary = new Default_Model_Library();
         $this->view->title = 'Bibliothèque de '.$username;
-        if($this->_getParam('name'))
-            $this->view->title = 'Documents sur '.$this->_getParam('name');
-        if($library == null) {
-            $library = $modelLibrary->getByUsername($username, $author);
-        }
+        $library = $modelLibrary->getByUsername($username, $author);
         
         $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($library));
         $page->setPageRange(5);
@@ -48,6 +59,48 @@ class LibraryController extends Zend_Controller_Action
             $i++;
         }
         $this->view->headScript()->appendScript("var auth = $autho;");
+    }
+    
+    public function listAction() {
+        $documents = $this->_getParam('documents');
+        $modelLibrary = new Default_Model_Library();
+        
+        $route = 'sortDocument';
+        if($documents != null)
+        {
+            $sort ='récents';
+            if($this->_getParam('type'))
+            {
+                if($this->_getParam('t') == 'votes') {
+                    $sort = 'les mieux votés'; 
+                }
+            }
+            $this->view->title = 'Documents '.$sort;
+            if($this->_getParam('name'))
+            {
+                $route = 'sortDocumentTag';
+                $this->view->tagName = $this->_getParam('name');
+                $this->view->title .= ' sur \''.$this->_getParam('name').'\'';
+            }
+                
+        }
+        else {
+            $documents = $modelLibrary->getAll();
+            $this->view->title = 'Documents récents';
+        }
+        
+        $this->view->route = $route;
+        $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
+        $page->setPageRange(5);
+        $page->setCurrentPageNumber($this->_getParam('page',1));
+        $page->setItemCountPerPage(20);
+        $this->view->library = $page;
+        $i = 0;
+        foreach ($page as $document)
+        {
+            $this->view->$i = $modelLibrary->getTags($document['id']);
+            $i++;
+        }
     }
     
     public function addAction()
@@ -97,7 +150,7 @@ class LibraryController extends Zend_Controller_Action
 
                     $purifyHelper = $this->view->getHelper('Purify');
                     $title = $purifyHelper->purifyTitle($title);
-                    $this->_redirect('/library/'.$auth->getIdentity()->login.'/doc/'.$libraryId.'/'.$title);
+                    $this->_redirect('/doc/show/'.$libraryId.'/'.$title);
                 }
             }
         }
@@ -395,7 +448,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
             } else {
-                $this->_redirect($this->view->url());
+                $this->_redirect($this->view->url().'#comments');
             }
         }
     }
@@ -406,7 +459,33 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
 
         $list = $this->view->documents = $modelLibrary->getDocumentsByTagName($name);
         
-        $this->_forward('index', 'library', 'default', array('documents' => $list));
+        $this->_forward('list', 'library', 'default', array('documents' => $list));
+    }
+    
+    public function sortAction() {
+        $sort_type = $this->_getParam('type');
+        $tag_name = $this->_getParam('name');
+        
+        if($sort_type == 'date')
+        {
+            if($tag_name != null)
+                $this->_redirect ('/doc/tagged/'.$tag_name);
+            else
+                $this->_redirect ('/doc/list');
+        }
+        else
+        {
+            $modelLibrary = new Default_Model_Library();
+            $documentsSorted = $modelLibrary->sortDocuments($sort_type, $tag_name);
+            $this->_forward('list', 'library', 'default', array('documents' => $documentsSorted));
+        }
+    }
+    
+    public function searchAction()
+    {
+        $modelLibrary = new Default_Model_Library();
+        $res = $modelLibrary->search($this->_getParam('search_content'));
+        $this->_forward('list', 'library', 'default', array('documents' => $res));
     }
 }
 

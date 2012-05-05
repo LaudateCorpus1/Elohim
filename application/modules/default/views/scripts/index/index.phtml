@@ -1,33 +1,60 @@
-<a href="<?php echo $this->url(array(       'module' => 'administration',
-                                            'controller' => 'admin',
-                                            'action' => 'index'
-                                        )) ?>">Admin</a>
+<?php $this->headTitle('Accueil'); ?>
 
-<?php  
-    foreach($this->news as $n) :
-?>
-        <div class="post">
-            <h2 class="title"><?php echo $this->escape($n->title); ?></h2>
-            <p class="meta"><span class="date">Le <?php echo $this->escape(date('d-m-Y', $n->date_posted)); ?> à <?php echo $this->escape(date('H:i:s', $n->date_posted)); ?></span></p>
-            <div class="entry">
-                <p><?php echo $this->escape($n->content); ?></p>
-                <p class="links"><a href="<?php echo $this->url(array(
-                                            'controller' => 'news',
-                                            'action' => 'index',
-                                            'id' => $n->id
-                                        )) ?>">Lire</a>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Commentaires</a></p>
-            </div>
-        </div>
-<?php 
-    endforeach; 
-?>
-
-<!--<div class="post">
-    <h2 class="title"><a href="#">Bienvenue</a></h2>
-    <p class="meta"><span class="date">May 10, 2011</span></p>
-    <div class="entry">
-        <p>Le site est ouvert !</p>
-        <p class="links"><a href="#">Lire</a>&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Commentaires</a></p>
+<div id="welcome-content">
+    <div class="post">
+        <h1>Bienvenue sur Islamine, le site qui vous permet de ne plus 
+        perdre les contenus que vous trouvez intéressant sur l'islam !</h1>
+        <h1>Vous pouvez aussi découvrir les documents que les autres personnes veulent
+        bien partager.</h1>
     </div>
 </div>
-      -->
+
+<div id="index-icons">
+    <table>
+        <tr>
+            <td>
+                <a href="<?php echo $this->url(array(
+                                        'controller' => 'library',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">
+                <img src="/images/document.png" alt="library"/></a>
+                <p><a href="<?php echo $this->url(array(
+                                        'controller' => 'library',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">
+                                    Documents</a></p>
+            </td>
+            <td>
+                <a href="<?php echo $this->url(array(
+                                        'controller' => 'event',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">
+                <img src="/images/calendar.png" alt="events"/></a>
+                <p><a href="<?php echo $this->url(array(
+                                        'controller' => 'event',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">Evènements</a></p>
+            </td>
+            <td>
+                <a href="<?php echo $this->url(array(
+                                        'controller' => 'user',
+                                        'action' => 'list'
+                                    ), 'default', true) ?>">
+                <img src="/images/user.png" alt="users"/></a>
+                <p><a href="<?php echo $this->url(array(
+                                        'controller' => 'user',
+                                        'action' => 'list'
+                                    ), 'default', true) ?>">Membres</a></p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="index-register">
+    <a class="btn btn-large btn-success" 
+       href="<?php echo $this->url(array(
+                                    'controller' => 'user',
+                                    'action' => 'register'
+                                ), 'default', true) ?>">S'inscrire</a>
+</div>
+

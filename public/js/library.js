@@ -167,18 +167,23 @@ function dialogAlertDocument()
     
     
     $('.alert-document-link').click(function(e) {
-        var _id = $(this).attr('id');
-        var documentId = _id.substring(_id.lastIndexOf('-') + 1);
-        //Cancel the link behavior
-        e.preventDefault();
-        // Si le dialog est ouvert à nouveau après un envoi (sans recharger la page)
-        if ($('#dialog-alert-document > .message').length)
+        if(typeof auth != "undefined" && auth)
         {
-            $('.ui-dialog-buttonset').find('button:first').show();
-            $('.ui-dialog-buttonset').find('button:last > span').text('Annuler');
-            $('#dialog-alert-document').find('#motif').val('');
-            $('#dialog-alert-document > .message').remove();
+            var _id = $(this).attr('id');
+            var documentId = _id.substring(_id.lastIndexOf('-') + 1);
+            //Cancel the link behavior
+            e.preventDefault();
+            // Si le dialog est ouvert à nouveau après un envoi (sans recharger la page)
+            if ($('#dialog-alert-document > .message').length)
+            {
+                $('.ui-dialog-buttonset').find('button:first').show();
+                $('.ui-dialog-buttonset').find('button:last > span').text('Annuler');
+                $('#dialog-alert-document').find('#motif').val('');
+                $('#dialog-alert-document > .message').remove();
+            }
+            $('#dialog-alert-document').data('id', documentId).dialog('open');
         }
-        $('#dialog-alert-document').data('id', documentId).dialog('open');
+        else
+            alert("Vous devez vous identifier");
     });
 }

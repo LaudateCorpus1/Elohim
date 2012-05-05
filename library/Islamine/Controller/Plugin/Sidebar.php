@@ -11,7 +11,8 @@ class Islamine_Controller_Plugin_Sidebar extends Zend_Controller_Plugin_Abstract
     {
         $layout = Zend_Layout::getMvcInstance();
         $module = $request->getModuleName();
-        if($module == 'default')
+        $controller = $request->getControllerName();
+        if($module == 'default' && $controller == 'news')
         {
             $nav = array();
             $model_category = new Model_Category();

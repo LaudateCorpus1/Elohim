@@ -7,9 +7,9 @@ $purifyHelper = $this->getHelper('Purify');
 
 <div id="user-info">
     <?php if($this->escape($this->edit)) : ?>
-    <a href="<?php echo $this->url(array(
+    <a class="label-right" href="<?php echo $this->url(array(
                                            'username'=> $this->escape($this->user->login)
-                                        ), 'editUser', true); ?>">Editer mon profil</a><br />
+                                        ), 'editUser', true); ?>">Editer mon profil</a>
     <?php endif; ?>
     
     <div class="user-avatar">
@@ -42,14 +42,28 @@ $purifyHelper = $this->getHelper('Purify');
         <?php if($this->escape($this->user->location) != null && $this->escape($this->user->location) != '')
                 echo $this->escape($this->user->location);
         ?>
-        
-        <?php if($this->escape($this->edit)) : ?>
-        <p><a href="<?php echo $this->url(array(
-                                ), 'myFavDocs', true); ?>">Mes documents favoris</a>
-        </p>
-        <?php endif; ?>
     </div>
-
+                                        
+    <div class="user-links">
+        <table>
+            <tbody>
+                <tr>
+                    <?php if($this->escape($this->edit)) : ?>
+                    <td class="cell">
+                        <a href="<?php echo $this->url(array(
+                                            ), 'myFavDocs', true); ?>">Documents favoris</a>
+                    </td>
+                    <?php endif; ?>
+                    <td class="cell">
+                        <a href="<?php echo $this->url(array(
+                                'username' => $this->escape($this->user->login)
+                                ), 'userLibrary', true); ?>">Bibliothèque</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+                                        
 <!--    <hr />
     <p><a href="<?php /*echo $this->url(array(
                                 'id'=> $this->escape($this->user->id),
@@ -61,7 +75,7 @@ $purifyHelper = $this->getHelper('Purify');
                                 'id'=> $this->escape($this->user->id),
                                 'username'=> $this->escape($this->user->login)
                             ), 'viewUserMessages', true);*/ ?>">Voir ses <?php //echo $this->escape($this->user->amount_messages); ?> messages</a>
-    </p>-->
+    </p>--> 
                             
     <!-- Stats Karma -->
     <div class="user-karma">

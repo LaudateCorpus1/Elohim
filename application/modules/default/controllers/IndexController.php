@@ -5,7 +5,7 @@ class IndexController extends Zend_Controller_Action
 
     public function init()
     {
-        $this->_helper->layout->setLayout('layout');
+        $this->_helper->layout->setLayout('index_layout');
         if ($this->_request->isXmlHttpRequest()) 
         {
             $this->_helper->viewRenderer->setNoRender();
@@ -15,10 +15,6 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $news = new Model_News();
-        $order = 'date_posted DESC';
-        $count = 50;
-        $list = $this->view->news = $news->fetchAll(null, $order, $count);
     }
     
     public function updatenotifbarAction()

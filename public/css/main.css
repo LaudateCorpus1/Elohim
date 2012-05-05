@@ -32,14 +32,14 @@ img{
 }
 
 .logo {
-	padding:15px 0 20px 0;
-	margin:0 auto;
-	width:370px;
-	float:left;
+    padding-bottom: 7px;
+    margin:0 auto;
+    width:370px;
+    float:left;
 }
 .logo img {
-	float:left;
-	margin:0 10px 0 0;
+    float:left;
+    margin:0 10px 0 0;
 }
 
 .logo a
@@ -660,6 +660,67 @@ input, textarea, select
     /*background:url("../images/banner.jpg") no-repeat left;*/
 }
 
+/*******************************/
+/********* Welcome Page ********/
+/*******************************/
+.index-content
+{
+    width: 700px;
+    margin: 0 auto;
+}
+
+#welcome-content
+{
+    width: 700px;
+    text-align: justify;
+    margin: 0 auto;
+}
+
+#index-icons {
+    width: 630px;
+    margin: 0 auto;
+}
+
+#index-icons table
+{
+    border-spacing: 20px;
+}
+
+#index-icons td {
+    padding: 20px;
+    background-color: #aaa;
+    border-radius: 7px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+}
+
+#index-icons td:hover {
+    background-color: #ddd;
+}
+
+#index-icons a:hover {
+    text-decoration: none;
+}
+
+#index-icons img {
+    width: 128px;
+    height: 128px;
+}
+
+#index-icons p {
+    text-align: center;
+    font-size: 130%;
+    margin: 0;
+    font-weight: bold;
+}
+
+.index-register {
+    margin: 0 auto;
+    width: 140px;
+    font-weight: bold;
+}
+
+
 /******************************************/
 /************** User account **************/
 /******************************************/
@@ -784,7 +845,6 @@ input, textarea, select
 }
 
 #user-info .user-karma {
-    border-top: solid #aaa 1px;
     width: 700px;
     margin: 0 auto;
 }
@@ -792,6 +852,30 @@ input, textarea, select
 #user-info .user-karma h3{
     font-size: 120%;
     margin: 0;
+}
+
+#user-info .user-links
+{
+    clear: both;
+    padding: 0 20px 20px;
+}
+
+#user-info .user-links .cell {
+    padding: 5px;
+    border: solid #aaa 1px;
+}
+
+#user-info .user-links table{
+    border-spacing: 4px 0px;
+}
+
+#user-info .user-links .cell:hover {
+    background-color: #ddd;
+    text-decoration: none;
+}
+
+#user-info .user-links .cell a:hover {
+    text-decoration: none;
 }
 
 .stats-karma td

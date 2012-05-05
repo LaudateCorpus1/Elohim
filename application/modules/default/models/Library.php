@@ -20,6 +20,29 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         return $row;
     }
     
+    public function getAll($order = 'library.date DESC')
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'id',
+                  'date',
+                  'lastEditDate',
+                  'title',
+                  'content',
+                  'public',
+                  'flag',
+                  'vote',
+                  'userId'
+                  ))
+              ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->where('public = 1')
+              ->order($order)
+              ->order($this->_name.'.date DESC');
+        
+        return $query;
+    }
+    
     public function getUserId($id)
     {
         $query = $this->select()
@@ -216,7 +239,8 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
               ->join('user', $this->_name.'.userId = user.id', 'login')
               ->where('Tags.name = ?', $name)
               ->where($this->_name.'.public = 1')
-              ->order($order);
+              ->order($order)
+              ->order($this->_name.'.date DESC');
         return $query;
     }
     
@@ -230,6 +254,48 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             return false;
         else
             return true;
+    }
+    
+    public function sortDocuments($sort_type, $tag_name = null)
+    {
+        $order = $this->_name.'.date DESC';
+        switch($sort_type)
+        {
+            case 'votes': 
+                $order = $this->_name.'.vote DESC';
+                if($tag_name != null)
+                    $res = $this->getDocumentsByTagName ($tag_name, $order);
+                else
+                    $res = $this->getAll($order);
+                break;
+        }
+        
+        return $res;
+    }
+    
+    public function search($term)
+    {
+        $where = $this->getAdapter()->quoteInto('title LIKE ?', '%'.$term.'%');
+        
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'id',
+                  'date',
+                  'lastEditDate',
+                  'title',
+                  'content',
+                  'public',
+                  'flag',
+                  'vote',
+                  'userId'
+                  ))
+              ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->where('public = 1')
+              ->where($where)
+              ->order($this->_name.'.date DESC');
+        
+        return $query;
     }
 }
 

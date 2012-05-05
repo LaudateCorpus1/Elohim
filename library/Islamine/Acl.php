@@ -86,8 +86,12 @@ class Islamine_Acl extends Zend_Acl
     
     protected function _setKarmaPrivileges()
     {
-        $model_privileges = new Model_Privileges($this->_config);
-        $this->_karma_privileges = $model_privileges->getAll();
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $model_privileges = new Model_Privileges($this->_config);
+            $this->_karma_privileges = $model_privileges->getAll();
+        }
     }
     
     /*public function _getKarmaPrivileges()

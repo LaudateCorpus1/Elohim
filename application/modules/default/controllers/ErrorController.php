@@ -34,6 +34,10 @@ class ErrorController extends Zend_Controller_Action
                 $this->view->message = 'Application error';
                 break;
         }
+        
+        if($errors->exception->getCode() == 404)
+            $this->view->message = 'Page not found';
+        
         $exception = $errors->exception;
         $columnMapping = array('type' => 'priority', 'message' => 'message', 'date' => 'timestamp', 'trace' => 'trace');
         $db = Zend_Db_Table::getDefaultAdapter();

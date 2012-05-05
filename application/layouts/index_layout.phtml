@@ -17,15 +17,9 @@ echo $this->doctype() . PHP_EOL;
         <?php
           echo $this->headTitle()->toString('		') . PHP_EOL;
           echo $this->headLink()
-                    ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
-                    ->appendStylesheet('/css/tagit/jquery.tagit.css')
-                    ->appendStylesheet('/css/bootstrap.css')
-                    ->appendStylesheet('/css/main.css')
-                    ->appendStylesheet('/css/form.css');
+                    ->prependStylesheet('/css/bootstrap.css')
+                    ->appendStylesheet('/css/main.css');
         
-            $this->headScript()->prependFile($this->baseUrl().'/js/ckfinder/ckfinder.js');
-            $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
-            $this->headScript()->prependFile($this->baseUrl().'/js/library.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/base.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
@@ -88,60 +82,14 @@ echo $this->doctype() . PHP_EOL;
             
             <div class="clr"></div>
             <div id="partner">
-                <img src="/images/banner.png" alt="banner" />
             </div>
             <div id="content">
-                <div class="library-content">
+                <div class="index-content">
                     <?php
                     echo $this->layout()->content . PHP_EOL;
                     ?>
                 </div>
-                <div id="sidebar-right">
-                     <div class="document-search">
-                         <?php
-                            echo new Default_Form_SearchDocument();
-                         ?>
-                     </div>
-
-                     <div class="module">
-                        <?php echo $this->layout()->module_favtags; ?>
-                     </div>
-
-                    <div class="modulep">
-                        <p class="partage">PartageIslam</p>
-                        <p>Vous avez des fichiers sur l'islam que vous voulez faire partager aux autre ?</p>
-                        <p>Envoyez-les nous, et nous les publierons sur le site !</p>
-                    </div>
-                </div>
-                        <!--<ul>
-                            <li>
-                                <div id="search" >
-                                    <form method="get" action="#">
-                                    <div>
-                                        <input type="text" name="s" id="search-text" value="" />
-					<input type="submit" id="search-submit" value="Go" />
-                                    </div>
-                                    </form>
-				</div>
-				<div style="clear: both;">&nbsp;</div>
-                            </li>
-                            <li>
-                                <?php foreach($this->layout()->sidebar as $category => $articles) : ?>
-                                
-                                <div class="category"><?php echo $category; ?></div>
-                                    <ul>
-                                    <?php foreach($articles as $article) : ?>
-                                        <li><a href="<?php echo $this->url(array(
-                                            'controller' => 'article',
-                                            'action' => 'show',
-                                            'id' => $article->id
-                                        )) ?>"><?php echo $article->title ?></a></li>
-                                    <?php  endforeach; ?>
-                                    </ul>
-                               <?php endforeach;
-                                ?>
-                            </li>
-			</ul>-->
+                        
             </div>
         </div>
         

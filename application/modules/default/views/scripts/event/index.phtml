@@ -12,13 +12,15 @@ echo $this->doctype() . PHP_EOL;
         <?php
         echo $this->headTitle()->toString('		') . PHP_EOL;
         echo $this->headLink()
-                    ->prependStylesheet('/css/scheduler/dhtmlxscheduler_glossy.css');
+                    ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
+                    ->appendStylesheet('/css/scheduler/dhtmlxscheduler_glossy.css');
         
             $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/locale_fr.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler_tooltip.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler_serialize.js');
-            echo $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler.js');
-            
+            $this->headScript()->prependFile($this->baseUrl().'/js/scheduler/dhtmlxscheduler.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
+            echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
         ?>
     </head>
 
@@ -30,8 +32,21 @@ echo $this->doctype() . PHP_EOL;
 		overflow:hidden;
                 font-family: "Helvetica Nueue", Arial;
 	}
-        a{
+        a {
+            color: #fff;
             text-decoration: none;
+        }
+        .link{
+            padding: 5px;
+        }
+        .link:hover {
+            color: #000;
+            background-color: #ddd;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .table-top{
+            width: 800px;
         }
 	.dhx_cal_navline input{
 		width:80px;
@@ -40,6 +55,15 @@ echo $this->doctype() . PHP_EOL;
 		font-family:Tahoma;
 		font-weight:8pt;
 	}
+        
+        .help-event-link {
+            cursor: pointer;
+        }
+        
+        #dialog-help-events ul li {
+            padding-bottom: 10px;
+            font-size: 0.9em;
+        }
 </style>
 
 
@@ -65,28 +89,35 @@ echo $this->doctype() . PHP_EOL;
 		scheduler.load("../../../../../../js/scheduler/events.php");
                 
 		var dp = new dataProcessor("../../../../../../js/scheduler/events.php");
-		dp.init(scheduler);	
+		dp.init(scheduler);
                 
-                scheduler.attachEvent("onEventAdded", function(event_id, event_object){
-                    event_object.user_id = userId;
-                });
+                if(parseInt(userId) == 0)
+                    scheduler.config.readonly = true;
+                else
+                {
+                    scheduler.attachEvent("onEventAdded", function(event_id, event_object){
+                        event_object.user_id = userId;
+                    });
+
+                    scheduler.attachEvent("onBeforeDrag", function (event_id, mode, native_event_object){
+                       return check(event_id, userId);
+                    });
+
+                    scheduler.attachEvent("onClick", function (event_id, native_event_object){
+                       return check(event_id, userId);
+                    });
+
+                    scheduler.attachEvent("onDblClick", function (event_id, native_event_object){
+                       return check(event_id, userId);
+                    });
+
+                    var format=scheduler.date.date_to_str("%d-%m-%Y %H:%i"); 
+                    scheduler.templates.tooltip_text = function(start,end,event) {
+                            return "<b>Evèn.:</b> "+event.text+"<br/><b>Date début:</b> "+format(start)+"<br/><b>Date fin:</b> "+format(end)+"<br/><b>Lieu:</b> "+event.details;
+                    };
+                }
                 
-                scheduler.attachEvent("onBeforeDrag", function (event_id, mode, native_event_object){
-                   return check(event_id, userId);
-                });
-                
-                scheduler.attachEvent("onClick", function (event_id, native_event_object){
-                   return check(event_id, userId);
-                });
-                
-                scheduler.attachEvent("onDblClick", function (event_id, native_event_object){
-                   return check(event_id, userId);
-                });
-                
-                var format=scheduler.date.date_to_str("%d-%m-%Y %H:%i"); 
-                scheduler.templates.tooltip_text = function(start,end,event) {
-                        return "<b>Evèn.:</b> "+event.text+"<br/><b>Date début:</b> "+format(start)+"<br/><b>Date fin:</b> "+format(end)+"<br/><b>Lieu:</b> "+event.details;
-                };
+                dialogAlertDocument();
 	}
         
         function check(event_id, userId)
@@ -102,32 +133,68 @@ echo $this->doctype() . PHP_EOL;
            }
            return true;
         }
+        
+        function dialogAlertDocument()
+        {
+            $('#dialog-help-events').dialog({
+                autoOpen: false,
+                height: 410,
+                width: 700,
+                modal: true,
+                buttons: {
+                        Fermer: function() {
+                                $( this ).dialog('close');
+                        }
+                },
+                close: function() {
+                        //allFields.val( "" ).removeClass( "ui-state-error" );
+                }
+            });
+
+            $('.help-event-link').click(function(e) {
+                e.preventDefault();
+                $('#dialog-help-events').dialog('open');
+            });
+        }
 </script>
 
 <body onload="init();">
     <div style="background-color:#201414; width: 100%">
-        <a href="<?php
-            echo $this->url(array(
-                'module' => 'default',
-                'controller' => 'index',
-                'action' => 'index'
-            ), 'default', true);
-            ?>"><img src="/images/logo.jpg" height="50"/>
-        </a>
-        <?php if(isset($this->backUrl)) : ?>
-        <a href="<?php
-            echo $this->backUrl; ?>" style="color:#fff;">Revenir en arrière
-        </a>
-        <?php else : ?>
-        <a href="<?php
-            echo $this->url(array(
-                'module' => 'default',
-                'controller' => 'index',
-                'action' => 'index'
-            ), 'default', true);
-            ?>" style="color:#fff;">Revenir en arrière
-        </a>
-        <?php endif; ?>
+        <table class="table-top">
+            <tbody>
+                <tr>
+                    <td>
+                        <a href="<?php
+                            echo $this->url(array(
+                                'module' => 'default',
+                                'controller' => 'index',
+                                'action' => 'index'
+                            ), 'default', true);
+                            ?>"><img src="/images/logo.jpg" height="50"/>
+                        </a>
+                    </td>
+                    <td>
+                        <?php if(isset($this->backUrl)) : ?>
+                        <a class="link" href="<?php
+                            echo $this->backUrl; ?>">Revenir en arrière
+                        </a>
+                        <?php else : ?>
+                        <a class="link" href="<?php
+                            echo $this->url(array(
+                                'module' => 'default',
+                                'controller' => 'index',
+                                'action' => 'index'
+                            ), 'default', true);
+                            ?>">Revenir en arrière
+                        </a>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <a class="help-event-link link">Aide </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 	
     <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
@@ -144,6 +211,17 @@ echo $this->doctype() . PHP_EOL;
         </div>
         <div class="dhx_cal_data">
         </div>		
+    </div>
+    
+    <div id="dialog-help-events" title="Aide" style="display:none;">
+        <ul>
+            <li>Vous pouvez consulter les détails d'un évènement en passant la souris dessus</li>
+            <li>Vous pouvez ajouter un évènement en double cliquant dans la zone où vous souhaitez le créer</li>
+            <li>Vous pouvez modifier ou supprimer un évènement que vous avez créé</li>
+            <li>Vous ne pouvez pas modifier ou supprimer un évènement créé par une autre personne</li>
+            <li>Pour changer la date d'un évènement que vous avez créé, vous pouvez le déplacer en maintenant le bouton de la souris</li>
+            <li>Pour étendre la durée d'un évènement que vous avez créé vous pouvez l'étirer par le bas (en vue Jour et Semaine)</li>
+        </ul>
     </div>
 </body>
 
