@@ -23,7 +23,13 @@ class Islamine_Controller_Action_Helper_NotifyUser extends Zend_Controller_Actio
             $data['fromUserId'] = $auth->getIdentity()->id;
             
             $model_notification = new Model_Notification();
-            $model_notification->addNotification($data);
+            // Si la notif doit etre supprimée, on récupère son message pour le passer
+            // à la fonction qui va supprimer cette notif
+            $res = $model_notification->isCancelling($type, $toUserId, $message);
+            if($res !== false)
+                $model_notification->deleteCancelledNotification($toUserId, $type, $res);
+            else
+                $model_notification->addNotification($data);
         }
     }
 }

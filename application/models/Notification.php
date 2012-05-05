@@ -65,5 +65,48 @@ class Model_Notification extends Zend_Db_Table_Abstract
         $where[] = 'beenRead = 0';
         $this->update($data, $where);
     }
+    
+    public function isCancelling($type, $toUserId, $message)
+    {
+       if($type == 'GAINED-PRIVILEGE')
+           $contrary = 'LOST-PRIVILEGE';
+       elseif($type == 'LOST-PRIVILEGE')
+           $contrary = 'GAINED-PRIVILEGE';
+       else
+           $contrary = '';
+        
+       $query = $this->select()
+                     ->from($this->_name)
+                     ->where('type = ?', $contrary)
+                     ->where($this->getAdapter()->quoteInto('toUserId = ?', $toUserId))
+                     ->where('beenRead = 0');
+       
+        $res = $this->fetchAll($query);
+        foreach($res as $notif)
+        {
+            preg_match('/"(.*?)"/', $notif->message, $matches);
+            preg_match('/"(.*?)"/', $message, $matchesMess);
+            if($notif->type == $contrary && $matches[1] == $matchesMess[1])
+                return $notif->message;
+        }
+        return false;
+    }
+    
+    public function deleteCancelledNotification($toUserId, $type, $message)
+    {
+        if($type == 'GAINED-PRIVILEGE')
+           $contrary = 'LOST-PRIVILEGE';
+        elseif($type == 'LOST-PRIVILEGE')
+           $contrary = 'GAINED-PRIVILEGE';
+        else
+           $contrary = '';
+        
+        $this->delete(array(
+                $this->getAdapter()->quoteInto('toUserId = ?', $toUserId),
+                $this->getAdapter()->quoteInto('type = ?', $contrary),
+                $this->getAdapter()->quoteInto('message = ?', $message),
+                $this->getAdapter()->quoteInto('beenRead = ?', 0)
+            ));
+    }
 }
 

@@ -46,7 +46,12 @@ class IndexController extends Zend_Controller_Action
         
     }
     
-    public function testAction()
+    public function faqAction()
+    {
+        
+    }
+    
+    public function privilegesAction()
     {
         
     }
