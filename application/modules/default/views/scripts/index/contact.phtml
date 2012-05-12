@@ -1,0 +1,13 @@
+<?php $this->headTitle('Contact'); 
+?>
+<div id="contact">
+    <h2>Nous contacter</h2>
+   
+    <?php 
+    if(isset($this->message))
+        echo '<p>'.$this->escape($this->message).'</p>';
+    else
+        echo $this->form; 
+    ?>
+</div>
+

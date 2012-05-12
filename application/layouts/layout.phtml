@@ -70,18 +70,19 @@ echo $this->doctype() . PHP_EOL;
 
                         <li><a href="<?php echo $this->url(array(
                                     ), 'docList', true) ?>">Documents</a></li>
+                        
+                        <li><a href="">Annonces</a></li>
 
                         <li><a href="<?php echo $this->url(array(
                                     ), 'indexForum', true) ?>">Forum</a></li>
-
-                        <li><a href="">Annonces</a></li>
 
                         <li><a href="<?php echo $this->url(array(
                                         'controller' => 'user',
                                         'action' => 'list'
                                     ), 'default', true) ?>">Membres</a></li>
 
-                        <li><a href="">Contact</a></li>
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'contact', true) ?>">Contact</a></li>
                     </ul>
                 </div>
             </div>

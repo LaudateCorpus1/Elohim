@@ -96,68 +96,79 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         $module     = $request->getModuleName();
         $controller = $request->getControllerName() ;
         $action     = $request->getActionName() ;
-
-        $front = Zend_Controller_Front::getInstance() ;
-        $default = $front->getDefaultModule() ;
-
-        // compose le nom de la ressource
-        if ($module == $default)
-            $resource = $controller ;
-        else
-            $resource = $module.'_'.$controller ;
         
-        // est-ce que la ressource existe ?
-        if (!$this->_acl->has($resource)) 
+        if($module == 'forum')
         {
-            return true;
             // action/resource does not exist in ACL
             $module = self::ERROR_MODULE;
             $controller = self::ERROR_CONTROLLER;
             $action = self::ERROR_ACTION;
-        } 
-        else 
+        }
+        else
         {
-            // contrôle si l'utilisateur est autorisé
-            if (!$this->_acl->isAllowed($role, $resource, $action))
+        
+            $front = Zend_Controller_Front::getInstance() ;
+            $default = $front->getDefaultModule() ;
+
+            // compose le nom de la ressource
+            if ($module == $default)
+                $resource = $controller ;
+            else
+                $resource = $module.'_'.$controller ;
+
+            // est-ce que la ressource existe ?
+            if (!$this->_acl->has($resource)) 
             {
-                // l'utilisateur n'est pas autorisé à accéder à cette ressource
-                // on va le rediriger
-                if (!$this->_auth->hasIdentity()) 
+                return true;
+                // action/resource does not exist in ACL
+                $module = self::ERROR_MODULE;
+                $controller = self::ERROR_CONTROLLER;
+                $action = self::ERROR_ACTION;
+            } 
+            else 
+            {
+                // contrôle si l'utilisateur est autorisé
+                if (!$this->_acl->isAllowed($role, $resource, $action))
                 {
-                    if($request->isXmlHttpRequest())
+                    // l'utilisateur n'est pas autorisé à accéder à cette ressource
+                    // on va le rediriger
+                    if (!$this->_auth->hasIdentity()) 
                     {
-                        $this->disableLayout();
-                        $this->sendAjaxResponse(array('status' => 'error', 'message' => 'Vous devez vous identifier'));
-                        // redirectAndExit() cleans up, sends the headers and stopts the script
-                        Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
+                        if($request->isXmlHttpRequest())
+                        {
+                            $this->disableLayout();
+                            $this->sendAjaxResponse(array('status' => 'error', 'message' => 'Vous devez vous identifier'));
+                            // redirectAndExit() cleans up, sends the headers and stopts the script
+                            Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
+                        }
+                        else
+                        {
+                            // il n'est pas identifié -> module de login
+                            $module = self::FAIL_AUTH_MODULE;
+                            $controller = self::FAIL_AUTH_CONTROLLER;
+                            $action = self::FAIL_AUTH_ACTION;
+                        }
                     }
-                    else
+                    else 
                     {
-                        // il n'est pas identifié -> module de login
-                        $module = self::FAIL_AUTH_MODULE;
-                        $controller = self::FAIL_AUTH_CONTROLLER;
-                        $action = self::FAIL_AUTH_ACTION;
-                    }
-                }
-                else 
-                {
-                    $model_privileges = new Model_Privileges();
-                    $privilege = $model_privileges->getMRP($module, $controller, $action);
+                        $model_privileges = new Model_Privileges();
+                        $privilege = $model_privileges->getMRP($module, $controller, $action);
 
-                    if($request->isXmlHttpRequest())
-                    {
-                        $this->disableLayout();
-                        $this->sendAjaxResponse($privilege);
-                        // redirectAndExit() cleans up, sends the headers and stopts the script
-                        Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
-                    }
-                    else
-                    {
-                        $request->setParam('privilege', $privilege);
+                        if($request->isXmlHttpRequest())
+                        {
+                            $this->disableLayout();
+                            $this->sendAjaxResponse($privilege);
+                            // redirectAndExit() cleans up, sends the headers and stopts the script
+                            Zend_Controller_Action_HelperBroker::getStaticHelper('redirector')->redirectAndExit(); 
+                        }
+                        else
+                        {
+                            $request->setParam('privilege', $privilege);
 
-                        $module = self::FAIL_KARMA_MODULE ;
-                        $controller = self::FAIL_KARMA_CONTROLLER ;
-                        $action = self::FAIL_KARMA_ACTION ;
+                            $module = self::FAIL_KARMA_MODULE ;
+                            $controller = self::FAIL_KARMA_CONTROLLER ;
+                            $action = self::FAIL_KARMA_ACTION ;
+                        }
                     }
                 }
             }

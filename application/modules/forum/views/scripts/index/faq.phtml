@@ -42,8 +42,12 @@
 
     <h3>Quels sont les privilèges à gagner ?</h3>
     <p>
-        Il y a différents privilèges. Pour plus de détails rendez vous sur la page
-        correspondante.
+        Il y a différents privilèges. Pour plus de détails rendez vous sur 
+        <a href="<?php echo $this->url(array(
+                            'module' => 'default',
+                            'controller'=> 'index',
+                            'action' => 'privileges'
+                        ), 'default', true); ?>">page correspondante</a>.
     </p>
 
     <h3>Pourquoi il y a-t-il des sujets fermés ?</h3>

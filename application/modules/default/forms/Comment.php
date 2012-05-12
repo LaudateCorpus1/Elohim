@@ -13,7 +13,7 @@ class Default_Form_Comment extends Zend_Form {
     public function addElementsForm() {
         $this->addElements(array(
             $this->createElement('text', 'pseudo')->setRequired(true)->setLabel('Pseudo'),
-            $this->createElement('textarea', 'content', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel("Message"),
+            $this->createElement('textarea', 'contentcomment', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel("Message"),
             $this->createElement('submit', 'Envoyer')
         ));
     }
