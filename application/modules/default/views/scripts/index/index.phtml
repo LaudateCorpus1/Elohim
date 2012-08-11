@@ -14,37 +14,38 @@
         <tr>
             <td>
                 <a href="<?php echo $this->url(array(
-                                        'controller' => 'library',
-                                        'action' => 'index'
-                                    ), 'default', true) ?>">
-                <img src="/images/document.png" alt="library"/></a>
-                <p><a href="<?php echo $this->url(array(
-                                        'controller' => 'library',
-                                        'action' => 'index'
-                                    ), 'default', true) ?>">
-                                    Documents</a></p>
+                                    ), 'docList', true) ?>">
+                    <p>
+                        Documents
+                        <br />
+                        <span class="detail">(122)</span>
+                    </p>
+                </a>
             </td>
             <td>
                 <a href="<?php echo $this->url(array(
                                         'controller' => 'event',
                                         'action' => 'index'
                                     ), 'default', true) ?>">
-                <img src="/images/calendar.png" alt="events"/></a>
-                <p><a href="<?php echo $this->url(array(
-                                        'controller' => 'event',
-                                        'action' => 'index'
-                                    ), 'default', true) ?>">Evènements</a></p>
+                <p>
+                    Evènements
+                    <br />
+                    <span class="detail">(12 ce mois-ci)</span>
+                </p>
+                </a>
             </td>
             <td>
                 <a href="<?php echo $this->url(array(
                                         'controller' => 'user',
                                         'action' => 'list'
                                     ), 'default', true) ?>">
-                <img src="/images/user.png" alt="users"/></a>
-                <p><a href="<?php echo $this->url(array(
-                                        'controller' => 'user',
-                                        'action' => 'list'
-                                    ), 'default', true) ?>">Membres</a></p>
+                
+                    <p>
+                        Membres
+                        <br />
+                        <span class="detail">(122)</span>
+                    </p>
+                </a>
             </td>
         </tr>
     </table>

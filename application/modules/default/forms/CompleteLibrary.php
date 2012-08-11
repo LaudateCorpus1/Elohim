@@ -1,5 +1,5 @@
 <?php
-require_once APPLICATION_PATH.'/modules/forum/forms/elements/Autocomplete.php';
+require_once 'elements/Autocomplete.php';
 
 class Default_Form_CompleteLibrary extends Zend_Form {
 
@@ -34,7 +34,7 @@ class Default_Form_CompleteLibrary extends Zend_Form {
     }
 
     public function addElementsForm() {
-        $auto = new Forum_Form_Element_Autocomplete('tags');
+        $auto = new Default_Form_Element_Autocomplete('tags');
         $auto->removeDecorator('Label');
         
         $this->addElements(array(

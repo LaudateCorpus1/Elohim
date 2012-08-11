@@ -103,12 +103,12 @@ class Forum_TagController extends Zend_Controller_Action
         }
     }
 
-    public function autocompleteAction()
+    /*public function autocompleteAction()
     {
         $t = new Forum_Model_Tag();
         $res = $t->search($this->_getParam('term'));
         $this->_helper->json(array_values($res));
-    }
+    }*/
     
     public function retagAction()
     {

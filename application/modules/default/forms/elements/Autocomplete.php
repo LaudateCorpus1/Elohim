@@ -9,7 +9,7 @@
  *
  * @author jeremie
  */
-class Forum_Form_Element_Autocomplete extends Zend_Form_Element_Xhtml
+class Default_Form_Element_Autocomplete extends Zend_Form_Element_Xhtml
 {
     public $helper = "autocomplete";
 }

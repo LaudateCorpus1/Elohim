@@ -1,5 +1,5 @@
 <?php
-require_once 'elements/Autocomplete.php';
+require_once APPLICATION_PATH.'/modules/default/forms/elements/Autocomplete.php';
 /**
  * Description of Form_UserPostTopic
  *
@@ -32,7 +32,7 @@ class Forum_Form_UserPostTopic extends Zend_Form {
 
     public function addElementsTopicForm() {
 
-        $auto = new Forum_Form_Element_Autocomplete('tags');
+        $auto = new Default_Form_Element_Autocomplete('tags');
         $auto->removeDecorator('Label');
 
 //        $autoComplete = new ZendX_JQuery_Form_Element_AutoComplete('tags');

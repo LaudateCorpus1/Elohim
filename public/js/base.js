@@ -144,7 +144,7 @@ $(function()
     var tags = $('#tagsValues').val();
     
     $("#tags").tagit({
-            tagSource: "/forum/tag/autocomplete",
+            tagSource: "/default/index/autocompletetag",
             singleField: true,
             singleFieldDelimiter: " ",
             singleFieldNode: $('#tagsValues')

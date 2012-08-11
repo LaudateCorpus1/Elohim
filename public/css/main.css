@@ -681,24 +681,31 @@ input, textarea, select
     margin: 0 auto;
 }
 
+#index-icons td a
+{
+    color: #ffffff;
+    display: inline-block; 
+    height:100%; 
+    width:100%;
+    padding: 15px 0;
+}
+
 #index-icons table
 {
     border-spacing: 20px;
 }
 
 #index-icons td {
-    padding: 20px;
-    background-color: #aaa;
-    border-radius: 7px;
+    width: 200px;
+    background-color: #008d17;
+    height: 100%;
+    /*border-radius: 7px;
     -moz-border-radius: 7px;
-    -webkit-border-radius: 7px;
+    -webkit-border-radius: 7px;*/
 }
 
-#index-icons td:hover {
-    background-color: #ddd;
-}
-
-#index-icons a:hover {
+#index-icons td a:hover {
+    color: #222;
     text-decoration: none;
 }
 
@@ -707,11 +714,18 @@ input, textarea, select
     height: 128px;
 }
 
-#index-icons p {
+#index-icons a {
     text-align: center;
-    font-size: 130%;
+    font-size: 150%;
     margin: 0;
     font-weight: bold;
+}
+
+#index-icons td .detail {
+    text-align: center;
+    font-size: 80%;
+    letter-spacing: 0.05em;
+    margin: 0;
 }
 
 .index-register {

@@ -293,6 +293,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
               ->join('user', $this->_name.'.userId = user.id', 'login')
               ->where('public = 1')
               ->where($where)
+              ->orWhere($this->getAdapter()->quoteInto('content LIKE ?', '%'.$term.'%'))
               ->order($this->_name.'.date DESC');
         
         return $query;

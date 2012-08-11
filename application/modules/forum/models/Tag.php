@@ -180,7 +180,7 @@ class Forum_Model_Tag extends Zend_Db_Table_Abstract
             $tags = explode(" ", $term);
             $finalterm = end($tags);
             if(stristr($tag, $finalterm))
-                    return true;
+                return true;
             return false;
         };
         $t = array();
