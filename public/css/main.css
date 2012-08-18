@@ -341,7 +341,7 @@ input, textarea, select
     color: #222;
     margin-top: 5px;
     width: 300px;
-    background-color: #F7A922; /*#2b66c9;*/
+    background-color: #019428; /*#F7A922; /*#2b66c9;*/
     padding: 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;
@@ -697,7 +697,7 @@ input, textarea, select
 
 #index-icons td {
     width: 200px;
-    background-color: #008d17;
+    background-color: #019428;
     height: 100%;
     /*border-radius: 7px;
     -moz-border-radius: 7px;
@@ -1313,8 +1313,8 @@ ul#favlist li.favorited-style a.close2
 
 .document-comment
 {
-    border: solid #dedede 1px;
-    background-color: #eee;
+    border: solid #9ADB38 1px;
+    background-color: #ACDB63;
     padding: 0 5px 0 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;

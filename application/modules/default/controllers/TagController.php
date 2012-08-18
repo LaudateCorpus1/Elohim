@@ -1,11 +1,11 @@
 <?php
 
-class Forum_TagControllerOld extends Zend_Controller_Action
+class TagController extends Zend_Controller_Action
 {
 
     public function init()
     {
-        $this->_helper->layout->setLayout('forum_layout');
+        $this->_helper->layout->setLayout('layout');
         
         if ($this->_request->isXmlHttpRequest()) {
             $this->_helper->viewRenderer->setNoRender();

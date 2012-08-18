@@ -41,7 +41,19 @@ $(function()
         else
             alert("Vous devez vous identifier");
     });
-
+    
+    /*
+     * Trier les documents
+     */
+    $('#form_sort_document').change(function()
+    {
+        var sort = $("select option:selected").val();
+        var tag = $('#tagname').val();
+        var url = "/doc/sort/" + sort;
+        if(tag != '')
+            url += '/tag/' + tag;
+        window.location.href = url;
+    });
 });
 
 function dialogDeleteDocument()

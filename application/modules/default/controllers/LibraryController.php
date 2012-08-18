@@ -62,8 +62,17 @@ class LibraryController extends Zend_Controller_Action
     }
     
     public function listAction() {
+        $autho = 'false';
+        
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $autho = 'true'; // Utilisateur authentifié
+        }
+        
         $documents = $this->_getParam('documents');
         $modelLibrary = new Default_Model_Library();
+        $sortForm = new Default_Form_SortDocument();
         
         $route = 'sortDocument';
         if($documents != null)
@@ -71,16 +80,19 @@ class LibraryController extends Zend_Controller_Action
             $sort ='récents';
             if($this->_getParam('type'))
             {
-                if($this->_getParam('t') == 'votes') {
+                $sortForm->populate(array('type' => $this->_getParam('type')));
+                if($this->_getParam('type') == 'votes') {
                     $sort = 'les mieux votés'; 
                 }
             }
             $this->view->title = 'Documents '.$sort;
             if($this->_getParam('name'))
             {
+                $tag = $this->_getParam('name');
+                $sortForm->populate(array('tagname' => $tag));
                 $route = 'sortDocumentTag';
-                $this->view->tagName = $this->_getParam('name');
-                $this->view->title .= ' sur \''.$this->_getParam('name').'\'';
+                $this->view->tagName = $tag;
+                $this->view->title .= ' sur \''.$tag.'\'';
             }
                 
         }
@@ -101,6 +113,9 @@ class LibraryController extends Zend_Controller_Action
             $this->view->$i = $modelLibrary->getTags($document['id']);
             $i++;
         }
+        
+        $this->view->sortForm = $sortForm;
+        $this->view->headScript()->appendScript("var auth = $autho;");
     }
     
     public function addAction()

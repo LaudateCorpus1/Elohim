@@ -52,7 +52,7 @@ $(function()
         var attr = $(this).attr('class');
         var tagId = attr.split("-");
         var action = $(this).find('img').first().attr('class');
-        var url = "/forum/tag/"+action+"favorited/"+tagId[1];
+        var url = "/tag/"+action+"favorited/"+tagId[1];
         
         if(typeof auth != "undefined" && auth)
         {
@@ -60,7 +60,7 @@ $(function()
             {
                 if(checkSuccess(response))
                 {
-                    var html = '<li class="favorited-style"><a href="/forum/tag/'+response.tagname+'" class="favorited-'+response.tagid+'">'+response.tagname+'</a>\n\
+                    var html = '<li class="favorited-style"><a href="/tag/'+response.tagname+'" class="favorited-'+response.tagid+'">'+response.tagname+'</a>\n\
                                 <a class="close2">x</a></li>';
 
                     if(response.action == "add")
@@ -114,7 +114,7 @@ $(function()
         $('.close2').live("click", function()
         {
             var attr = $(this).parent().find('a').first().attr('class').split('-');
-            var url = "/forum/tag/removefavorited/"+attr[1];
+            var url = "/tag/removefavorited/"+attr[1];
             $.post(url, {}, function(response)
             {
                 if(checkSuccess(response))

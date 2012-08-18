@@ -9,16 +9,7 @@ $purifyHelper = $this->getHelper('Purify');
     <?php if($this->library->count() == 0)  : ?>
         <h3>Aucun document n'a été trouvé</h3>
     <?php else : ?>
-        Trier par 
-        <a href="<?php echo $this->url(array(
-                            'type'=> 'votes',
-                            'name' => $this->escape($this->tagName)
-                        ), $this->escape($this->route)); ?>">Vote</a>
-         - 
-        <a href="<?php echo $this->url(array(
-                            'type'=> 'date',
-                            'name' => $this->escape($this->tagName)
-                        ), $this->escape($this->route)); ?>">Date</a>
+        <?php echo $this->sortForm; ?>
     <?php endif; 
     
     

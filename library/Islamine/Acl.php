@@ -124,7 +124,11 @@ class Islamine_Acl extends Zend_Acl
             {
                 if(intval($user->karma) >= $privilege->karma_needed)
                 {
-                    $this->allow($role, $privilege->module.'_'.$privilege->resource, $privilege->privilege);
+                    if($privilege->module == '')
+                        $module = '';
+                    else
+                        $module = $privilege->module.'_';
+                    $this->allow($role, $module.$privilege->resource, $privilege->privilege);
                 }
             }
         }
