@@ -5,9 +5,18 @@
     if(isset($this->error))
         echo '<div class="help-error">'.$this->escape($this->error).'</div>';
 
-    if(isset($this->success))
-        echo $this->escape($this->success);  
+    if(isset($this->success)):
+        echo $this->escape($this->success);
+    ?>
+    <br />
+    Vous pouvez dès à présent <a href="<?php echo $this->url(array(
+                                        'module' => 'default',
+                                        'controller'=>'user',
+                                        'action'=>'login'
+                                    )); ?>">vous connecter</a>.
+    <?php endif;
     
-    echo $this->form;
+    if(!isset($this->success))
+        echo $this->form;
     ?>
 </div>

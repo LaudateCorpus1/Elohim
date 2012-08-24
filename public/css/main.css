@@ -88,7 +88,7 @@ h2 {
     font:normal 24px Arial, Helvetica, sans-serif;
     padding:0;
     margin:5px 0;
-    color:#595959;
+    color: #487700; /*#595959;*/
 }
 
 h3
@@ -643,14 +643,25 @@ input, textarea, select
 
 .partage
 {
-    color: #F90;
+    color: #fff;
     font-weight: bold;
 }
 
 .modulep
 {
-    border: 1px solid #FC6;
+    border: 1px solid #00601A;
+    background-color: #1C6F32;
     padding: 5px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+.modulep2
+{
+    border: 1px solid #00601A;
+    background-color: #ACDB63;
+    padding: 5px;
+    margin-top: 10px;
 }
 
 #partner
@@ -1325,5 +1336,5 @@ ul#favlist li.favorited-style a.close2
 .comment-author
 {
     margin: 0;
-    border-bottom: dotted #aaa 1px;
+    border-bottom: dotted #487700 1px;
 }

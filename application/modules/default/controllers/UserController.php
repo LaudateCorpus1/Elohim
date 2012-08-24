@@ -43,48 +43,29 @@ class UserController extends Zend_Controller_Action
         }
           
           $request = $this->getRequest();
-          //$users = $this->_getTable('User');
-          //$form = $this->_getForm('Register', $this->_helper->url('register'));
           $form = new Default_Form_UserRegister();
           
           if ($request->isPost()) {
-              // if the Register form has been submitted and the submitted data is valid
               if ($form->isValid($_POST)) {
                   $data = $form->getValues();
                   
-                  /*if ($users->getSingleWithEmail($data['email']) != null) {
-                      // if the email already exists in the database
-                      $this->view->error = 'Email already taken';
-                  } else if ($users->getSingleWithUsername($data['username']) != null) {
-                      // if the username already exists in the database
-                      $this->view->error = 'Username already taken';
-                  } else if ($data['email'] != $data['emailAgain']) {
-                      // if both emails do not match
-                      $this->view->error = 'Both emails must be same';
-                  } else*/ if ($data['password'] != $data['passwordAgain']) {
-                      // if both passwords do not match
+                  if ($data['password'] != $data['passwordAgain']) {
                       $this->view->error = 'Les deux mots de passe doivent être les mêmes';
                   } else {
                       
                       // everything is OK, let's send email with a verification string
                       // the verifications string is an sha1 hash of the email
-                      /*$mail = new Zend_Mail();
-                      $mail->setFrom('your@name.com', 'Your Name');
-                      $mail->setSubject('Thank you for registering');
-                      $mail->setBodyText('Dear Sir or Madam,
-      Thank You for registering at yourwebsite.com. In order for your account to be
-      activated please click on the following URI:
-      http://yourwebsite.com/admin/login/email-verification?str=' . sha1($data['email'])
-      . '
-      Best Regards,
-      Your Name and yourwebsite.com staff');
-                      $mail->addTo($data['email'],
-                                   $data['first_name'] . ' ' . $data['last_name']);
-                      
-                      if (!$mail->send()) {
-                          // email sending failed
-                          $this->view->error = 'Failed to send email to the address you provided';
-                      } else*/ {
+                      /*if(!$this->_helper->alertMail->send('Inscription Islamine', $data['username'].',
+  Merci de vous être inscrit sur http://www.islamine.com. Pour activer votre compte
+  merci de cliquer sur le lien suivant:
+  http://islamine.localhost/login/email-verification?str=' . sha1($data['email'])
+  . '
+  Cordialement,
+  L\'équipe d\'Islamine', $data['email']))
+                      {
+                         $this->view->error = 'Failed to send email to the address you provided'; 
+                      }
+                      else*/ {
                           
                           // email sent successfully, let's add the user to the database;
                           $data['login'] = $data['username'];
@@ -92,12 +73,12 @@ class UserController extends Zend_Controller_Action
                           //$data['salt'] = $this->_helper->RandomString(40);
                           $data['role'] = 'member';
                           $data['status'] = 'pending';
-                          $data['avatar'] = 'userpic.gif';
+                          $data['avatar'] = 'userpic.jpeg';
                           $data['date_created'] = date('Y-m-d H:i:s');
                           
                           $model_user = new Model_User();
                           $model_user->add($data);
-                          $this->view->success = 'Successfully registered';
+                          $this->view->success = 'Inscription réussie.';
                       }
                   }
               }
@@ -377,6 +358,45 @@ class UserController extends Zend_Controller_Action
         $user_pagination->setCurrentPageNumber($this->_getParam('page',1));
         $user_pagination->setItemCountPerPage(36);
         $this->view->users = $user_pagination;
+    }
+    
+    public function forgotpasswordAction()
+    {
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $message = 'Vous êtes déjà connecté';
+            if($this->_request->isXmlHttpRequest())
+                echo Zend_Json::encode(array('status' => 'error', 'message' => $message));
+            else
+                throw new Exception($message);
+        }
+        else
+        {
+            if ($this->_request->isXmlHttpRequest()) 
+            {
+                $data = $this->getRequest()->getPost();
+                $email = $data['email'];
+                $model_user = new Model_User();
+                if($model_user->doesEmailExist($email))
+                {
+                    $newPassword = substr(md5(date('Ymdhis')),0,8);
+                    $res = $model_user->updateUserByEmail(array('password' => $newPassword), $email);
+                    
+                    $this->_helper->alertMail->send('Récupération mot de passe Islamine', 'Bonjour,
+
+Voici votre nouveau mot de passe : '.$newPassword.'
+Nous vous conseillons de le changer dans les plus brefs délais.
+
+Cordialement,
+L\'équipe d\'Islamine', $email);
+
+                    echo Zend_Json::encode(array('status' => 'ok', 'message' => 'Un e-mail avec un nouveau mot de passe a été envoyé'));
+                }
+                else
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Cet e-mail n\'existe pas'));
+            }
+        }
     }
 }
 

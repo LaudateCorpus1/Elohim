@@ -87,7 +87,7 @@ class Default_Form_UserLoginTop extends Zend_Form {
         $rememberMe = new Zend_Form_Element_Checkbox('rememberMe', array(
             'label' => 'Rester connecté',
             'required' => true,
-            'description' => '<div id="user-top-links"><a href="/default/user/register">S\'inscrire</a> | <a href="">Mot de passe oublié</a></div>'
+            'description' => '<div id="user-top-links"><a href="/default/user/register">S\'inscrire</a> | <a class="forgot-password-link">Mot de passe oublié</a></div>'
         ));
         
         $rememberMe->setDecorators(array(

@@ -30,6 +30,18 @@ class Islamine_Controller_Plugin_Notification extends Zend_Controller_Plugin_Abs
                         $modelNotification->updateNotifications(array('beenRead' => true), array('topicId' => $topicId));
                     }
                 }
+                else if($request->getModuleName() == 'default' 
+                    && $request->getControllerName() == 'library' 
+                    && $request->getActionName() == 'show')
+                {
+                    $documentId = $request->getParam('document');
+                    $modelLibrary = new Default_Model_Library();
+                    $documentAuthor = $modelLibrary->getUserId($documentId);
+                    if($documentAuthor == $auth->getIdentity()->id)
+                    {
+                        $modelNotification->updateNotifications(array('beenRead' => true), array('documentId' => $documentId));
+                    }
+                }
 
                 $notifications = $modelNotification->getAllUnreadByUser($auth->getIdentity()->id);
                 $userNotifications = $notifications;

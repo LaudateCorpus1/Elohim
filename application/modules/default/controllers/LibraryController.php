@@ -120,7 +120,6 @@ class LibraryController extends Zend_Controller_Action
     
     public function addAction()
     {
-        $this->view->headScript()->appendFile("/js/documentEditor.js");
         $form = new Default_Form_CompleteLibrary();
 
         if ($this->getRequest()->isPost()) {
@@ -152,7 +151,7 @@ class LibraryController extends Zend_Controller_Action
                         if(intval($auth->getIdentity()->karma) < intval($createTagsKarma)) {
                             $tag->getAdapter()->rollBack();
                             $error = true;
-                            $this->_forward('karma', 'error', 'forum', array('message' => 'Vous n\'avez pas le privilège pour créer des mots-clés'));
+                            throw new Exception ('Vous n\'avez pas le privilège pour créer des mots-clés');
                         }
                         else {
                             $tagId = $tag->addTag($t, '1', 'libraryAmount');
@@ -170,6 +169,7 @@ class LibraryController extends Zend_Controller_Action
             }
         }
         $this->view->form = $form;
+        $this->view->headScript()->appendFile("/js/documentEditor.js");
     }
     
     public function showAction()
@@ -201,7 +201,7 @@ class LibraryController extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
             if (isset($formData['post_comment']) && $commentForm->isValid($formData)) {
-                $this->_processComment($formData, $id);
+                $this->_processComment($formData, $id, $this->view->document->userId);
             }
         }
         $this->view->commentForm = $commentForm;
@@ -329,7 +329,7 @@ class LibraryController extends Zend_Controller_Action
                 if ($this->getRequest()->isPost()) 
                 {
                     $formData = $this->getRequest()->getPost();
-                    if($form->isValid($formData)) 
+                    if($form->isValid($formData))
                     {
                         $motif = $form->getValue('motif');
                         $this->flagDocument($motif, $document);
@@ -411,7 +411,12 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                 }
             }
             else
-                throw new Exception ('Ce document n\'est pas public', 500);
+            {
+                if ($this->getRequest()->isXmlHttpRequest())
+                    echo Zend_Json::encode(array('status' => 'error', 'message' => 'Ce document n\'est pas public'));
+                else
+                    throw new Exception ('Ce document n\'est pas public');
+            }
         }
     }
     
@@ -443,7 +448,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
         }
     }
     
-    protected function _processComment($data, $documentId)
+    protected function _processComment($data, $documentId, $documentAuthorId)
     {
         $content = $data['form_comment_content'];
         $modelComment = new Default_Model_CommentLibrary();
@@ -459,6 +464,9 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                         'content' => $content
             );
             $commentId = $modelComment->addComment($data);
+            
+            if($documentAuthorId != $identity->id)
+                $this->_helper->notifyUser('Nouveau commentaire :', $documentAuthorId, null, null, null, $documentId);
             
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));

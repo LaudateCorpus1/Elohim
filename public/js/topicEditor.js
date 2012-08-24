@@ -1,5 +1,7 @@
 $(function()
 {
+    $('#form_complete_library').preventDoubleSubmission();
+
     // Input des tags
     $('.ui-widget-content').attr('value', '5 mots max (ex: mariage)');
     

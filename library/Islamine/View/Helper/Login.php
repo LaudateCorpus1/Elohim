@@ -54,10 +54,16 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
         }
         else
         {
+            $forgotPasswordForm = new Default_Form_ForgotPassword();
+            
             $login_form = new Default_Form_UserLoginTop();
             $login_form->populate(array('uri' => $url));
             $html = $login_form;
-
+            
+            $html .= '<div id="dialog-forgot-password" title="Mot de passe oublié" style="display:none;">
+                <p>Vous recevrez un nouveau mot de passe par mail</p>
+                '.$forgotPasswordForm.'
+            </div>';
         }
         return $html;
     }
@@ -69,12 +75,10 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
         foreach($notifications as $notification)
         {
             $html .= '<div class="notification new">
-                            Nouvelle réponse : <a class="notification-id-'.$notification->id.'" href="'.$this->view->url(array(
-                                                                    'module' => 'forum',
-                                                                    'controller' => 'topic',
-                                                                    'action' => 'show',
-                                                                    'topic' => $notification->topicId
-                                    )).'">'.$notification->title.'</a>
+                            '.$notification->message.' <a class="notification-id-'.$notification->id.'" href="'.$this->view->url(array(
+                                                                    'document' => $notification->documentId,
+                                                                    'title' => $notification->title
+                                    ), 'showDocument').'#comments">'.$notification->title.'</a>
                       </div>';
         }
         

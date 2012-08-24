@@ -164,7 +164,17 @@ class Model_User extends Zend_Db_Table_Abstract
 
     public function updateUser(array $data, $id)
     {
+        if(isset($data['password']))
+            $data['password'] = md5($data['password']);
         $where = $this->getAdapter()->quoteInto('id = ?', $id);
+        $this->update($data, $where);
+    }
+    
+    public function updateUserByEmail(array $data, $email)
+    {
+        if(isset($data['password']))
+            $data['password'] = md5($data['password']);
+        $where = $this->getAdapter()->quoteInto('email = ?', $email);
         $this->update($data, $where);
     }
     
@@ -174,7 +184,7 @@ class Model_User extends Zend_Db_Table_Abstract
         $karma_privileges = $model_privileges->getDistinct();
         
         // Il faut vérifier si l'utilisateur gagne ou perd un privilège
-        $currentKarma = $this->get($user_id)->karma;
+        /*$currentKarma = $this->get($user_id)->karma;
         foreach($karma_privileges as $privilege)
         {
             // Il gagne un privilège
@@ -189,7 +199,7 @@ class Model_User extends Zend_Db_Table_Abstract
                 Zend_Controller_Action_HelperBroker::getStaticHelper('NotifyUser')
                         ->direct($privilege->lost_message, $user_id, null, null, 'LOST-PRIVILEGE');
             }
-        }
+        }*/
         
         $new_karma = array('karma' => new Zend_Db_Expr('karma + '.$karma));
         
@@ -279,6 +289,17 @@ class Model_User extends Zend_Db_Table_Abstract
               ->limit(50);
         
         return $this->fetchAll($query);
+    }
+    
+    public function doesEmailExist($email)
+    {
+        $query = $this->select();
+        $query->from($this->_name)
+              ->where($this->getAdapter()->quoteInto('email = ?', $email));
+        $res = $this->fetchRow($query);
+        if($res == null)
+            return false;
+        return true;
     }
 }
 

@@ -1,3 +1,22 @@
+// jQuery plugin to prevent double submission of forms
+jQuery.fn.preventDoubleSubmission = function() {
+  var $form;
+  $(this).bind('submit',function(e){
+    $form = $(this);
+
+    if ($form.data('submitted') === true) {
+      // Previously submitted - don't submit again
+      e.preventDefault();
+    } else {
+      // Mark it so that the next submit can be ignored
+      $form.data('submitted', true);
+    }
+  });
+
+  // Keep chainability
+  return $form;
+};
+
 var url = window.location.pathname;
 var mouse_is_inside = false;
 
@@ -174,6 +193,8 @@ $(function()
         $('.notifications').fadeOut('slow');
     });
    
+   
+   dialogForgotPassword();
 });
 
 function checkSuccess(response)
@@ -288,4 +309,54 @@ function rate(action, object)
     }
     else
         alert("Vous devez vous identifier");
+}
+
+function dialogForgotPassword()
+{
+    $('#dialog-forgot-password').dialog({
+        autoOpen: false,
+        height: 190,
+        width: 400,
+        modal: true,
+        buttons: {
+            Valider: function() {
+
+                var email = $('#dialog-forgot-password').find('#email');
+                if(email.val() == "") {
+                    alert("Veuillez entrer un e-mail");
+                }
+                else
+                {
+                    var data = $('#form_forgot_password').serializeArray();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/user/forgotpassword",
+                        dataType: "json",
+                        data: data,
+                        success: function(response)
+                        {
+                            if(checkSuccess(response))
+                            {
+                                alert(response.message);
+                            }
+                        },
+                        error: function(a, b, c)
+                        {
+                            alert('Une erreur est survenue');
+                        }
+                    });
+                }
+            },
+            Annuler: function() {
+                    $( this ).dialog('close');
+            }
+        }
+    });
+     
+    $('.forgot-password-link').click(function(e) {
+        //Cancel the link behavior
+        e.preventDefault();
+        $('#dialog-forgot-password').dialog('open');
+    });
 }

@@ -17,6 +17,17 @@ class Islamine_Controller_Action_Helper_AlertMail extends Zend_Controller_Action
         $mail->setBodyText($body, 'utf-8');
         $mail->send();
     }
+    
+    public function send($subject, $body, $sendto)
+    {
+        $auth = Zend_Auth::getInstance();
+        $mail = new Islamine_Mail('moderation.islamine@gmail.com', '15L4M1N3');
+        $mail->addTo($sendto, $sendto);    
+        $mail->setFrom('moderation.islamine@gmail.com', 'Islamine');
+        $mail->setSubject($subject);
+        $mail->setBodyText($body, 'utf-8');
+        $mail->send();
+    }
 }
 
 

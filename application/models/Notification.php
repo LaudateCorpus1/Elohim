@@ -24,11 +24,12 @@ class Model_Notification extends Zend_Db_Table_Abstract
         $query = $this->select()
                  ->setIntegrityCheck(false)
                  ->from($this->_name)
-                 ->join('Topic', 'Topic.topicId='.$this->_name.'.topicId', 'title')
+                 ->joinLeft('Topic', 'Topic.topicId='.$this->_name.'.topicId', 'title')
+                 ->joinLeft('library', 'library.id='.$this->_name.'.documentId', 'title')
                  ->where($this->getAdapter()->quoteInto('toUserId = ?', $userId))
                  ->where('beenRead = 0')
                  ->where('type IS NULL');
-         //Zend_Debug::dump($query->__toString()); exit;
+        //Zend_Debug::dump($query->__toString()); exit;
         return $this->fetchAll($query);
     }
     

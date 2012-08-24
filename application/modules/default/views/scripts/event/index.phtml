@@ -40,8 +40,8 @@ echo $this->doctype() . PHP_EOL;
             padding: 5px;
         }
         .link:hover {
-            color: #000;
-            background-color: #ddd;
+            color: #fff;
+            background-color: #019428;
             padding: 5px;
             border-radius: 5px;
         }
@@ -62,7 +62,7 @@ echo $this->doctype() . PHP_EOL;
         
         #dialog-help-events ul li {
             padding-bottom: 10px;
-            font-size: 0.9em;
+            font-size: 0.87em;
         }
 </style>
 
@@ -138,7 +138,7 @@ echo $this->doctype() . PHP_EOL;
         {
             $('#dialog-help-events').dialog({
                 autoOpen: false,
-                height: 410,
+                height: 415,
                 width: 700,
                 modal: true,
                 buttons: {
@@ -216,6 +216,7 @@ echo $this->doctype() . PHP_EOL;
     <div id="dialog-help-events" title="Aide" style="display:none;">
         <ul>
             <li>Vous pouvez consulter les détails d'un évènement en passant la souris dessus</li>
+            <li>Vous devez vous connecter pour créer un évènement</li>
             <li>Vous pouvez ajouter un évènement en double cliquant dans la zone où vous souhaitez le créer</li>
             <li>Vous pouvez modifier ou supprimer un évènement que vous avez créé</li>
             <li>Vous ne pouvez pas modifier ou supprimer un évènement créé par une autre personne</li>

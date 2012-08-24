@@ -17,7 +17,8 @@ echo $this->doctype() . PHP_EOL;
         <?php
           echo $this->headTitle()->toString('		') . PHP_EOL;
           echo $this->headLink()
-                    ->prependStylesheet('/css/bootstrap.css')
+                    ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
+                    ->appendStylesheet('/css/bootstrap.css')
                     ->appendStylesheet('/css/main.css');
         
             $this->headScript()->prependFile($this->baseUrl().'/js/base.js');

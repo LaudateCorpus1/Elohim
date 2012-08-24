@@ -26,17 +26,19 @@ class ErrorController extends Zend_Controller_Action
         
                 // 404 error -- controller or action not found
                 $this->getResponse()->setHttpResponseCode(404);
-                $this->view->message = 'Page not found';
+                $this->view->message = 'Page non trouvée';
+                $this->view->error = 404;
                 break;
             default:
                 // application error
                 $this->getResponse()->setHttpResponseCode(500);
-                $this->view->message = 'Application error';
+                $this->view->message = 'Une erreur est survenue';
+                $this->view->error = 500;
                 break;
         }
         
         if($errors->exception->getCode() == 404)
-            $this->view->message = 'Page not found';
+            $this->view->message = 'Page non trouvée';
         
         $exception = $errors->exception;
         $columnMapping = array('type' => 'priority', 'message' => 'message', 'date' => 'timestamp', 'trace' => 'trace');
@@ -57,7 +59,7 @@ class ErrorController extends Zend_Controller_Action
             $this->view->exception = $errors->exception;
         }
         
-        $this->view->request   = $errors->request;
+        $this->view->request = $errors->request;
     }
 
     public function getLog()
