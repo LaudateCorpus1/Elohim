@@ -620,6 +620,12 @@ input, textarea, select
     margin: 0 0 15px auto;
 }
 
+.module h4
+{
+    font-size: 15px;
+    margin: 6px 0 7px 0;
+}
+
 #sort-module
 {
     background-color: #F1F1F1;
@@ -645,6 +651,7 @@ input, textarea, select
 {
     color: #00601A;
     font-weight: bold;
+    font-size: 14px;
 }
 
 .modulep
@@ -653,11 +660,18 @@ input, textarea, select
     background-color: #1C6F32;
     padding: 5px;
     color: #fff;*/
-    padding: 5px;
+    padding: 5px 0 5px 0;
     border-bottom: 1px solid #EBEBEB;
     color: #1C6F32;
     margin-top: 10px;
     line-height: 1.6em;
+}
+
+.modulep h4
+{
+    font-size: 15px;
+    margin: 6px 0 7px 0;
+    color: #00601A;
 }
 
 .modulep2
@@ -670,16 +684,10 @@ input, textarea, select
 
 .last-news
 {
-    padding: 5px;
+    padding: 5px 0 5px 0;
     border-top: 1px solid #EBEBEB;
     border-bottom: 1px solid #EBEBEB;
     line-height: 1.2em;
-}
-
-.last-news h4
-{
-    font-size: 15px;
-    margin: 6px 0 7px 0;
 }
 
 .last-news .news
