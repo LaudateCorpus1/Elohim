@@ -18,7 +18,24 @@ class Model_News extends Zend_Db_Table_Abstract
     
     public function getAll()
     {
-        return $this->fetchAll();
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'id',
+                  'date_posted',
+                  'last_updated',
+                  'title',
+                  'content',
+                  'author'
+                  ))
+              ->order('date_posted  DESC');
+        
+        return $query;
+    }
+    
+    public function getLastNews($count = 5)
+    {
+        return $this->fetchAll(null, 'date_posted  DESC', $count);
     }
 }
 

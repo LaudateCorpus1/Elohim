@@ -175,6 +175,13 @@ class Default_Form_UserEdit extends Zend_Form {
             array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
             ));
         
+        $csrf = new Zend_Form_Element_Hash(get_class().'_csrf', array('salt' => 'unique'));
+        $csrf->setDecorators(array(
+            'ViewHelper',
+            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
+            array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
+            ));
+        
         $submit = new Zend_Form_Element_Submit('editbtn', array(
                     'decorators' => $this->buttonDecorators,
                     'label' => 'Valider',
@@ -192,6 +199,7 @@ class Default_Form_UserEdit extends Zend_Form {
             $oldPassword,
             $password,
             $passwordAgain,
+            $csrf,
             $submit
         ));
     }

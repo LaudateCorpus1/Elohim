@@ -10,9 +10,14 @@ class NewsController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $id = $this->_getParam('id');
         $model = new Model_News();
-        $this->view->news = $model->get($id);
+        $news = $model->getAll();
+        
+        $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($news));
+        $page->setPageRange(5);
+        $page->setCurrentPageNumber($this->_getParam('page',1));
+        $page->setItemCountPerPage(20);
+        $this->view->news = $page;
     }
 
 

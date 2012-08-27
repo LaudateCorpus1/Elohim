@@ -119,14 +119,40 @@ class Default_Form_UserRegister extends Zend_Form {
                     'label' => 'S\'inscrire',
                     'class' => 'btn btn-primary'
                 ));
+        
+        
+        $captcha = new Zend_Form_Element_Captcha('foo', array(
+                'label' => "Please verify you're a human",
+                'captcha' => 'Figlet',
+                'captchaOptions' => array(
+                    'captcha' => 'Figlet',
+                    'wordLen' => 6,
+                    'timeout' => 300,
+                )
+            ));
+        
+        $captcha->setDecorators(array(
+            'ViewHelper',
+            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
+            array('Label', array('tag' => 'td')),
+            array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
+            array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
+            ));
 
-
+        $csrf = new Zend_Form_Element_Hash(get_class().'_csrf', array('salt' => 'unique'));
+        $csrf->setDecorators(array(
+            'ViewHelper',
+            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
+            array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
+            ));
 
         $this->addElements(array(
             $email,
             $username,
             $password,
             $passwordAgain,
+            //$captcha,
+            $csrf,
             $submit
         ));
     }

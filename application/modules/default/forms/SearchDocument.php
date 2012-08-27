@@ -53,7 +53,10 @@ class Default_Form_SearchDocument extends Zend_Form {
             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => 'true'))
         ));
         
-        $this->addElements(array($this->text, $this->submit));
+        $this->addElements(array(
+            $this->text, 
+            $this->submit,
+                ));
 
 //        $this->addElements(array(
 //            $this->createElement('textarea', 'content', array('rows' => '7', 'cols' => '50', 'value' => $messageValue))->setRequired(true)->setLabel("Message"),

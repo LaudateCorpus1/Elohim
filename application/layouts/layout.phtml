@@ -72,7 +72,7 @@ echo $this->doctype() . PHP_EOL;
                                     ), 'docList', true) ?>">Documents</a></li>
 
                         <li><a href="<?php echo $this->url(array(
-                                    ), 'indexForum', true) ?>">Annonces</a></li>
+                                    ), 'news', true) ?>">Annonces</a></li>
 
                         <li><a href="<?php echo $this->url(array(
                                     ), 'faq', true) ?>">FAQ</a></li>
@@ -103,6 +103,10 @@ echo $this->doctype() . PHP_EOL;
                          <?php
                             echo new Default_Form_SearchDocument();
                          ?>
+                     </div>
+                    
+                    <div class="module">
+                        <?php echo $this->layout()->moduleNews; ?>
                      </div>
 
                      <div class="module">

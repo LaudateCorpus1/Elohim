@@ -49,7 +49,11 @@ class Default_Form_CommentDocument extends Zend_Form {
                      ->setAttrib('class', 'btn')
                      ->setDecorators($this->buttonDecorators);
 
-        $this->addElements(array($this->text, $this->submit));
+        $this->addElements(array(
+            $this->text, 
+            $this->submit,
+            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique'))->setDecorators($this->elementDecorators)
+            ));
     }
 
     public function loadDefaultDecorators() {

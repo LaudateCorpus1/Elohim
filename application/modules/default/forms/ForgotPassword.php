@@ -1,4 +1,4 @@
-<?php
+l<?php
 
 /*
  * To change this template, choose Tools | Templates
@@ -37,7 +37,7 @@ class Default_Form_ForgotPassword extends Zend_Form
             ));
         
         $this->addElements(array(
-            $email
+            $email,
         ));
     }
 

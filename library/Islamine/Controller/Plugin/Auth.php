@@ -165,9 +165,9 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                         {
                             $request->setParam('privilege', $privilege);
 
-                            $module = self::FAIL_KARMA_MODULE ;
-                            $controller = self::FAIL_KARMA_CONTROLLER ;
-                            $action = self::FAIL_KARMA_ACTION ;
+                            $module = self::FAIL_ACL_MODULE ;
+                            $controller = self::FAIL_ACL_CONTROLLER ;
+                            $action = self::FAIL_ACL_ACTION ;
                         }
                     }
                 }

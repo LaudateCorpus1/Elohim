@@ -148,12 +148,12 @@ class LibraryController extends Zend_Controller_Action
                         $modelLibraryTag->addRow($libraryId, $tagId);
                     } else {
                         $createTagsKarma = intval(Zend_Registry::getInstance()->constants->create_tags_karma);
-                        if(intval($auth->getIdentity()->karma) < intval($createTagsKarma)) {
+                        /*if(intval($auth->getIdentity()->karma) < intval($createTagsKarma)) {
                             $tag->getAdapter()->rollBack();
                             $error = true;
                             throw new Exception ('Vous n\'avez pas le privilège pour créer des mots-clés');
                         }
-                        else {
+                        else*/ {
                             $tagId = $tag->addTag($t, '1', 'libraryAmount');
                             $modelLibraryTag->addRow($libraryId, $tagId);
                         }

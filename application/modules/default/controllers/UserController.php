@@ -69,6 +69,7 @@ class UserController extends Zend_Controller_Action
                           
                           // email sent successfully, let's add the user to the database;
                           $data['login'] = $data['username'];
+                          unset($data['Default_Form_UserRegister_csrf']);
                           unset($data['username'], $data['passwordAgain'], $data['register']);
                           //$data['salt'] = $this->_helper->RandomString(40);
                           $data['role'] = 'member';
@@ -301,6 +302,7 @@ class UserController extends Zend_Controller_Action
                                 unset($data['passwordAgain']);
                                 $data['password'] = md5($data['password']);
                             }
+                            unset($data['Default_Form_UserEdit_csrf']);
                             
                             $model_user->updateUser($data, $user->id);
                             $this->_redirect('/users/'.$user->id.'/' . $username);

@@ -44,6 +44,7 @@ class Default_Form_CompleteLibrary extends Zend_Form {
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots-clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
             $this->createElement('checkbox', 'form_document_library_public')->setLabel('Publier')->setDecorators($this->checkboxDecorators),
+            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique'))->setDecorators($this->elementDecorators),
             $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn btn-primary')
         ));
     }

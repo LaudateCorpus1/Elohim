@@ -1,5 +1,11 @@
-<div class="article">
-<h2><?php echo $this->escape($this->news->title); ?></h2>
+<?php $this->headTitle('Les dernières annonces'); ?>
 
-<?php echo nl2br($this->news->content); ?>
+<div class="article">
+<?php foreach($this->news as $new): ?>
+    <h2><?php echo $this->escape($new['title']); ?></h2>
+
+    <?php echo nl2br($new['content']); ?>
+    <hr />
+<?php endforeach; ?>
+<?php echo $this->paginationControl($this->news, 'Sliding', '/partials/pagination.phtml'); ?>
 </div>

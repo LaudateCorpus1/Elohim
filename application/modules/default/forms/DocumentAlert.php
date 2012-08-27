@@ -28,6 +28,7 @@ class Default_Form_DocumentAlert extends Zend_Form {
         
         $this->addElements(array(
             $this->createElement('text', 'motif', array('size' => '60'))->setRequired(true)->setLabel('Motif')->setDecorators($this->elementDecorators),
+            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique'))->setDecorators($this->elementDecorators),
             $this->createElement('submit', 'validate_document_alert')->setLabel('Valider')->setAttrib('class', 'btn btn-primary')->setDecorators($this->buttonDecorators)
         ));
     }
