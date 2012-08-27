@@ -791,6 +791,22 @@ input, textarea, select
     font-weight: bold;
 }
 
+/******************************************/
+/***************** News *******************/
+/******************************************/
+.main-news
+{
+    margin-bottom: 30px;
+    border-bottom: 1px solid #EBEBEB;
+}
+
+.main-news .info
+{
+    font-size: 11px;
+    color: #888;
+    display: block;
+    line-height: 2.2em;
+}
 
 /******************************************/
 /************** User account **************/
