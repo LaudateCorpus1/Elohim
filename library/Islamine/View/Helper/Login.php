@@ -27,6 +27,11 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
             if($count > 0)
                 $classNotif = 'user-top-notifications new';
             
+            if($count > 1)
+                $title = ' notifications';
+            else
+                $title = ' notification';
+            
             $session->redirect = $url;
             $html = '<div id="user-top-links-log">
                         <div class="user-top-info">
@@ -37,7 +42,7 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
                                                                     'username' => $auth->getIdentity()->login
                                     ), 'showUser', true).'">Mon compte</a>
                                 </div>
-                                <div class="'.$classNotif.'"><a class="notifications-link">'.$count.'</a></div>
+                                <div class="'.$classNotif.'"><a class="notifications-link" title="'.$count.$title.'">'.$count.'</a></div>
                             </div>
                             <div>
                                 <a href="'.$this->view->url(array(
