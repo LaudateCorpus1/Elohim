@@ -16,9 +16,9 @@
                 <a href="<?php echo $this->url(array(
                                     ), 'docList', true) ?>">
                     <p>
-                        Documents
+                        Documents publiés
                         <br />
-                        <span class="detail">(122)</span>
+                        <span class="detail">(<?php echo $this->escape($this->documentsAmount); ?>)</span>
                     </p>
                 </a>
             </td>
@@ -30,7 +30,7 @@
                 <p>
                     Evènements
                     <br />
-                    <span class="detail">(12 ce mois-ci)</span>
+                    <span class="detail">(<?php echo $this->escape($this->eventsAmount); ?> ce mois-ci)</span>
                 </p>
                 </a>
             </td>
@@ -43,7 +43,7 @@
                     <p>
                         Membres
                         <br />
-                        <span class="detail">(122)</span>
+                        <span class="detail">(<?php echo $this->escape($this->usersAmount); ?>)</span>
                     </p>
                 </a>
             </td>
@@ -51,6 +51,7 @@
     </table>
 </div>
 
+<?php if(!$this->escape($this->isUserConnected)) : ?>
 <div class="index-register">
     <a class="btn btn-large btn-success" 
        href="<?php echo $this->url(array(
@@ -58,4 +59,5 @@
                                     'action' => 'register'
                                 ), 'default', true) ?>">S'inscrire</a>
 </div>
+<?php endif; ?>
 

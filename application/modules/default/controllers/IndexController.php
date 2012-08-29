@@ -15,6 +15,19 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
+        $this->view->isUserConnected = false;
+        $auth = Zend_Auth::getInstance();
+        if($auth->hasIdentity())
+        {
+            $this->view->isUserConnected = true;
+        }
+        
+        $modelEvent = new Default_Model_Event();
+        $this->view->eventsAmount = $modelEvent->getEventsAmountInCurrentMonth();
+        $modelLibrary = new Default_Model_Library();
+        $this->view->documentsAmount = $modelLibrary->getDocumentsAmount();
+        $modelUser = new Model_User();
+        $this->view->usersAmount = $modelUser->getUsersAmount();
     }
     
     public function updatenotifbarAction()

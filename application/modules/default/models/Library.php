@@ -298,5 +298,14 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         
         return $query;
     }
+    
+    public function getDocumentsAmount()
+    {
+        $query = $this->select()
+                      ->from($this->_name, 'count(*) as amount')
+                      ->where('public = 1');
+        $res = $this->fetchRow($query);
+        return $res->amount;
+    }
 }
 

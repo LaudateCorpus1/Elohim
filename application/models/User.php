@@ -301,5 +301,13 @@ class Model_User extends Zend_Db_Table_Abstract
             return false;
         return true;
     }
+    
+    public function getUsersAmount()
+    {
+        $query = $this->select()
+                      ->from($this->_name, 'count(*) as amount');
+        $res = $this->fetchRow($query);
+        return $res->amount;
+    }
 }
 

@@ -15,7 +15,7 @@ class ErrorController extends Zend_Controller_Action
         $errors = $this->_getParam('error_handler');
         
         if (!$errors) {
-            $this->view->message = 'You have reached the error page';
+            $this->view->message = 'Une erreur est survenue';
             return;
         }
         
