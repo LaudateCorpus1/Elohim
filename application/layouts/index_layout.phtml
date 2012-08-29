@@ -92,7 +92,6 @@ echo $this->doctype() . PHP_EOL;
                     echo $this->layout()->content . PHP_EOL;
                     ?>
                 </div>
-                        
             </div>
         </div>
         
@@ -102,7 +101,8 @@ echo $this->doctype() . PHP_EOL;
                 <p>Copyright © 2012</p>
                 <p>
                     <a href="#">Sitemap</a> | 
-                    <a href="#">Contact</a> | 
+                    <a href="<?php echo $this->url(array(
+                                    ), 'contact', true) ?>">Contact</a> | 
                     <a href="<?php echo $this->url(array(
                                         'controller' => 'index',
                                         'action' => 'copyright'

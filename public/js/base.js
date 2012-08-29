@@ -315,7 +315,7 @@ function dialogForgotPassword()
 {
     $('#dialog-forgot-password').dialog({
         autoOpen: false,
-        height: 190,
+        height: 210,
         width: 400,
         modal: true,
         buttons: {

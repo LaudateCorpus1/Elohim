@@ -358,11 +358,27 @@ input, textarea, select
     float: left;
 }
 
-.user-top-info a, .user-logout-link a
+.user-top-info a
 {
     color: #F1F1F1;
     font-size: 13px;
     font-weight: bold;
+}
+
+ .user-logout-link a
+ {
+     color: #222;
+     font-weight: bold;
+ }
+
+.user-top-karma
+{
+    font-weight: bold;
+    background-color: #EBEBEB;
+    text-align: center;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 
 .user-top-notifications
@@ -505,6 +521,7 @@ input, textarea, select
 {
     width: 970px;
     float: left;
+    margin: auto;
 }
 
 #nav ul
@@ -662,7 +679,7 @@ input, textarea, select
     color: #fff;*/
     padding: 5px 0 5px 0;
     border-bottom: 1px solid #EBEBEB;
-    color: #1C6F32;
+    color: #00601A;
     margin-top: 10px;
     line-height: 1.6em;
 }
@@ -671,7 +688,7 @@ input, textarea, select
 {
     font-size: 15px;
     margin: 6px 0 7px 0;
-    color: #00601A;
+    color: #333;
 }
 
 .modulep2
@@ -796,8 +813,16 @@ input, textarea, select
 /******************************************/
 .main-news
 {
-    margin-bottom: 30px;
-    border-bottom: 1px solid #EBEBEB;
+    width: 600px;
+    margin: 0 auto 30px auto;
+    border-bottom: 1px solid #DDD;
+}
+
+.main-news h2
+{
+    font-size: 16px;
+    color: #222;
+    font-weight: bold;
 }
 
 .main-news .info

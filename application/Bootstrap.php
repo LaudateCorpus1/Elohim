@@ -62,5 +62,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $view;
     }
     
+    protected function _initSessions() 
+    {
+        Zend_Session::start();
+    }
+    
 }
 
