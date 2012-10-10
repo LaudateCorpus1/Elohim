@@ -75,7 +75,6 @@ class UserController extends Zend_Controller_Action
                           $data['role'] = 'member';
                           $data['status'] = 'pending';
                           $data['avatar'] = 'userpic.jpeg';
-                          $data['date_created'] = date('Y-m-d H:i:s');
                           
                           $model_user = new Model_User();
                           $model_user->add($data);
@@ -382,7 +381,7 @@ class UserController extends Zend_Controller_Action
                 $model_user = new Model_User();
                 if($model_user->doesEmailExist($email))
                 {
-                    $newPassword = substr(md5(date('Ymdhis')),0,8);
+                    $newPassword = substr(md5(date('Ymdhis')), 0, 8);
                     $res = $model_user->updateUserByEmail(array('password' => $newPassword), $email);
                     
                     $this->_helper->alertMail->send('Récupération mot de passe Islamine', 'Bonjour,

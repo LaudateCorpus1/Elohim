@@ -5,7 +5,7 @@ class Default_Form_Contact extends Zend_Form {
     public function init() {
         $this->setAttrib('id', 'form_contact')
                 ->setMethod('POST')
-                ->setName('form_contcact');
+                ->setName('form_contact');
 
         $this->addElementsForm();
     }

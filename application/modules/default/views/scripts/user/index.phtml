@@ -31,13 +31,7 @@ $purifyHelper = $this->getHelper('Purify');
                 echo $this->escape($this->user->first_name); 
         ?>
         <br />
-
-        <span class="Bold">E-mail : </span>
-        <?php if($this->escape($this->user->email) != null && $this->escape($this->user->email) != '')
-                echo $this->escape($this->user->email);
-        ?>
-        <br />
-
+        
         <span class="Bold">Lieu : </span>
         <?php if($this->escape($this->user->location) != null && $this->escape($this->user->location) != '')
                 echo $this->escape($this->user->location);

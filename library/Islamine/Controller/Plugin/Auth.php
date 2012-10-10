@@ -85,7 +85,7 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
           
           $role = $user['login'].'_'.$user['id'];
           if(!$this->_acl->hasRole($role)) 
-            $role = $user['role'] ;
+            $role = $user['role'];
         }
         else 
         {
@@ -94,8 +94,8 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         }
 
         $module     = $request->getModuleName();
-        $controller = $request->getControllerName() ;
-        $action     = $request->getActionName() ;
+        $controller = $request->getControllerName();
+        $action     = $request->getActionName();
         
         if($module == 'forum')
         {
@@ -107,14 +107,14 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         else
         {
         
-            $front = Zend_Controller_Front::getInstance() ;
-            $default = $front->getDefaultModule() ;
+            $front = Zend_Controller_Front::getInstance();
+            $default = $front->getDefaultModule();
 
             // compose le nom de la ressource
             if ($module == $default)
-                $resource = $controller ;
+                $resource = $controller;
             else
-                $resource = $module.'_'.$controller ;
+                $resource = $module.'_'.$controller;
 
             // est-ce que la ressource existe ?
             if (!$this->_acl->has($resource)) 
@@ -165,18 +165,18 @@ class Islamine_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                         {
                             $request->setParam('privilege', $privilege);
 
-                            $module = self::FAIL_ACL_MODULE ;
-                            $controller = self::FAIL_ACL_CONTROLLER ;
-                            $action = self::FAIL_ACL_ACTION ;
+                            $module = self::FAIL_ACL_MODULE;
+                            $controller = self::FAIL_ACL_CONTROLLER;
+                            $action = self::FAIL_ACL_ACTION;
                         }
                     }
                 }
             }
         }
 
-        $request->setModuleName($module) ;
-        $request->setControllerName($controller) ;
-        $request->setActionName($action) ;
+        $request->setModuleName($module);
+        $request->setControllerName($controller);
+        $request->setActionName($action);
     }
     
     protected function disableLayout()

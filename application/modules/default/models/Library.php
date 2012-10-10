@@ -81,26 +81,32 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
     
     public function getByUsername($username, $flagOwner = false)
     {
-        $query = $this->select();
-        $query->setIntegrityCheck(false)
-              ->from($this->_name, array(
-                  'id',
-                  'date',
-                  'lastEditDate',
-                  'title',
-                  'content',
-                  'public',
-                  'flag',
-                  'vote'
-                  ))
-              ->join('user', $this->_name.'.userId = user.id', null)
-              ->where($this->getAdapter()->quoteInto('login = ?', $username))
-              ->order('date DESC');
-        
-        if(!$flagOwner)
-            $query->where('public = 1');
-        
-        return $query;
+        $modelUser = new Model_User();
+        if($modelUser->doesExist($username))
+        {
+            $query = $this->select();
+            $query->setIntegrityCheck(false)
+                  ->from($this->_name, array(
+                      'id',
+                      'date',
+                      'lastEditDate',
+                      'title',
+                      'content',
+                      'public',
+                      'flag',
+                      'vote'
+                      ))
+                  ->join('user', $this->_name.'.userId = user.id', null)
+                  ->where($this->getAdapter()->quoteInto('login = ?', $username))
+                  ->order('date DESC');
+
+            if(!$flagOwner)
+                $query->where('public = 1');
+
+            return $query;
+        }
+        else
+            throw new Exception("Cet utilisateur n'existe pas");
     }
     
     public function getTags($libraryId)

@@ -3,11 +3,36 @@
 <div>
 <?php foreach($this->news as $new): ?>
     <div class="main-news">
-    <h2><?php echo $this->escape($new['title']); ?></h2>
+        <h2><?php echo $this->escape($new['title']); ?></h2>
 
-    <?php echo nl2br($new['content']); ?>
-    <span class="info"><?php echo $this->escape($new['date_posted']); ?></span>
+        <?php echo nl2br($this->escape($new['content'])); ?>
+        <span class="info"><?php echo $this->escape($new['date_posted']); ?></span>
+        
+        <?php if($this->escape($this->canModify)): ?>
+            <div class="label-right">
+                <a id="delete-news-link-<?php echo $this->escape($new['id']); ?>"
+                   class="label label-important" 
+                   href="<?php echo $this->url(array(
+                                            'id'=> $this->escape($new['id']),
+                                            'action' => 'delete'
+                                        ), 'actionNews', true); ?>">Supprimer
+                </a>
+            </div>
+            <div class="label-right">
+                <a class="label" href="<?php echo $this->url(array(
+                                            'id'=> $this->escape($new['id']),
+                                            'action' => 'edit'
+                                        ), 'actionNews', true); ?>">Editer
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 <?php endforeach; ?>
 <?php echo $this->paginationControl($this->news, 'Sliding', '/partials/pagination.phtml'); ?>
 </div>
+
+<?php if($this->escape($this->canModify)) : ?>
+<div id="dialog-delete-news" title="Supprimer une news">
+    Voulez-vous vraiment supprimer cette news ?
+</div>
+<?php endif; ?>

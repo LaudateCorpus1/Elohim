@@ -12,6 +12,14 @@
  */
 class Default_Form_ForgotPassword extends Zend_Form 
 {
+    private $elementDecorators = array(
+        'ViewHelper',
+            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
+            array('Label', array('tag' => 'td')),
+            array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
+            array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
+            );
+    
     public function init()
     {
         $this->addPrefixPath('Islamine_Form_Decorator', 'Islamine/Form/Decorator/', 'decorator');    
@@ -28,16 +36,11 @@ class Default_Form_ForgotPassword extends Zend_Form
             )
         ));
         
-        $email->setDecorators(array(
-            'ViewHelper',
-            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
-            array('Label', array('tag' => 'td')),
-            array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
-            array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
-            ));
+        $email->setDecorators($this->elementDecorators);
         
         $this->addElements(array(
             $email,
+            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique'))->setDecorators($this->elementDecorators)
         ));
     }
 

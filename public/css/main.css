@@ -1,4 +1,14 @@
+/******************************************/
+/*********** Overwrite bootstrap **********/
+/******************************************/
+.pagination
+{
+    height: auto;
+}
 
+/******************************************/
+/****************** Main ******************/
+/******************************************/
 body {
 	margin:0;
 	padding:0;
@@ -746,7 +756,7 @@ input, textarea, select
 #welcome-content
 {
     width: 700px;
-    text-align: justify;
+    text-align: center;
     margin: 0 auto;
 }
 
@@ -1424,4 +1434,17 @@ ul#favlist li.favorited-style a.close2
 {
     margin: 0;
     border-bottom: dotted #487700 1px;
+}
+
+/******************************************/
+/****************** Faq ******************/
+/******************************************/
+#faq
+{
+    font-size: 15px;
+}
+
+#faq h3
+{
+    font-size: 18px;
 }

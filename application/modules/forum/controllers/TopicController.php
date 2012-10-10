@@ -149,7 +149,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                         $message = new Forum_Model_Message();
                         $message->addMessage($identity->id, $topicId, $content, $_SERVER['REMOTE_ADDR']);
 
-                        $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+                        $model_topic->updateTopic(array('lastActivity' => gmdate('Y-m-d H:i:s', time())), $topicId);
                         $topic = $model_topic->getTopic($topicId);
                         if($topic->userId != $identity->id)
                             $this->_helper->notifyUser('Un nouveau message !', $topic->userId, $topicId);
@@ -284,7 +284,7 @@ class Forum_TopicController extends Zend_Controller_Action {
                                 }*/
                                 $title = $form->getValue('form_topic_title');
 
-                                $date = date('Y-m-d H:i:s', time());
+                                $date = gmdate('Y-m-d H:i:s', time());
                                 $topic->updateTopic(array('title' => $title, 'message' => $message, 'ipAddress' => $_SERVER['REMOTE_ADDR'], 'lastEditDate' => $date, 'lastActivity' => $date), $topicId);
 
                                 $purifyHelper = $this->view->getHelper('Purify');
@@ -612,10 +612,10 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
         if($auth->hasIdentity())
         {
             $identity = $auth->getIdentity();
-            $commentDate = date('Y-m-d H:i:s', time());
+            $commentDate = gmdate('Y-m-d H:i:s', time());
             $commentId = $comment->addComment($identity->id, $content, $commentDate);
             $commentTopic->addRow($commentId, $topicId);
-            $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+            $model_topic->updateTopic(array('lastActivity' => gmdate('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));

@@ -13,52 +13,125 @@ echo $this->doctype() . PHP_EOL;
         <meta http-equiv="pragma" content="no-cache" />
         <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
         <meta name="robots" content="index,follow" />
-        <!--        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />-->
 
         <?php
-        echo $this->headLink()
-                ->prependStylesheet('/css/admin.css')
-                ->appendStylesheet('/css/main.css');
+          echo $this->headTitle()->toString('		') . PHP_EOL;
+          echo $this->headLink()
+                    ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
+                    ->appendStylesheet('/css/tagit/jquery.tagit.css')
+                    ->appendStylesheet('/css/bootstrap.css')
+                    ->appendStylesheet('/css/main.css')
+                    ->appendStylesheet('/css/form.css');
+        
+            $this->headScript()->prependFile($this->baseUrl().'/js/ckfinder/ckfinder.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/ckeditor/ckeditor.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/library.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/base.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
+            echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
         ?>
     </head>
     <body>
+        <noscript>
+            <div id="noscript-padding">
+            </div>
+        </noscript>
+        
+        <?php echo $this->layout()->privilegeNotifPadding; ?>
+        
+        <div>
+            <div id="bg-header-top"></div>
+            <div id="bg-header-bottom"></div>
+        </div>
+        
         <div class="main">
             <div class="header">
-                <div class="header_resize">
-                    <div class="logo">
-                        <h1><a href="<?php
-        echo $this->url(array(
-            'module' => 'administration',
-            'controller' => 'admin',
-            'action' => 'index'
-        ),null, true);
-        ?>"><span>Islamine administration</span></a></h1>
-                    </div>
-                    <div class="menu_nav">
-<?php //echo $this->navigation()->menu() . PHP_EOL;  ?>
-                        <ul>
-                            <li><a href="<?php echo $this->url(array(
-                                            'controller' => 'index',
-                                            'action' => 'index'
-                                        )) ?>"><span>Index site</span></a></li>
-                            <?php if (Zend_Auth::getInstance()->hasIdentity()): ?>
-                            <li><a href="<?php echo $this->url(array(
-                                            'controller' => 'admin',
-                                            'action' => 'logout'
-                                        )) ?>"><span>Déconnexion</span></a></li>
-                            <?php endif; ?>
-                        </ul>
-                        <div class="clr"></div>
-                    </div>
+                <div class="logo">
+                    <a href="<?php
+                        echo $this->url(array(
+                            'module' => 'default',
+                            'controller' => 'index',
+                            'action' => 'index'
+                        ), 'default', true);
+                        ?>"><img src="/images/logo.jpg"/>
+                    </a>
+                </div>
+                <div id="user-top">
+                    <?php echo $this->login(); ?>
+                </div>
+                <div class="clr"></div>
+                <div id="nav">
+                    <ul>
+                        <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'event',
+                                        'action' => 'index'
+                                    ), 'default', true) ?>">Evènements</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'docList', true) ?>">Documents</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'news', true) ?>">Annonces</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'faq', true) ?>">FAQ</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                        'controller' => 'user',
+                                        'action' => 'list'
+                                    ), 'default', true) ?>">Membres</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'contact', true) ?>">Contact</a></li>
+                    </ul>
                 </div>
             </div>
+            
             <div class="clr"></div>
+            <div id="partner">
+<!--                <img src="/images/banner.png" alt="banner" />-->
+            </div>
             <div id="content">
-               
-                        <?php
-                        echo $this->layout()->content . PHP_EOL;
-                        ?>
+                <div class="library-content">
+                    <?php
+                    echo $this->layout()->content . PHP_EOL;
+                    ?>
+                </div>
+                <div id="sidebar-right">
+                    
+                     <div class="document-search">
+                         <?php
+                            echo new Default_Form_SearchDocument();
+                         ?>
+                     </div>
+                </div>
             </div>
         </div>
+        
+        <div class="clr"></div>
+        <div class="footer">
+            <div class="footer-content">
+                <p>Copyright © 2012</p>
+                <p>
+                    <a href="#">Sitemap</a> | 
+                    <a href="<?php echo $this->url(array(
+                                    ), 'contact', true) ?>">Contact</a> | 
+                    <a href="<?php echo $this->url(array(
+                                        'controller' => 'index',
+                                        'action' => 'copyright'
+                                    ), 'default', true) ?>">Mentions légales</a> | 
+                    <a href="#">Flux RSS</a>
+                </p>
+            </div>
+        </div>
+        
+        <?php echo $this->layout()->privilegeNotifications; ?>
+
+        <noscript>
+            <div id="notify-message-script">
+                <span>Islamine fonctionne mieux avec JavaScript activé</span>
+            </div>
+        </noscript>
     </body>
 </html>

@@ -1,0 +1,26 @@
+
+<?php $this->headTitle('Erreur');  ?>
+ 
+<h2><?php echo $this->message; ?></h2>
+  <div class="article">
+      <?php if (isset($this->exception)): ?>
+
+      <?php if($this->escape($this->error) != 404 || 'development' == APPLICATION_ENV): ?>
+      <h3>Information:</h3>
+      <p>
+          <?php echo $this->exception->getMessage() ?>
+      </p>
+      <?php endif; ?>
+
+      <?php if ('development' == APPLICATION_ENV): ?> 
+
+      <h3>Stack trace:</h3>
+      <pre><?php echo $this->exception->getTraceAsString() ?>
+      </pre>
+
+      <h3>Request Parameters:</h3>
+      <pre><?php echo var_export($this->request->getParams(), true) ?>
+      </pre>
+      <?php endif ?>
+      <?php endif ?>
+  </div>

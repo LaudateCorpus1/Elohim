@@ -37,5 +37,25 @@ class Model_News extends Zend_Db_Table_Abstract
     {
         return $this->fetchAll(null, 'date_posted  DESC', $count);
     }
+    
+    public function addNews($author, $title, $content)
+    {
+        $data = array(
+            'author' => $author,
+            'title' => $title,
+            'content' => $content
+        );
+        return $this->insert($data);
+    }
+    
+    public function updateNews(array $data, $id)
+    {
+        $this->update($data, $this->getAdapter()->quoteInto('id = ?', $id));
+    }
+    
+    public function deleteNews($id)
+    {
+        $this->delete(array('id = ?' => $id));
+    }
 }
 

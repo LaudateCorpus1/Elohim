@@ -309,5 +309,15 @@ class Model_User extends Zend_Db_Table_Abstract
         $res = $this->fetchRow($query);
         return $res->amount;
     }
+    
+    public function doesExist($username)
+    {
+        $where = $this->getAdapter()->quoteInto('login = ?', $username);
+        $row = $this->fetchRow($this->select()->where($where));
+        
+        if($row == null)
+            return false;
+        return true;
+    }
 }
 

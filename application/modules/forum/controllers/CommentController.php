@@ -58,9 +58,9 @@ class Forum_CommentController extends Zend_Controller_Action {
         if($auth->hasIdentity())
         {
             $identity = $auth->getIdentity();
-            $editDate = date('Y-m-d H:i:s', time());
+            $editDate = gmdate('Y-m-d H:i:s', time());
             $model_comment->updateComment(array('content' => $content, 'lastEditDate' => $editDate), $commentId);
-            $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+            $model_topic->updateTopic(array('lastActivity' => gmdate('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'date' => $editDate));

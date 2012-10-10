@@ -84,10 +84,10 @@ class Forum_MessageController extends Zend_Controller_Action {
         if($auth->hasIdentity())
         {
             $identity = $auth->getIdentity();
-            $commentDate = date('Y-m-d H:i:s', time());
+            $commentDate = gmdate('Y-m-d H:i:s', time());
             $commentId = $comment->addComment($identity->id, $content, $commentDate);
             $commentMessage->addRow($commentId, $messageId);
-            $model_topic->updateTopic(array('lastActivity' => date('Y-m-d H:i:s', time())), $topicId);
+            $model_topic->updateTopic(array('lastActivity' => gmdate('Y-m-d H:i:s', time())), $topicId);
             
             if ($this->_request->isXmlHttpRequest()) {
                 echo Zend_Json::encode(array('status' => 'ok', 'user' => $identity->login, 'userId' => $identity->id, 'commentId' => $commentId, 'date' => $commentDate));
@@ -263,7 +263,7 @@ class Forum_MessageController extends Zend_Controller_Action {
                         $identity = $auth->getIdentity();
                         $content = $messageForm->getValue('form_message_content');
 
-                        $date = date('Y-m-d H:i:s', time());
+                        $date = gmdate('Y-m-d H:i:s', time());
                         $data = array('content' => $content,
                                       'lastEditDate' => $date,
                                       'lastActivity' => $date,

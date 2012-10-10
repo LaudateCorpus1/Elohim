@@ -56,6 +56,11 @@
                 <div class="document-show-date">
                     <span class="document-show-date posted">
                     Le <?php echo strftime('%d %B %Y à %H:%M:%S', strtotime($this->escape($this->document->date)));?>
+                    par <a href="<?php echo $this->url(array(
+                                                'id'=> $this->escape($this->document->userId),
+                                                'username' => $this->escape($this->document->login)
+                                            ), 'showUser', true); ?>"><?php echo $this->escape($this->document->login); ?></a>
+                    
                     <?php if($this->escape($this->document->lastEditDate) != null) : ?>
                         <span class="document-show-date edit">
                             (Edité le <?php echo strftime('%d %B %Y à %H:%M:%S', strtotime($this->escape($this->document->lastEditDate)));?>)

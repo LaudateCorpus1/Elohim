@@ -58,8 +58,32 @@ $purifyHelper = $this->getHelper('Purify');
                                             ), 'showUser', true); ?>"><?php echo $this->escape($document['login']); ?>
                     </a>
                 </div>
+                <?php if($this->escape($this->canModify)) : ?>
+                    <div class="label-right">
+                        <a id="delete-document-link-<?php echo $this->escape($document['id']).'-index'; ?>"
+                           class="label label-important" 
+                           href="<?php echo $this->url(array(
+                                                    'id'=> $this->escape($document['id']),
+                                                    'action' => 'delete'
+                                                ), 'actionDocument', true); ?>">Supprimer
+                        </a>
+                    </div>
+                    <div class="label-right">
+                        <a class="label" href="<?php echo $this->url(array(
+                                                    'id'=> $this->escape($document['id']),
+                                                    'action' => 'edit'
+                                                ), 'actionDocument', true); ?>">Editer
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     <?php $i++; endforeach; ?>
     <?php echo $this->paginationControl($this->library, 'Sliding', '/partials/pagination.phtml'); ?>
 </div>
+
+<?php if($this->escape($this->canModify)) : ?>
+<div id="dialog-delete-document" title="Supprimer un document">
+    Voulez-vous vraiment supprimer ce document ?
+</div>
+<?php endif; ?>

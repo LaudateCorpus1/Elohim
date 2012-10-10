@@ -32,16 +32,28 @@ class LibraryController extends Zend_Controller_Action
     {
         $autho = 'false';
         $author = false;
+        $canModify = false;
         $this->view->username = $username = $this->_getParam('username');
         
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
         {
+            $moderatorRole = Zend_Registry::getInstance()->constants->roles->moderator;
+            $adminRole = Zend_Registry::getInstance()->constants->roles->admin;
             if(strtolower($auth->getIdentity()->login) == strtolower($username))
+            {
                 $author = true;
+                $canModify = true;
+            }
+            else if($auth->getIdentity()->role == $moderatorRole
+                    || $auth->getIdentity()->role == $adminRole)
+            {
+                $canModify = true;
+            }
             $autho = 'true'; // Utilisateur authentifié
         }
         $this->view->author = $author;
+        $this->view->canModify = $canModify;
         
         $modelLibrary = new Default_Model_Library();
         $this->view->title = 'Bibliothèque de '.$username;
@@ -63,12 +75,21 @@ class LibraryController extends Zend_Controller_Action
     
     public function listAction() {
         $autho = 'false';
+        $canModify = false;
         
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
         {
+            $moderatorRole = Zend_Registry::getInstance()->constants->roles->moderator;
+            $adminRole = Zend_Registry::getInstance()->constants->roles->admin;
             $autho = 'true'; // Utilisateur authentifié
+            if($auth->getIdentity()->role == $moderatorRole
+                    || $auth->getIdentity()->role == $adminRole)
+            {
+                $canModify = true;
+            }
         }
+        $this->view->canModify = $canModify;
         
         $documents = $this->_getParam('documents');
         $modelLibrary = new Default_Model_Library();
@@ -184,8 +205,14 @@ class LibraryController extends Zend_Controller_Action
         if($auth->hasIdentity())
         {
             $autho = 'true';
-            if($auth->getIdentity()->id == $this->view->document->userId)
+            $moderatorRole = Zend_Registry::getInstance()->constants->roles->moderator;
+            $adminRole = Zend_Registry::getInstance()->constants->roles->admin;
+            if($auth->getIdentity()->id == $this->view->document->userId
+                    || $auth->getIdentity()->role == $moderatorRole
+                    || $auth->getIdentity()->role == $adminRole)
+            {
                 $author = true;
+            }
         }
         $this->view->author = $author;
         if(!$author && intval($this->view->document->public) == 0)
@@ -216,8 +243,12 @@ class LibraryController extends Zend_Controller_Action
        $modelLibrary = new Default_Model_Library();
        $document = $modelLibrary->get($id);
        
-       // Si c'est bien l'auteur du doc
-       if($auth->getIdentity()->id == $document->userId)
+       // Si c'est bien l'auteur du doc ou un modo ou admin
+       $moderatorRole = Zend_Registry::getInstance()->constants->roles->moderator;
+       $adminRole = Zend_Registry::getInstance()->constants->roles->admin;
+       if($auth->getIdentity()->id == $document->userId
+               || $auth->getIdentity()->role == $moderatorRole
+               || $auth->getIdentity()->role == $adminRole)
        {
            $this->view->headScript()->appendFile("/js/documentEditor.js");
            $form = new Default_Form_CompleteLibrary();
@@ -233,7 +264,7 @@ class LibraryController extends Zend_Controller_Action
                     $newTags = $form->getValue('tagsValues');
                     if($this->_helper->updateTags($id, $newTags, 'library'))
                     {
-                        $date = date('Y-m-d H:i:s', time());
+                        $date = gmdate('Y-m-d H:i:s', time());
                         $modelLibrary->updateDocument(array(
                                                         'title' => $title,
                                                         'content' => $description,
@@ -273,11 +304,15 @@ class LibraryController extends Zend_Controller_Action
     public function deleteAction()
     {
         $id = $this->_getParam('id');
-        if($this->isAuthor($id))
+        $auth = Zend_Auth::getInstance();
+        $moderatorRole = Zend_Registry::getInstance()->constants->roles->moderator;
+        $adminRole = Zend_Registry::getInstance()->constants->roles->admin;
+        if($this->isAuthor($id)
+               || $auth->getIdentity()->role == $moderatorRole
+               || $auth->getIdentity()->role == $adminRole)
         {
             $modelLibrary = new Default_Model_Library();
             $modelLibrary->deleteDocument($id);
-            $auth = Zend_Auth::getInstance();
             
             if($this->_request->isXmlHttpRequest())
                 echo Zend_Json::encode(array('status' => 'ok', 'username' => $auth->getIdentity()->login));
@@ -460,7 +495,6 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             $data = array(
                         'libraryId' => $documentId,
                         'userId' => $identity->id,
-                        'date' => date('Y-m-d H:i:s', time()),
                         'content' => $content
             );
             $commentId = $modelComment->addComment($data);

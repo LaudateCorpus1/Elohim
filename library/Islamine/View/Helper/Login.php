@@ -49,7 +49,6 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
                                                         'username' => $auth->getIdentity()->login
                                     ), 'userLibrary', true).'">Ma bibliothèque</a>
                             </div>
-                            
                         </div>
                         <div class="user-logout-link">
                             <div class="user-top-karma">'.$user->karma.' karma</div>

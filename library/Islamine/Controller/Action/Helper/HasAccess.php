@@ -12,7 +12,7 @@ class Islamine_Controller_Action_Helper_HasAccess extends Zend_Controller_Action
     public function direct($resource, $privilege)
     {
         if (!$this->_acl)
-                $acl = Zend_Registry::get('acl');
+            $acl = Zend_Registry::get('acl');
         
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())

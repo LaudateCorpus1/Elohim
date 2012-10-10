@@ -99,6 +99,7 @@ echo $this->doctype() . PHP_EOL;
                     ?>
                 </div>
                 <div id="sidebar-right">
+                    
                      <div class="document-search">
                          <?php
                             echo new Default_Form_SearchDocument();
@@ -129,6 +130,11 @@ echo $this->doctype() . PHP_EOL;
                     <div class="modulep2">
                         <p class="partage">Attention</p>
                         <p>Merci de vérifier les sources de ce que vous publiez pour éviter des désagrements</p>
+                    </div>
+                    
+                    <div class="module">
+                        <a href="<?php echo $this->url(array(
+                                    ), 'admin', true) ?>">Administration</a>
                     </div>
                 </div>
                         <!--<ul>
