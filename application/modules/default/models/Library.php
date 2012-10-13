@@ -302,29 +302,10 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         $qTerm = new Zend_Search_Lucene_Index_Term($term);
         $query = new Zend_Search_Lucene_Search_Query_Term($qTerm);
         $hits = $index->find($query);
-        return $hits;
-        /*$where = $this->getAdapter()->quoteInto('title LIKE ?', '%'.$term.'%');
-        
-        $query = $this->select();
-        $query->setIntegrityCheck(false)
-              ->from($this->_name, array(
-                  'id',
-                  'date',
-                  'lastEditDate',
-                  'title',
-                  'content',
-                  'public',
-                  'flag',
-                  'vote',
-                  'userId'
-                  ))
-              ->join('user', $this->_name.'.userId = user.id', 'login')
-              ->where('public = 1')
-              ->where($where)
-              ->orWhere($this->getAdapter()->quoteInto('content LIKE ?', '%'.$term.'%'))
-              ->order($this->_name.'.date DESC');
-        
-        return $query;*/
+        if(count($hits) > 0)
+            return $hits;
+        else
+            return null;
     }
     
     public function getDocumentsAmount()

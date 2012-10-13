@@ -6,82 +6,83 @@ $purifyHelper = $this->getHelper('Purify');
 <h2>Derniers documents publiés</h2>
 
 <div class="library">
-    <?php if($this->library->count() == 0)  : ?>
+    <?php if($this->library == null || $this->library->count() == 0)  : ?>
         <h3>Aucun document n'a été trouvé</h3>
     <?php else : ?>
-        <?php echo $this->sortForm; ?>
-    <?php endif; 
+        <?php echo $this->sortForm;
     
-    
-    $i=0;
-    foreach($this->library as $document) :
-        $document = Islamine_Array::array_to_object($document);
-        $voteClass = '';
-        if(intval($document->vote > 0))
-            $voteClass = 'positive';
-        else if(intval($document->vote < 0))
-            $voteClass = 'negative';
-    ?>
-        <div class="library-document">
-            <div class="document-header">
-                <span class="document-vote <?php echo $voteClass; ?>">
-                    <?php echo $this->escape($document->vote); ?></span>
-                <span class="document-title">
-                    <?php echo $this->documentTitle($document); ?>
-                </span>
-            </div>
-            <div class="document-description">
-                <?php echo $this->purify($this->textWrap($document->content, 300));?> 
-            </div>
-            <div class="tags">
-                <?php
-                foreach($this->$i as $tag) : ?>
-                <div class="tag">
-                    <div class="tag-name">
-                        <a href="<?php echo $this->url(array(
-                                            'name'=> $this->escape($tag->name)
-                                        ), 'taggedDocument'); ?>"><?php echo $this->escape($tag->name); ?>
-                        </a>
-                    </div>  
-                    <div class="tag-action">
-                        <?php echo $this->favoriteTag($this->escape($tag->tagId), $this->escape($tag->name)); ?>
-                    </div>
+        $i=0;
+        foreach($this->library as $document) :
+            $document = Islamine_Array::array_to_object($document);
+            $voteClass = '';
+            if(intval($document->vote > 0))
+                $voteClass = 'positive';
+            else if(intval($document->vote < 0))
+                $voteClass = 'negative';
+        ?>
+            <div class="library-document">
+                <div class="document-header">
+                    <span class="document-vote <?php echo $voteClass; ?>">
+                        <?php echo $this->escape($document->vote); ?></span>
+                    <span class="document-title">
+                        <?php echo $this->documentTitle($document); ?>
+                    </span>
                 </div>
-                <?php endforeach; ?>
-            </div>
-            
-            <div class="document-menu">
-                <div class="document-date">
-                Ajouté le <?php echo strftime('%d %B %Y à %H:%M:%S', strtotime($this->escape($document->date))); ?>
-                par <a href="<?php echo $this->url(array(
-                                                'id'=> $this->escape($document->userId),
-                                                'username' => $this->escape($document->login)
-                                            ), 'showUser', true); ?>"><?php echo $this->escape($document->login); ?>
-                    </a>
+                <div class="document-description">
+                    <?php echo $this->purify($this->textWrap($document->content, 300));?> 
                 </div>
-                <?php if($this->escape($this->canModify)) : ?>
-                    <div class="label-right">
-                        <a id="delete-document-link-<?php echo $this->escape($document->id).'-index'; ?>"
-                           class="label label-important" 
-                           href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($document->id),
-                                                    'action' => 'delete'
-                                                ), 'actionDocument', true); ?>">Supprimer
+                <div class="tags">
+                    <?php
+                    foreach($this->$i as $tag) : ?>
+                    <div class="tag">
+                        <div class="tag-name">
+                            <a href="<?php echo $this->url(array(
+                                                'name'=> $this->escape($tag->name)
+                                            ), 'taggedDocument'); ?>"><?php echo $this->escape($tag->name); ?>
+                            </a>
+                        </div>  
+                        <div class="tag-action">
+                            <?php echo $this->favoriteTag($this->escape($tag->tagId), $this->escape($tag->name)); ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="document-menu">
+                    <div class="document-date">
+                    Ajouté le <?php echo strftime('%d %B %Y à %H:%M:%S', strtotime($this->escape($document->date))); ?>
+                    par <a href="<?php echo $this->url(array(
+                                                    'id'=> $this->escape($document->userId),
+                                                    'username' => $this->escape($document->login)
+                                                ), 'showUser', true); ?>"><?php echo $this->escape($document->login); ?>
                         </a>
                     </div>
-                    <div class="label-right">
-                        <a class="label" href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($document->id),
-                                                    'action' => 'edit'
-                                                ), 'actionDocument', true); ?>">Editer
-                        </a>
-                    </div>
-                <?php endif; ?>
+                    <?php if($this->escape($this->canModify)) : ?>
+                        <div class="label-right">
+                            <a id="delete-document-link-<?php echo $this->escape($document->id).'-index'; ?>"
+                               class="label label-important" 
+                               href="<?php echo $this->url(array(
+                                                        'id'=> $this->escape($document->id),
+                                                        'action' => 'delete'
+                                                    ), 'actionDocument', true); ?>">Supprimer
+                            </a>
+                        </div>
+                        <div class="label-right">
+                            <a class="label" href="<?php echo $this->url(array(
+                                                        'id'=> $this->escape($document->id),
+                                                        'action' => 'edit'
+                                                    ), 'actionDocument', true); ?>">Editer
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-    <?php $i++; endforeach; ?>
-    <?php echo $this->paginationControl($this->library, 'Sliding', '/partials/pagination.phtml'); ?>
+        <?php $i++; endforeach; ?>
+        <?php echo $this->paginationControl($this->library, 'Sliding', '/partials/pagination.phtml'); ?>
+
+    <?php endif; ?>
 </div>
+
 
 <?php if($this->escape($this->canModify)) : ?>
 <div id="dialog-delete-document" title="Supprimer un document">

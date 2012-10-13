@@ -126,25 +126,35 @@ class LibraryController extends Zend_Controller_Action
             }
         }
         else {
-            $documents = $modelLibrary->getAll();
-            $this->view->title = 'Documents récents';
-            $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
+            
+            if(!$this->_getParam('search'))
+            {
+                $documents = $modelLibrary->getAll();
+                $this->view->title = 'Documents récents';
+                $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
+            }
         }
         
-        $this->view->route = $route;
-        $page->setPageRange(5);
-        $page->setCurrentPageNumber($this->_getParam('page',1));
-        $page->setItemCountPerPage(20);
-        $this->view->library = $page;
-        $i = 0;
-        
-        foreach ($page as $document)
+        if($documents != null)
         {
-            if($this->_getParam('search') != null && $this->_getParam('search'))
-                $this->view->$i = $modelLibrary->getTags($document->id);
-            else
-                $this->view->$i = $modelLibrary->getTags($document['id']);
-            $i++;
+            $this->view->route = $route;
+            $page->setPageRange(5);
+            $page->setCurrentPageNumber($this->_getParam('page',1));
+            $page->setItemCountPerPage(20);
+            $this->view->library = $page;
+            $i = 0;
+
+            foreach ($page as $document)
+            {
+                if($this->_getParam('search') != null && $this->_getParam('search'))
+                    $this->view->$i = $modelLibrary->getTags($document->id);
+                else
+                    $this->view->$i = $modelLibrary->getTags($document['id']);
+                $i++;
+            }
+        }
+        else {
+            $this->view->library = null;
         }
         
         $this->view->sortForm = $sortForm;
