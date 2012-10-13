@@ -115,23 +115,35 @@ class LibraryController extends Zend_Controller_Action
                 $this->view->tagName = $tag;
                 $this->view->title .= ' sur \''.$tag.'\'';
             }
-                
+            
+            if($this->_getParam('search') != null && $this->_getParam('search'))
+            {
+                $page = Islamine_Paginator::factory($documents);
+            }
+            else
+            {
+                $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
+            }
         }
         else {
             $documents = $modelLibrary->getAll();
             $this->view->title = 'Documents récents';
+            $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
         }
         
         $this->view->route = $route;
-        $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
         $page->setPageRange(5);
         $page->setCurrentPageNumber($this->_getParam('page',1));
         $page->setItemCountPerPage(20);
         $this->view->library = $page;
         $i = 0;
+        
         foreach ($page as $document)
         {
-            $this->view->$i = $modelLibrary->getTags($document['id']);
+            if($this->_getParam('search') != null && $this->_getParam('search'))
+                $this->view->$i = $modelLibrary->getTags($document->id);
+            else
+                $this->view->$i = $modelLibrary->getTags($document['id']);
             $i++;
         }
         
@@ -270,7 +282,11 @@ class LibraryController extends Zend_Controller_Action
                                                         'content' => $description,
                                                         'lastEditDate' => $date,
                                                         'public' => $public,
-                                                        'source' => $source
+                                                        'source' => $source,
+                                                        'vote' => $document->vote,
+                                                        'date' => $document->date,
+                                                        'userId' => $document->userId,
+                                                        'login' => $document->login
                                                      ), $id);
 
                         $purifyHelper = $this->view->getHelper('Purify');
@@ -542,7 +558,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
     {
         $modelLibrary = new Default_Model_Library();
         $res = $modelLibrary->search($this->_getParam('search_content'));
-        $this->_forward('list', 'library', 'default', array('documents' => $res));
+        $this->_forward('list', 'library', 'default', array('documents' => (array)$res, 'search' => true));
     }
 }
 

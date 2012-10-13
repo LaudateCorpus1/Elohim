@@ -15,22 +15,23 @@ $purifyHelper = $this->getHelper('Purify');
     
     $i=0;
     foreach($this->library as $document) :
+        $document = Islamine_Array::array_to_object($document);
         $voteClass = '';
-        if(intval($document['vote'] > 0))
+        if(intval($document->vote > 0))
             $voteClass = 'positive';
-        else if(intval($document['vote'] < 0))
+        else if(intval($document->vote < 0))
             $voteClass = 'negative';
     ?>
         <div class="library-document">
             <div class="document-header">
                 <span class="document-vote <?php echo $voteClass; ?>">
-                    <?php echo $this->escape($document['vote']); ?></span>
+                    <?php echo $this->escape($document->vote); ?></span>
                 <span class="document-title">
                     <?php echo $this->documentTitle($document); ?>
                 </span>
             </div>
             <div class="document-description">
-                <?php echo $this->purify($this->textWrap($document['content'], 300));?> 
+                <?php echo $this->purify($this->textWrap($document->content, 300));?> 
             </div>
             <div class="tags">
                 <?php
@@ -51,26 +52,26 @@ $purifyHelper = $this->getHelper('Purify');
             
             <div class="document-menu">
                 <div class="document-date">
-                Ajouté le <?php echo strftime('%d %B %Y à %H:%M:%S', strtotime($this->escape($document['date']))); ?>
+                Ajouté le <?php echo strftime('%d %B %Y à %H:%M:%S', strtotime($this->escape($document->date))); ?>
                 par <a href="<?php echo $this->url(array(
-                                                'id'=> $this->escape($document['userId']),
-                                                'username' => $this->escape($document['login'])
-                                            ), 'showUser', true); ?>"><?php echo $this->escape($document['login']); ?>
+                                                'id'=> $this->escape($document->userId),
+                                                'username' => $this->escape($document->login)
+                                            ), 'showUser', true); ?>"><?php echo $this->escape($document->login); ?>
                     </a>
                 </div>
                 <?php if($this->escape($this->canModify)) : ?>
                     <div class="label-right">
-                        <a id="delete-document-link-<?php echo $this->escape($document['id']).'-index'; ?>"
+                        <a id="delete-document-link-<?php echo $this->escape($document->id).'-index'; ?>"
                            class="label label-important" 
                            href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($document['id']),
+                                                    'id'=> $this->escape($document->id),
                                                     'action' => 'delete'
                                                 ), 'actionDocument', true); ?>">Supprimer
                         </a>
                     </div>
                     <div class="label-right">
                         <a class="label" href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($document['id']),
+                                                    'id'=> $this->escape($document->id),
                                                     'action' => 'edit'
                                                 ), 'actionDocument', true); ?>">Editer
                         </a>

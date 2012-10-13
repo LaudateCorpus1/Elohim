@@ -28,3 +28,10 @@ The following is a sample VHOST you might want to consider for your project.
    </Directory>
     
 </VirtualHost>
+
+
+INSTALL
+
+DROITS
+public/users => drwxr-xr-x 3 www-data www-data   4096 2011-12-23 02:13 users
+supprimer le dossier index

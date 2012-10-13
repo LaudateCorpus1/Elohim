@@ -13,13 +13,16 @@ class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
 {
     public function documentTitle($document)
     {
+        if(is_array($document))
+            $document = Islamine_Array::array_to_object ($document);
+        
         $purifyHelper = $this->view->getHelper('Purify');
-        $title = $this->view->escape($purifyHelper->purifyTitle($document['title']));
+        $title = $this->view->escape($purifyHelper->purifyTitle($document->title));
         $comp = '';
         
-        if(filter_var($this->view->escape($document['title']), FILTER_VALIDATE_URL))
+        if(filter_var($this->view->escape($document->title), FILTER_VALIDATE_URL))
         {
-            $comp = ' - <a href="'.$this->view->escape($document['title']).'" target="_blank">Aller sur le site</a>';
+            $comp = ' - <a href="'.$this->view->escape($document->title).'" target="_blank">Aller sur le site</a>';
             if(strpos($title, '//') !== false)
             {
                 $title = substr($title, strpos($title, '//')+2);
@@ -30,9 +33,9 @@ class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
         }
         
         $html = '<a href="'.$this->view->url(array(
-                                            'document' => $this->view->escape($document['id']),
+                                            'document' => $this->view->escape($document->id),
                                             'title' => $title
-                                        ), 'showDocument').'">'.$this->view->escape($document['title']).'
+                                        ), 'showDocument').'">'.$this->view->escape($document->title).'
                  </a>'.$comp;
         
         return $html;

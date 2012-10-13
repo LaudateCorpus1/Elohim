@@ -3,6 +3,13 @@
 class Default_Model_Library extends Zend_Db_Table_Abstract
 {
     protected $_name = 'library';
+    protected $_searchIndexerClass;
+    
+    function __construct($config = array()) 
+    {
+        $this->_searchIndexerClass = new Default_Model_LibraryRow();
+        parent::__construct($config);
+    }
     
     public function get($id)
     {
@@ -71,7 +78,16 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
     
     public function updateDocument(array $data, $id)
     {
-        $this->update($data, $this->getAdapter()->quoteInto('id = ?', $id));
+        $search = $data;
+        if(isset($data['login']))
+            unset($data['login']);
+        $nb = $this->update($data, $this->getAdapter()->quoteInto('id = ?', $id));
+        if($nb == 1)
+        {
+            $search['key'] = $id;
+            $search['class'] = 'Library';
+            $this->_searchIndexerClass->notify('update', $search);
+        }
     }
     
     public function deleteDocument($id)
@@ -281,7 +297,13 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
     
     public function search($term)
     {
-        $where = $this->getAdapter()->quoteInto('title LIKE ?', '%'.$term.'%');
+        $search = Zend_Registry::get('search');
+        $index = Zend_Search_Lucene::open($search->getIndexDirectory());
+        $qTerm = new Zend_Search_Lucene_Index_Term($term);
+        $query = new Zend_Search_Lucene_Search_Query_Term($qTerm);
+        $hits = $index->find($query);
+        return $hits;
+        /*$where = $this->getAdapter()->quoteInto('title LIKE ?', '%'.$term.'%');
         
         $query = $this->select();
         $query->setIntegrityCheck(false)
@@ -302,7 +324,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
               ->orWhere($this->getAdapter()->quoteInto('content LIKE ?', '%'.$term.'%'))
               ->order($this->_name.'.date DESC');
         
-        return $query;
+        return $query;*/
     }
     
     public function getDocumentsAmount()
