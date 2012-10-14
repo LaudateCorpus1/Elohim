@@ -71,9 +71,21 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             'title' => $title,
             'content' => $content,
             'public' => $public,
-            'source' => $source
+            'source' => $source,
+            'vote' => '0'
         );
-        return $this->insert($data);
+        $id = $this->insert($data);
+        
+        if($public == '1')
+        {
+            $modelUser = new Model_User();
+            $login = $modelUser->getLoginById($userId);
+            $data['id'] = $id;
+            $data['login'] = $login;
+            $data['class'] = 'Library';
+            $this->_searchIndexerClass->notify('insert', $data);
+        }
+        return $id;
     }
     
     public function updateDocument(array $data, $id)
@@ -82,17 +94,34 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         if(isset($data['login']))
             unset($data['login']);
         $nb = $this->update($data, $this->getAdapter()->quoteInto('id = ?', $id));
-        if($nb == 1)
+        if($nb == 1 && $data['public'] == '1')
         {
             $search['id'] = $id;
             $search['class'] = 'Library';
             $this->_searchIndexerClass->notify('update', $search);
+        }
+        else if($data['public'] == '0')
+        {
+            $search['id'] = $id;
+            $search['class'] = 'Library';
+            $this->_searchIndexerClass->notify('delete', $search);
         }
     }
     
     public function deleteDocument($id)
     {
         $this->delete(array('id = ?' => $id));
+        $luceneData = array(
+            'class' => 'Library',
+            'id' => $id,
+            'title' => '',
+            'vote' => '',
+            'content' => '',
+            'date' => '',
+            'userId' => '',
+            'login' => ''
+        );
+        $this->_searchIndexerClass->notify('delete', $luceneData);
     }
     
     public function getByUsername($username, $flagOwner = false)
@@ -103,7 +132,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             $query = $this->select();
             $query->setIntegrityCheck(false)
                   ->from($this->_name, array(
-                      'id',
+                      'key' => 'id',
                       'date',
                       'lastEditDate',
                       'title',

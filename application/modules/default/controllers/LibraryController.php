@@ -67,7 +67,7 @@ class LibraryController extends Zend_Controller_Action
         $i = 0;
         foreach ($page as $document)
         {
-            $this->view->$i = $modelLibrary->getTags($document['id']);
+            $this->view->$i = $modelLibrary->getTags($document['key']);
             $i++;
         }
         $this->view->headScript()->appendScript("var auth = $autho;");

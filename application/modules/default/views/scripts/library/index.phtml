@@ -58,10 +58,10 @@ $purifyHelper = $this->getHelper('Purify');
                 </div>
                 <?php if($this->escape($this->canModify)) : ?>
                     <div class="label-right">
-                        <a id="delete-document-link-<?php echo $this->escape($document['id']).'-index'; ?>"
+                        <a id="delete-document-link-<?php echo $this->escape($document['key']).'-index'; ?>"
                            class="label label-important" 
                            href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($document['id']),
+                                                    'id'=> $this->escape($document['key']),
                                                     'action' => 'delete'
                                                 ), 'actionDocument', true); ?>">Supprimer
                         </a>
@@ -72,7 +72,7 @@ $purifyHelper = $this->getHelper('Purify');
                         <span class="label label-success">Publié</span>
                         <?php endif; ?>
                         <a class="label" href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($document['id']),
+                                                    'id'=> $this->escape($document['key']),
                                                     'action' => 'edit'
                                                 ), 'actionDocument', true); ?>">Editer
                         </a>

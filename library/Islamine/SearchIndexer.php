@@ -47,7 +47,7 @@ class Islamine_SearchIndexer implements Islamine_Interface_IObserver
             
             // docRef sert à retrouver le document pour le supprimer ou mettre à jour
             // Lucene ne supporte pas la maj, il faut supprimer puis ajouter
-            $doc->addField(Zend_Search_Lucene_Field::Keyword('docRef', $fields['class'].':'.$fields['key']));
+            $doc->addField(Zend_Search_Lucene_Field::Keyword('docRef', $fields['class'].':'.$fields['id']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('class', $fields['class']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('key', $fields['id']));
             $doc->addField(Zend_Search_Lucene_Field::text('title', $fields['title']));

@@ -103,6 +103,20 @@ class Model_User extends Zend_Db_Table_Abstract
         return $row;
     }
     
+    public function getLoginById($id)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, 'login')
+              ->where($this->getAdapter()->quoteInto('id = ?', $id));
+        
+        $row = $this->fetchRow($query);
+        if($row == null)
+            throw new Exception("Utilisateur introuvable : $id");
+        
+        return $row->login;
+    }
+    
     public function getTopicsByLogin($login)
     {
         $query = $this->select();
@@ -241,14 +255,14 @@ class Model_User extends Zend_Db_Table_Abstract
               ->join('library', 'favoriteLibrary.libraryId = library.id',array(
                                 'title',
                                 'vote',
-                                'id'
+                                'key' => 'id'
                                 ))
               ->join('user', 'library.userId = user.id',array(
                                 'authorId' => 'id',
                                 'login'
                                 ))
               ->where($this->getAdapter()->quoteInto('favoriteLibrary.userId = ?', $userId))
-              ->order('id DESC');
+              ->order('key DESC');
         
         return $query;
     }

@@ -98,7 +98,7 @@ $purifyHelper = $this->getHelper('Purify');
                 <?php elseif($this->escape($stat->documentTitle) != null) : ?>
                 <?php
                         $document = array('title' => $this->escape($stat->documentTitle),
-                                          'id' => $this->escape($stat->libraryId));
+                                          'key' => $this->escape($stat->libraryId));
                         echo $this->documentTitle($document, $this->escape($stat->login));
                     endif;
                 ?>
