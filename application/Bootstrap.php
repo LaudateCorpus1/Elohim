@@ -76,7 +76,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     public function _initSearchListeners()
     {
-            $search = new Islamine_SearchIndexer(APPLICATION_PATH . '/indexer/index');
+            $search = new Islamine_SearchIndexer(APPLICATION_PATH . '/indexer/index-documents');
             Islamine_Model_SearchableRow::register($search);
             Zend_Registry::set('search', $search);
     }

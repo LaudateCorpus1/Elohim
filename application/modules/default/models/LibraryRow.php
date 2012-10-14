@@ -6,7 +6,7 @@ class Default_Model_LibraryRow extends Islamine_Model_SearchableRow
     {
         $fields = array();
         $fields['class'] = $this->modelType();
-        $fields['key'] = $this['id'];
+        $fields['id'] = $this['id'];
         $fields['content'] = $this['content'];
         $fields['title'] = $this['title'];
         //$fields['tags'] = $this->reported_by;

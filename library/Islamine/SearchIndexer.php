@@ -49,7 +49,7 @@ class Islamine_SearchIndexer implements Islamine_Interface_IObserver
             // Lucene ne supporte pas la maj, il faut supprimer puis ajouter
             $doc->addField(Zend_Search_Lucene_Field::Keyword('docRef', $fields['class'].':'.$fields['key']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('class', $fields['class']));
-            $doc->addField(Zend_Search_Lucene_Field::UnIndexed('key', $fields['key']));
+            $doc->addField(Zend_Search_Lucene_Field::UnIndexed('key', $fields['id']));
             $doc->addField(Zend_Search_Lucene_Field::text('title', $fields['title']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('vote', $fields['vote']));
             $doc->addField(Zend_Search_Lucene_Field::text('content', $fields['content']));

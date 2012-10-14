@@ -32,8 +32,13 @@ class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
             }
         }
         
+        if(isset($document->key) && $document->key != null)
+            $id = $this->view->escape($document->key);
+        else
+            $id = $this->view->escape($document->id);
+        
         $html = '<a href="'.$this->view->url(array(
-                                            'document' => $this->view->escape($document->id),
+                                            'document' => $id,
                                             'title' => $title
                                         ), 'showDocument').'">'.$this->view->escape($document->title).'
                  </a>'.$comp;

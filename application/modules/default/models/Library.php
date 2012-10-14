@@ -32,7 +32,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from($this->_name, array(
-                  'id',
+                  'key' => 'id',
                   'date',
                   'lastEditDate',
                   'title',
@@ -84,7 +84,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         $nb = $this->update($data, $this->getAdapter()->quoteInto('id = ?', $id));
         if($nb == 1)
         {
-            $search['key'] = $id;
+            $search['id'] = $id;
             $search['class'] = 'Library';
             $this->_searchIndexerClass->notify('update', $search);
         }
@@ -299,8 +299,22 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
     {
         $search = Zend_Registry::get('search');
         $index = Zend_Search_Lucene::open($search->getIndexDirectory());
-        $qTerm = new Zend_Search_Lucene_Index_Term($term);
-        $query = new Zend_Search_Lucene_Search_Query_Term($qTerm);
+        $term = trim($term);
+        if(strpos($term, ' ') === false)
+        {
+            $qTerm = new Zend_Search_Lucene_Index_Term($term);
+            $query = new Zend_Search_Lucene_Search_Query_Term($qTerm);
+        }
+        else
+        {
+            $query = new Zend_Search_Lucene_Search_Query_MultiTerm();
+            $terms = explode(' ', $term);
+            foreach($terms as $word)
+            {
+                $query->addTerm(new Zend_Search_Lucene_Index_Term($word), true);
+            }
+        }
+        
         $hits = $index->find($query);
         if(count($hits) > 0)
             return $hits;

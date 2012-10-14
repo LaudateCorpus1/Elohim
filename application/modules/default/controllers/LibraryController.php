@@ -143,13 +143,15 @@ class LibraryController extends Zend_Controller_Action
             $page->setItemCountPerPage(20);
             $this->view->library = $page;
             $i = 0;
-
+            
             foreach ($page as $document)
             {
                 if($this->_getParam('search') != null && $this->_getParam('search'))
-                    $this->view->$i = $modelLibrary->getTags($document->id);
+                {
+                    $this->view->$i = $modelLibrary->getTags($document->key);
+                }
                 else
-                    $this->view->$i = $modelLibrary->getTags($document['id']);
+                    $this->view->$i = $modelLibrary->getTags($document['key']);
                 $i++;
             }
         }
