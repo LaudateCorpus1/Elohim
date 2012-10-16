@@ -64,26 +64,25 @@ echo $this->doctype() . PHP_EOL;
                 <div id="nav">
                     <ul>
                         <li><a href="<?php echo $this->url(array(
+                                    ), 'news', true) ?>"
+                                title="Les news d'Islamine">News</a></li>
+                                
+                        <li><a href="<?php echo $this->url(array(
+                                    ), 'docList', true) ?>"
+                                title="Liste des documents (textes, audios, vidéos) envoyés par les membres">Documents</a></li>
+
+                        <li><a href="<?php echo $this->url(array(
                                         'controller' => 'event',
                                         'action' => 'index'
-                                    ), 'default', true) ?>">Evènements</a></li>
-
-                        <li><a href="<?php echo $this->url(array(
-                                    ), 'docList', true) ?>">Documents</a></li>
-
-                        <li><a href="<?php echo $this->url(array(
-                                    ), 'news', true) ?>">Annonces</a></li>
-
-                        <li><a href="<?php echo $this->url(array(
-                                    ), 'faq', true) ?>">FAQ</a></li>
+                                    ), 'default', true) ?>"
+                                    title="Evènements en rapport avec l'Islam (conférences...)">Evènements</a></li>
 
                         <li><a href="<?php echo $this->url(array(
                                         'controller' => 'user',
                                         'action' => 'list'
-                                    ), 'default', true) ?>">Membres</a></li>
+                                    ), 'default', true) ?>"
+                                title="Liste des membres">Membres</a></li>
 
-                        <li><a href="<?php echo $this->url(array(
-                                    ), 'contact', true) ?>">Contact</a></li>
                     </ul>
                 </div>
             </div>
@@ -174,6 +173,8 @@ echo $this->doctype() . PHP_EOL;
             <div class="footer-content">
                 <p>Copyright © 2012</p>
                 <p>
+                    <a href="<?php echo $this->url(array(
+                                    ), 'faq', true) ?>">FAQ</a> | 
                     <a href="#">Sitemap</a> | 
                     <a href="<?php echo $this->url(array(
                                     ), 'contact', true) ?>">Contact</a> | 

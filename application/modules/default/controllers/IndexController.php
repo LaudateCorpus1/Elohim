@@ -6,6 +6,11 @@ class IndexController extends Zend_Controller_Action
     public function init()
     {
         $this->_helper->layout->setLayout('index_layout');
+        if($this->getRequest()->getActionName() == 'index')
+        {
+            $layout = Zend_Layout::getMvcInstance();
+            $layout->class = 'class="index"';
+        }
         if ($this->_request->isXmlHttpRequest()) 
         {
             $this->_helper->viewRenderer->setNoRender();
