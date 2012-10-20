@@ -22,6 +22,8 @@ var mouse_is_inside = false;
 
 $(function()
 {
+    navigationSubmenu();
+    
     /*
      * Barre de notifications lors d'un(e) gain/perte de privilège
      */
@@ -207,6 +209,38 @@ function checkSuccess(response)
     return true;
 }
 
+// Navigation submenu
+function navigationSubmenu()
+{
+    /*$("#nav li.nav-index-2").hover(function () 
+    {
+        $(this).parent().find("ul.subnav").slideDown('medium');
+    },
+    function () 
+    {
+        $(this).parent().find("ul.subnav").slideUp('medium');
+    });*/
+    
+    $('#nav li.nav-index-2').hover(
+        function () {
+            $('ul', this).stop(true, true).slideDown(200);
+        },
+        function () {
+            $('ul', this).stop(true, true).slideUp(200);            
+        });
+    
+    /*$("#nav li.nav-index-2").hover(function() 
+    {
+        $(this).parent().find("ul.subnav").slideDown('fast').show();
+
+        $(this).parent().hover(function() 
+        {
+        }, function()
+        {
+            $(this).parent().find("ul.subnav").slideUp('slow');
+        });
+    });*/
+}
 
 // Fonction de vote
 function rate(action, object)

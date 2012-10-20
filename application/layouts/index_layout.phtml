@@ -62,9 +62,11 @@ echo $this->doctype() . PHP_EOL;
                                     ), 'news', true) ?>"
                                 title="Les news d'Islamine">News</a></li>
                                 
-                        <li><a href="<?php echo $this->url(array(
+                        <li class="nav-index-2"><a href="<?php echo $this->url(array(
                                     ), 'docList', true) ?>"
-                                title="Liste des documents (textes, audios, vidéos) envoyés par les membres">Documents</a></li>
+                                title="Liste des documents (textes, audios, vidéos) envoyés par les membres">Documents</a>
+                            <?php echo $this->submenu(); ?>
+                        </li>
 
                         <li><a href="<?php echo $this->url(array(
                                         'controller' => 'event',

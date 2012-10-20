@@ -37,10 +37,20 @@ class Default_Form_CompleteLibrary extends Zend_Form {
         $auto = new Default_Form_Element_Autocomplete('tags');
         $auto->removeDecorator('Label');
         
+        $modelCategory = new Model_Category();
+        $categories = $modelCategory->getNamesFormFormatted();
+        
+        $categoriesSelect = new Zend_Form_Element_Select('type');
+        $categoriesSelect->setRequired(true)
+             ->setLabel('Catégorie')
+             ->addMultiOptions($categories)
+             ->setDecorators($this->elementDecorators);
+        
         $this->addElements(array(
             $this->createElement('text', 'form_document_library_header', array('size' => '88'))->setRequired(true)->setLabel('Titre / Adresse d\'un site')->setDecorators($this->elementDecorators),
             $this->createElement('textarea', 'form_document_library_description', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Texte / Description de l\'adresse')->setDecorators($this->elementDecorators),
             $this->createElement('text', 'form_document_library_source', array('size' => '88'))->setRequired(true)->setLabel('Source (nom de l\'auteur / courant islamique / site de l\'article / origine du texte, etc)')->setDecorators($this->elementDecorators),
+            $categoriesSelect,
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots-clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
             $this->createElement('checkbox', 'form_document_library_public')->setLabel('Publier')->setDecorators($this->checkboxDecorators),

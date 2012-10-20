@@ -20,5 +20,33 @@ class Model_Category extends Zend_Db_Table_Abstract
     {
         return $this->fetchAll();
     }
+    
+    public function getNames()
+    {
+        $query = $this->select()
+                      ->from($this->_name, 'name');
+        
+        $rows = $this->fetchAll($query);
+        $names = array();
+        foreach($rows as $row)
+        {
+            $names[] = $row->name;
+        }
+        return $names;
+    }
+    
+    public function getNamesFormFormatted()
+    {
+        $query = $this->select()
+                      ->from($this->_name, 'name');
+        
+        $rows = $this->fetchAll($query);
+        $names = array('' => '-------');
+        foreach($rows as $index => $row)
+        {
+            $names[$index] = $row->name;
+        }
+        return $names;
+    }
 
 }
