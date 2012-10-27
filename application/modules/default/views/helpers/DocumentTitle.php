@@ -22,7 +22,7 @@ class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
         
         if(filter_var($this->view->escape($document->title), FILTER_VALIDATE_URL))
         {
-            $comp = ' - <a href="'.$this->view->escape($document->title).'" target="_blank">Aller sur le site</a>';
+            $comp = '<a href="'.$this->view->escape($document->title).'" target="_blank" title="Aller sur le site"><i class="icon-chevron-right"></i></a>';
             if(strpos($title, '//') !== false)
             {
                 $title = substr($title, strpos($title, '//')+2);

@@ -18,6 +18,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         $query->setIntegrityCheck(false)
               ->from($this->_name)
               ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->join('category', $this->_name.'.categoryId = category.id', array('category' => 'name'))
               ->where($where);
         $row = $this->fetchRow($query);
         if($row == null)
@@ -40,10 +41,38 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
                   'public',
                   'flag',
                   'vote',
-                  'userId'
+                  'userId',
+                  'categoryId'
                   ))
               ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->join('category', $this->_name.'.categoryId = category.id', array('category' => 'name'))
               ->where('public = 1')
+              ->order($order)
+              ->order($this->_name.'.date DESC');
+        
+        return $query;
+    }
+    
+    public function getDocumentsByCategory($categoryId, $order = 'library.date DESC')
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, array(
+                  'key' => 'id',
+                  'date',
+                  'lastEditDate',
+                  'title',
+                  'content',
+                  'public',
+                  'flag',
+                  'vote',
+                  'userId',
+                  'categoryId'
+                  ))
+              ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->join('category', $this->_name.'.categoryId = category.id', array('category' => 'name'))
+              ->where('public = 1')
+              ->where($this->getAdapter()->quoteInto($this->_name.'.categoryId = ?', $categoryId))
               ->order($order)
               ->order($this->_name.'.date DESC');
         
@@ -64,7 +93,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         return $row->userId;
     }
     
-    public function addDocument($userId, $title, $content, $public, $source)
+    public function addDocument($userId, $title, $content, $public, $source, $categoryId)
     {
         $data = array(
             'userId' => $userId,
@@ -72,7 +101,8 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             'content' => $content,
             'public' => $public,
             'source' => $source,
-            'vote' => '0'
+            'vote' => '0',
+            'categoryId' => $categoryId
         );
         $id = $this->insert($data);
         
@@ -139,9 +169,11 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
                       'content',
                       'public',
                       'flag',
-                      'vote'
+                      'vote',
+                      'categoryId'
                       ))
                   ->join('user', $this->_name.'.userId = user.id', null)
+                  ->join('category', $this->_name.'.categoryId = category.id', array('category' => 'name'))
                   ->where($this->getAdapter()->quoteInto('login = ?', $username))
                   ->order('date DESC');
 
@@ -265,19 +297,21 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         return $res;
     }
     
-    public function getDocumentsByTagName($name, $order = 'library.date DESC')
+    public function getDocumentsByTagName($name, $order = 'library.date DESC', $categoryId = null)
     {
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from($this->_name, array(
-                                'id',
+                                'key' => 'id',
                                 'date',
                                 'lastEditDate',
                                 'title',
                                 'content',
                                 'public',
                                 'flag',
-                                'vote'
+                                'vote',
+                                'userId',
+                                'categoryId'
                                 ))
               ->join('libraryTag', $this->_name.'.id = libraryTag.libraryId',array(
                                 'libraryId',
@@ -288,10 +322,15 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
                                 'libraryAmount'
                                 ))
               ->join('user', $this->_name.'.userId = user.id', 'login')
+              ->join('category', $this->_name.'.categoryId = category.id', array('category' => 'name'))
               ->where('Tags.name = ?', $name)
               ->where($this->_name.'.public = 1')
               ->order($order)
               ->order($this->_name.'.date DESC');
+        
+        if($categoryId != null && $categoryId != '')
+            $query->where($this->getAdapter()->quoteInto($this->_name.'.categoryId = ?', $categoryId));
+              
         return $query;
     }
     
@@ -307,7 +346,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             return true;
     }
     
-    public function sortDocuments($sort_type, $tag_name = null)
+    public function sortDocuments($sort_type, $tag_name = null, $categoryId = null)
     {
         $order = $this->_name.'.date DESC';
         switch($sort_type)
@@ -315,7 +354,9 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             case 'votes': 
                 $order = $this->_name.'.vote DESC';
                 if($tag_name != null)
-                    $res = $this->getDocumentsByTagName ($tag_name, $order);
+                    $res = $this->getDocumentsByTagName($tag_name, $order, $categoryId);
+                else if($categoryId != null)
+                    $res = $this->getDocumentsByCategory ($categoryId);
                 else
                     $res = $this->getAll($order);
                 break;

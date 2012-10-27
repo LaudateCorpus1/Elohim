@@ -31,6 +31,13 @@ $purifyHelper = $this->getHelper('Purify');
                 <span class="document-title">
                     <?php echo $this->documentTitle($document); ?>
                 </span>
+                <div class="label-right">
+                    <?php echo $this->documentCategory($document); ?>
+                    <?php if(intval($this->escape($document['public'])) && 
+                            $this->escape($this->canModify)) : ?>
+                    <span class="badge badge-success" title="Publié"><i class="icon-ok icon-white"></i></span>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="document-description">
                 <?php echo $this->purify($this->textWrap($document['content'], 300));?> 
@@ -59,22 +66,18 @@ $purifyHelper = $this->getHelper('Purify');
                 <?php if($this->escape($this->canModify)) : ?>
                     <div class="label-right">
                         <a id="delete-document-link-<?php echo $this->escape($document['key']).'-index'; ?>"
-                           class="label label-important" 
+                           title="Supprimer"
                            href="<?php echo $this->url(array(
                                                     'id'=> $this->escape($document['key']),
                                                     'action' => 'delete'
-                                                ), 'actionDocument', true); ?>">Supprimer
+                                                ), 'actionDocument', true); ?>"><i class="icon-trash"></i>
                         </a>
                     </div>
                     <div class="label-right">
-                        <?php if(intval($this->escape($document['public'])) && 
-                                $this->escape($this->canModify)) : ?>
-                        <span class="label label-success">Publié</span>
-                        <?php endif; ?>
-                        <a class="label" href="<?php echo $this->url(array(
+                        <a title="Editer" href="<?php echo $this->url(array(
                                                     'id'=> $this->escape($document['key']),
                                                     'action' => 'edit'
-                                                ), 'actionDocument', true); ?>">Editer
+                                                ), 'actionDocument', true); ?>"><i class="icon-pencil"></i>
                         </a>
                     </div>
                 <?php endif; ?>

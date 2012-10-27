@@ -2,6 +2,13 @@
 
 class LibraryController extends Zend_Controller_Action
 {
+    private $_categories = array('texte' => '1',
+                                 'audio' => '2',
+                                 'video' => '3',
+                                 'image' => '4',
+                                 'autre' => '5'
+        );
+    
     public function init()
     {
         $this->_helper->layout->setLayout('layout');
@@ -92,6 +99,7 @@ class LibraryController extends Zend_Controller_Action
         $this->view->canModify = $canModify;
         
         $documents = $this->_getParam('documents');
+        $category = $this->_getParam('category');
         $modelLibrary = new Default_Model_Library();
         $sortForm = new Default_Form_SortDocument();
         
@@ -127,12 +135,16 @@ class LibraryController extends Zend_Controller_Action
         }
         else {
             
-            if(!$this->_getParam('search'))
+            if(!$this->_getParam('search') && $category == 'all')
             {
                 $documents = $modelLibrary->getAll();
                 $this->view->title = 'Documents récents';
-                $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
             }
+            elseif($category != 'all')
+            {
+                $documents = $modelLibrary->getDocumentsByCategory($this->_categories[$category]);
+            }
+            $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
         }
         
         if($documents != null)
@@ -175,6 +187,7 @@ class LibraryController extends Zend_Controller_Action
                 $description = $form->getValue('form_document_library_description');
                 $public = $form->getValue('form_document_library_public');
                 $source = $form->getValue('form_document_library_source');
+                $categoryId = $form->getValue('form_document_library_category');
                 $tags = $form->getValue('tagsValues');
                 $tags = strtolower($tags);
                 $tagArray = explode(" ", $tags);
@@ -185,7 +198,7 @@ class LibraryController extends Zend_Controller_Action
                 
                 $tag->getAdapter()->beginTransaction();
                 
-                $libraryId = $modelLibrary->addDocument($auth->getIdentity()->id, $title, $description, $public, $source);
+                $libraryId = $modelLibrary->addDocument($auth->getIdentity()->id, $title, $description, $public, $source, $categoryId);
                 $error = false;
                 foreach ($tagArray as $t) {
                     if ($tag->doesExist($t) !== false) {
@@ -285,6 +298,7 @@ class LibraryController extends Zend_Controller_Action
                     $description = $form->getValue('form_document_library_description');
                     $public = $form->getValue('form_document_library_public');
                     $source = $form->getValue('form_document_library_source');
+                    $categoryId = $form->getValue('form_document_library_category');
                     $newTags = $form->getValue('tagsValues');
                     if($this->_helper->updateTags($id, $newTags, 'library'))
                     {
@@ -298,7 +312,8 @@ class LibraryController extends Zend_Controller_Action
                                                         'vote' => $document->vote,
                                                         'date' => $document->date,
                                                         'userId' => $document->userId,
-                                                        'login' => $document->login
+                                                        'login' => $document->login,
+                                                        'categoryId' => $categoryId
                                                      ), $id);
 
                         $purifyHelper = $this->view->getHelper('Purify');
@@ -547,21 +562,29 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
         $this->_forward('list', 'library', 'default', array('documents' => $list));
     }
     
-    public function sortAction() {
+    public function sortAction() 
+    {
         $sort_type = $this->_getParam('type');
         $tag_name = $this->_getParam('name');
+        $category = $this->_getParam('category');
         
         if($sort_type == 'date')
         {
             if($tag_name != null)
-                $this->_redirect ('/doc/tagged/'.$tag_name);
+            {
+                if($category != null)
+                    $this->_redirect ('/doc/tagged/'.$tag_name.'/cat/'.$category);
+                else
+                    $this->_redirect ('/doc/tagged/'.$tag_name);
+            }
             else
                 $this->_redirect ('/doc/list');
         }
         else
         {
+            $category != null ? $categoryId = $this->_categories[$category] : $categoryId = null;
             $modelLibrary = new Default_Model_Library();
-            $documentsSorted = $modelLibrary->sortDocuments($sort_type, $tag_name);
+            $documentsSorted = $modelLibrary->sortDocuments($sort_type, $tag_name, $categoryId);
             $this->_forward('list', 'library', 'default', array('documents' => $documentsSorted));
         }
     }

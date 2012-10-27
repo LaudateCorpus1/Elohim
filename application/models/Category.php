@@ -44,7 +44,7 @@ class Model_Category extends Zend_Db_Table_Abstract
         $names = array('' => '-------');
         foreach($rows as $index => $row)
         {
-            $names[$index] = $row->name;
+            $names[$index+1] = $row->name;
         }
         return $names;
     }

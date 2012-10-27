@@ -48,7 +48,8 @@ $(function()
     $('#form_sort_document').change(function()
     {
         var sort = $("select option:selected").val();
-        var tag = $('#tagname').val();
+        var tag = $('#form_sort_tagname').val();
+        var category = $('#form_sort_category').val();
         var url = "/doc/sort/" + sort;
         if(tag != '')
             url += '/tag/' + tag;

@@ -212,15 +212,6 @@ function checkSuccess(response)
 // Navigation submenu
 function navigationSubmenu()
 {
-    /*$("#nav li.nav-index-2").hover(function () 
-    {
-        $(this).parent().find("ul.subnav").slideDown('medium');
-    },
-    function () 
-    {
-        $(this).parent().find("ul.subnav").slideUp('medium');
-    });*/
-    
     $('#nav li.nav-index-2').hover(
         function () {
             $('ul', this).stop(true, true).slideDown(200);
@@ -228,18 +219,6 @@ function navigationSubmenu()
         function () {
             $('ul', this).stop(true, true).slideUp(200);            
         });
-    
-    /*$("#nav li.nav-index-2").hover(function() 
-    {
-        $(this).parent().find("ul.subnav").slideDown('fast').show();
-
-        $(this).parent().hover(function() 
-        {
-        }, function()
-        {
-            $(this).parent().find("ul.subnav").slideUp('slow');
-        });
-    });*/
 }
 
 // Fonction de vote

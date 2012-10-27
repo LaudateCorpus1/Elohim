@@ -40,7 +40,7 @@ class Default_Form_CompleteLibrary extends Zend_Form {
         $modelCategory = new Model_Category();
         $categories = $modelCategory->getNamesFormFormatted();
         
-        $categoriesSelect = new Zend_Form_Element_Select('type');
+        $categoriesSelect = new Zend_Form_Element_Select('form_document_library_category');
         $categoriesSelect->setRequired(true)
              ->setLabel('Catégorie')
              ->addMultiOptions($categories)

@@ -27,6 +27,9 @@ $purifyHelper = $this->getHelper('Purify');
                     <span class="document-title">
                         <?php echo $this->documentTitle($document); ?>
                     </span>
+                    <div class="label-right">
+                        <?php echo $this->documentCategory($document); ?>
+                    </div>
                 </div>
                 <div class="document-description">
                     <?php echo $this->purify($this->textWrap($document->content, 300));?> 

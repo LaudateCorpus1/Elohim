@@ -29,17 +29,26 @@ class Default_Form_SortDocument extends Zend_Form {
                     array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'openOnly' => true))
                 ));
         
-        $tag = new Zend_Form_Element_Hidden('tagname');
+        $tag = new Zend_Form_Element_Hidden('form_sort_tagname');
         $tag->setDecorators(array(
             'ViewHelper',
             'Description',
             'Errors', array(array('data' => 'HtmlTag'), array('tag' => 'td')),
-            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => 'true'))
+            array(array('row' => 'HtmlTag'), array('tag' => 'tr'))
+        ));
+        
+        $category = new Zend_Form_Element_Hidden('form_sort_category');
+        $category->setDecorators(array(
+            'ViewHelper',
+            'Description',
+            'Errors', array(array('data' => 'HtmlTag'), array('tag' => 'td')),
+            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => true))
         ));
         
         $this->addElements(array(
             $type,
-            $tag
+            $tag,
+            $category
         ));
     }
 
