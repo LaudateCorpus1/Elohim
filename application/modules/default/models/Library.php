@@ -356,7 +356,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
                 if($tag_name != null)
                     $res = $this->getDocumentsByTagName($tag_name, $order, $categoryId);
                 else if($categoryId != null)
-                    $res = $this->getDocumentsByCategory ($categoryId);
+                    $res = $this->getDocumentsByCategory ($categoryId, $order);
                 else
                     $res = $this->getAll($order);
                 break;

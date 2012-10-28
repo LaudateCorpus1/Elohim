@@ -118,7 +118,7 @@ class LibraryController extends Zend_Controller_Action
             if($this->_getParam('name'))
             {
                 $tag = $this->_getParam('name');
-                $sortForm->populate(array('tagname' => $tag));
+                $sortForm->populate(array('form_sort_tagname' => $tag));
                 $route = 'sortDocumentTag';
                 $this->view->tagName = $tag;
                 $this->view->title .= ' sur \''.$tag.'\'';
@@ -142,6 +142,7 @@ class LibraryController extends Zend_Controller_Action
             }
             elseif($category != 'all')
             {
+                $sortForm->populate(array('form_sort_category' => $category));
                 $documents = $modelLibrary->getDocumentsByCategory($this->_categories[$category]);
             }
             $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
@@ -572,7 +573,7 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
         {
             if($tag_name != null)
             {
-                if($category != null)
+                if($category != null && $category != 'all')
                     $this->_redirect ('/doc/tagged/'.$tag_name.'/cat/'.$category);
                 else
                     $this->_redirect ('/doc/tagged/'.$tag_name);
