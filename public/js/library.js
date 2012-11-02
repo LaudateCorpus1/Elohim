@@ -56,7 +56,7 @@ $(function()
             url += '/tag/' + tag;
         
         if(category != '')
-            url += '/cat/' + category;
+            url += '/category/' + category;
             
         window.location.href = url;
     });

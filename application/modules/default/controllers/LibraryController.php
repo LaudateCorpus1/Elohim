@@ -102,26 +102,27 @@ class LibraryController extends Zend_Controller_Action
         $category = $this->_getParam('category');
         $modelLibrary = new Default_Model_Library();
         $sortForm = new Default_Form_SortDocument();
+        $this->view->title = 'Documents ';
+        $titleTag = $titleSort = $titleCategory = '';
         
         $route = 'sortDocument';
         if($documents != null)
         {
-            $sort ='récents';
+            $titleSort ='récents';
             if($this->_getParam('type'))
             {
                 $sortForm->populate(array('type' => $this->_getParam('type')));
                 if($this->_getParam('type') == 'votes') {
-                    $sort = 'les mieux votés'; 
+                    $titleSort = 'les mieux votés'; 
                 }
             }
-            $this->view->title = 'Documents '.$sort;
             if($this->_getParam('name'))
             {
                 $tag = $this->_getParam('name');
                 $sortForm->populate(array('form_sort_tagname' => $tag));
                 $route = 'sortDocumentTag';
                 $this->view->tagName = $tag;
-                $this->view->title .= ' sur \''.$tag.'\'';
+                $titleTag = ' sur \''.$tag.'\'';
             }
             
             if($this->_getParam('search') != null && $this->_getParam('search'))
@@ -138,14 +139,19 @@ class LibraryController extends Zend_Controller_Action
             if(!$this->_getParam('search') && $category == 'all')
             {
                 $documents = $modelLibrary->getAll();
-                $this->view->title = 'Documents récents';
+                $titleSort = 'récents';
             }
             elseif($category != 'all')
             {
-                $sortForm->populate(array('form_sort_category' => $category));
                 $documents = $modelLibrary->getDocumentsByCategory($this->_categories[$category]);
             }
             $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
+        }
+        
+        if($category != 'all')
+        {
+            $titleCategory = $category. 's ';
+            $sortForm->populate(array('form_sort_category' => $category));
         }
         
         if($documents != null)
@@ -172,6 +178,7 @@ class LibraryController extends Zend_Controller_Action
             $this->view->library = null;
         }
         
+        $this->view->title .= $titleCategory.$titleSort.$titleTag;
         $this->view->sortForm = $sortForm;
         $this->view->headScript()->appendScript("var auth = $autho;");
     }
@@ -574,12 +581,17 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
             if($tag_name != null)
             {
                 if($category != null && $category != 'all')
-                    $this->_redirect ('/doc/tagged/'.$tag_name.'/cat/'.$category);
+                    $this->_redirect ('/doc/tagged/'.$tag_name.'/category/'.$category);
                 else
                     $this->_redirect ('/doc/tagged/'.$tag_name);
             }
             else
-                $this->_redirect ('/doc/list');
+            {
+                if($category != null && $category != 'all')
+                    $this->_redirect ('/doc/list/'.$category);
+                else
+                    $this->_redirect ('/doc/list');
+            }
         }
         else
         {
