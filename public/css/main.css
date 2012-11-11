@@ -24,7 +24,8 @@ html {
 
 .index
 {
-    background: url(../images/image2.jpeg);
+    /*background: url(../images/image2.jpeg);*/
+    background: #E5E6E7;
 }
 
 .main
@@ -141,7 +142,8 @@ a.rm, a.com {
 
 #bg-header-top
 {
-    background-color: #201414;
+    /*background-color: #201414;*/
+    background: url(../images/bandeau.jpg) repeat-y scroll center top black;
     height: 76px;
 }
 
@@ -756,15 +758,34 @@ input, textarea, select
 /*******************************/
 .index-content
 {
-    width: 700px;
     margin: 0 auto;
 }
 
 #welcome-content
 {
-    width: 700px;
+    width: 800px;
     text-align: center;
     margin: 0 auto;
+}
+
+.work
+{
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#welcome-content a
+{
+    text-align: center;
+    float: none;
+    margin: 0 auto;
+    color: #0069D6;
+    text-decoration: underline;
+}
+
+#welcome-content a:hover
+{
+    color: #FF6600;
 }
 
 #index-icons {
@@ -821,7 +842,7 @@ input, textarea, select
 
 .index-register {
     margin: 0 auto;
-    width: 140px;
+    width: 100px;
     font-weight: bold;
 }
 
@@ -1356,7 +1377,7 @@ ul#favlist li.favorited-style a.close2
 .document-show-description
 {
     /*border-left: #595959 dashed 1px;*/
-    text-align: justify;
+    text-align: left;
     overflow: hidden;
 }
 

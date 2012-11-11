@@ -549,7 +549,6 @@ a été alerté par '.$auth->getIdentity()->login.' pour le motif : '.$motif;
                         'content' => $content
             );
             $commentId = $modelComment->addComment($data);
-            
             if($documentAuthorId != $identity->id)
                 $this->_helper->notifyUser('Nouveau commentaire :', $documentAuthorId, null, null, null, $documentId);
             

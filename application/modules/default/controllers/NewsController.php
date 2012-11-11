@@ -94,29 +94,9 @@ class NewsController extends Zend_Controller_Action
     public function deleteAction()
     {
         $id = $this->_getParam('id');
-        $auth = Zend_Auth::getInstance();
-        $moderatorRole = Zend_Registry::getInstance()->constants->roles->moderator;
-        $adminRole = Zend_Registry::getInstance()->constants->roles->admin;
-        if($this->isAuthor($id)
-               || $auth->getIdentity()->role == $moderatorRole
-               || $auth->getIdentity()->role == $adminRole)
-        {
-            $modelLibrary = new Default_Model_Library();
-            $modelLibrary->deleteDocument($id);
-            
-            if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'ok', 'username' => $auth->getIdentity()->login));
-            else
-                $this->view->message = 'Le document a été supprimé';
-        }
-        else
-        {
-            $message = 'Vous n\'avez pas le droit de supprimer un document ne vous appartenant pas';
-            if($this->_request->isXmlHttpRequest())
-                echo Zend_Json::encode(array('status' => 'error', 'message' => $message));
-            else
-                throw new Exception($message);
-        }
+        $modelNews = new Model_News();
+        $modelNews->deleteNews($id);
+        $this->_redirect('/news');
     }
 }
 

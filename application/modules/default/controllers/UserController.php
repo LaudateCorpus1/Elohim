@@ -24,13 +24,15 @@ class UserController extends Zend_Controller_Action
         $this->view->stats = $model_user->getKarmaStats($userId);
         
         $edit = false;
+        $this->view->isAdmin = false;
         $auth = Zend_Auth::getInstance();
         if($auth->hasIdentity())
         {
             if($auth->getIdentity()->id == $this->view->user->id)
                 $edit = true;
+            if($auth->getIdentity()->role == 'admin')
+                $this->view->isAdmin = true;
         }
-        $this->view->edit = $edit;
     }
 
    public function registerAction()

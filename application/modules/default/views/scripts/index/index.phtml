@@ -8,12 +8,51 @@
             n'hésitez pas !
         </h1>
         
-        <a href="<?php echo $this->url(array(
-                                    ), 'faq', true) ?>"><h1>Comment ça marche ?</h1></a>
+        <h1 class="work"><a href="<?php echo $this->url(array(
+                                    ), 'faq', true) ?>">Comment ça marche ?</a></h1>
     </div>
 </div>
 
-<div id="index-icons">
+<div class="carousel-container">
+  <div id="carousel">
+    <div class="carousel-feature">
+      <a><img class="carousel-image" alt="Image Caption" src="images/allahsunset.jpg" /></a>
+      <div class="carousel-caption">
+        <p>
+            Un peu de science éloigne de Dieu, beaucoup de science y ramène - 
+            <span class="carousel-caption-author">Louis Pasteur</span>
+        </p>
+      </div>
+    </div>
+    <div class="carousel-feature">
+      <a><img class="carousel-image" alt="Image Caption" src="images/aurore.jpg" /></a>
+    </div>
+    <div class="carousel-feature">
+      <a><img class="carousel-image" alt="Image Caption" src="images/ciel-rouge.jpg" /></a>
+      <div class="carousel-caption">
+        <p>
+          Images can be placed here as well.
+        </p>
+      </div>
+    </div>
+    <div class="carousel-feature">
+      <a><img class="carousel-image" alt="Image Caption" src="images/nature1.jpg" /></a>
+    </div>
+    <div class="carousel-feature">
+      <a><img class="carousel-image" alt="Image Caption" src="images/sample5.jpg" /></a>
+      <div class="carousel-caption">
+        <p>
+          The background color of the caption area can be changed using CSS. The opacity can be changed in the options, but it will also change the opacity of the text.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div id="carousel-left"><img src="images/arrow-left.png" /></div>
+  <div id="carousel-right"><img src="images/arrow-right.png" /></div>
+</div>
+
+<!--<div id="index-icons">
     <table>
         <tr>
             <td>
@@ -53,7 +92,7 @@
             </td>
         </tr>
     </table>
-</div>
+</div>-->
 
 <?php if(!$this->escape($this->isUserConnected)) : ?>
 <div class="index-register">

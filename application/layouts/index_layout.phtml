@@ -19,13 +19,33 @@ echo $this->doctype() . PHP_EOL;
           echo $this->headLink()
                     ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
                     ->appendStylesheet('/css/bootstrap.css')
+                    ->appendStylesheet('/css/feature-carousel.css')
                     ->appendStylesheet('/css/main.css');
         
             $this->headScript()->prependFile($this->baseUrl().'/js/base.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/tagit/tag-it.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/jquery.featureCarousel.min.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
         ?>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            var carousel = $("#carousel").featureCarousel({
+                autoPlay: 0,
+                largeFeatureWidth: 450,
+                largeFeatureHeight: 230,
+                smallFeatureWidth: 225,
+                smallFeatureHeight: 115,
+                trackerSummation: false
+              // include options like this:
+              // (use quotes only for string values, and no trailing comma after last option)
+              // option: value,
+              // option: value
+            });
+
+            
+          });
+        </script>
     </head>
     <body <?php echo $this->layout()->class; ?>>
         <noscript>
@@ -49,7 +69,7 @@ echo $this->doctype() . PHP_EOL;
                             'controller' => 'index',
                             'action' => 'index'
                         ), 'default', true);
-                        ?>"><img src="/images/logo.jpg"/>
+                        ?>"><img src="/images/logo.gif"/>
                     </a>
                 </div>
                 <div id="user-top">

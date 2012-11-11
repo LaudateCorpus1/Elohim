@@ -53,6 +53,12 @@ $purifyHelper = $this->getHelper('Purify');
                                 'username' => $this->escape($this->user->login)
                                 ), 'userLibrary', true); ?>">Bibliothèque</a>
                     </td>
+                    <?php if($this->escape($this->isAdmin)): ?>
+                    <td class="cell">
+                        <a href="<?php echo $this->url(array(
+                                    ), 'admin', true) ?>">Administration</a>
+                    </td>
+                    <?php endif; ?>
                 </tr>
             </tbody>
         </table>
