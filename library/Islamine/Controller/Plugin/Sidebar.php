@@ -23,7 +23,7 @@ class Islamine_Controller_Plugin_Sidebar extends Zend_Controller_Plugin_Abstract
             {
                 $html .= '<div class="news">
                               <a href="'.$view->url(array(
-                                                ), 'news').'">'.$new->title.'</a>
+                                                ), 'news').'#'.$view->escape($new->id).'">'.$new->title.'</a>
                               <span class="date">'.$new->date_posted.'</span>
                           </div>';
             }

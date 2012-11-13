@@ -29,22 +29,16 @@ echo $this->doctype() . PHP_EOL;
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
         ?>
         <script type="text/javascript">
-          $(document).ready(function() {
-            var carousel = $("#carousel").featureCarousel({
-                autoPlay: 0,
-                largeFeatureWidth: 450,
-                largeFeatureHeight: 230,
-                smallFeatureWidth: 225,
-                smallFeatureHeight: 115,
-                trackerSummation: false
-              // include options like this:
-              // (use quotes only for string values, and no trailing comma after last option)
-              // option: value,
-              // option: value
+            $(document).ready(function() {
+                var carousel = $("#carousel").featureCarousel({
+                    autoPlay: 0,
+                    largeFeatureWidth: 450,
+                    largeFeatureHeight: 230,
+                    smallFeatureWidth: 225,
+                    smallFeatureHeight: 115,
+                    trackerSummation: false
+                });
             });
-
-            
-          });
         </script>
     </head>
     <body <?php echo $this->layout()->class; ?>>

@@ -2,6 +2,7 @@
 
 <div>
 <?php foreach($this->news as $new): ?>
+    <a name="<?php echo $this->escape($new['id']); ?>"></a>
     <div class="main-news">
         <h2><?php echo $this->escape($new['title']); ?></h2>
 
