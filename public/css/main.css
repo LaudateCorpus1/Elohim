@@ -7,6 +7,14 @@
 }
 
 /******************************************/
+/*********** Overwrite jquery ui **********/
+/******************************************/
+.ui-widget
+{
+    font-size: 1em;
+}
+
+/******************************************/
 /****************** Main ******************/
 /******************************************/
 body {
@@ -14,7 +22,7 @@ body {
     padding:0;
     width:100%;
     color:/*#9a9a9a*/ #333333;
-    font:normal 80%/1.8em "Helvetica Nueue", Arial, Helvetica, sans-serif;
+    font:normal 85%/1.6em "Helvetica Nueue", Arial, Helvetica, sans-serif;
 }
 html {
     padding:0;
@@ -348,7 +356,7 @@ input, textarea, select
 #user-top-links
 {
     float: left;
-    font-size: 0.9em;
+    font-size: 11px;
     color: #F1F1F1;
 }
 
@@ -700,7 +708,7 @@ input, textarea, select
     border-bottom: 1px solid #EBEBEB;
     color: #00601A;
     margin-top: 10px;
-    line-height: 1.6em;
+    line-height: 1.4em;
 }
 
 .modulep h4
@@ -1136,7 +1144,7 @@ input, textarea, select
     color: #333333; 
     float: left;
     padding: 0 3px 0 3px;
-    font-size: 0.9em;
+    font-size: 11px;
     line-height: 180%;
 }
 

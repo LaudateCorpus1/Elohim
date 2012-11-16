@@ -64,6 +64,11 @@ echo $this->doctype() . PHP_EOL;
             padding-bottom: 10px;
             font-size: 0.87em;
         }
+        
+        .event-top {
+            background: url(../images/bandeau.jpg) repeat-y scroll center top black;
+            width: 100%;
+        }
 </style>
 
 
@@ -159,7 +164,7 @@ echo $this->doctype() . PHP_EOL;
 </script>
 
 <body onload="init();">
-    <div style="background-color:#201414; width: 100%">
+    <div class="event-top">
         <table class="table-top">
             <tbody>
                 <tr>
@@ -170,7 +175,7 @@ echo $this->doctype() . PHP_EOL;
                                 'controller' => 'index',
                                 'action' => 'index'
                             ), 'default', true);
-                            ?>"><img src="/images/logo.jpg" height="50"/>
+                            ?>"><img src="/images/logo.gif" height="50"/>
                         </a>
                     </td>
                     <td>

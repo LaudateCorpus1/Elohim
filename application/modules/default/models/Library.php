@@ -389,7 +389,7 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         if(count($hits) > 0)
             return $hits;
         else
-            return null;
+            return array();
     }
     
     public function getDocumentsAmount()

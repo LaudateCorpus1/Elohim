@@ -106,7 +106,7 @@ class LibraryController extends Zend_Controller_Action
         $titleTag = $titleSort = $titleCategory = '';
         
         $route = 'sortDocument';
-        if($documents != null)
+        if($documents != null || is_array($documents))
         {
             $titleSort ='récents';
             if($this->_getParam('type'))

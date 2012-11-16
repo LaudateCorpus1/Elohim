@@ -55,6 +55,7 @@ class Islamine_SearchIndexer implements Islamine_Interface_IObserver
             $doc->addField(Zend_Search_Lucene_Field::text('content', $fields['content']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('date', $fields['date']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('userId', $fields['userId']));
+            $doc->addField(Zend_Search_Lucene_Field::UnIndexed('categoryId', $fields['categoryId']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('login', $fields['login']));
         }
         $this->_modifyIndex($flag, $doc);

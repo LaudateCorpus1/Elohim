@@ -15,6 +15,7 @@ class Zend_View_Helper_DocumentCategory extends Zend_View_Helper_Abstract
     {
         if(is_array($document))
             $document = Islamine_Array::array_to_object ($document);
+        
         switch ($document->categoryId)
         {
             case '1': $icon = 'icon-align-justify';
@@ -32,7 +33,9 @@ class Zend_View_Helper_DocumentCategory extends Zend_View_Helper_Abstract
             default: $icon = 'icon-asterisk';
                 break;
         }
-        $html = '<span title="Document '.lcfirst($document->category).'">
+        $modelCategory = new Default_Model_Category();
+        $category = $modelCategory->get($document->categoryId);
+        $html = '<span title="Document '.lcfirst($category->name).'">
                     <i class="'.$icon.'"></i>
                 </span>';
         
