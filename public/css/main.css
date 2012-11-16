@@ -1460,6 +1460,9 @@ ul#favlist li.favorited-style a.close2
     border: solid #9ADB38 1px;
     background-color: #ACDB63;
     padding: 0 5px 0 5px;
+    -moz-box-shadow: 1px 1px 1px #888;
+    -webkit-box-shadow: 1px 1px 1px #888;
+    box-shadow: 1px 1px 1px #888;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
