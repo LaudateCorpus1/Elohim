@@ -33,7 +33,7 @@ class Zend_View_Helper_DocumentCategory extends Zend_View_Helper_Abstract
             default: $icon = 'icon-asterisk';
                 break;
         }
-        $modelCategory = new Default_Model_Category();
+        $modelCategory = new Model_Category();
         $category = $modelCategory->get($document->categoryId);
         $html = '<span title="Document '.lcfirst($category->name).'">
                     <i class="'.$icon.'"></i>
