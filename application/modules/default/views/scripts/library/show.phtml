@@ -67,6 +67,25 @@
                         </span>
                     <?php endif; ?>
                     </span>
+                    
+                    <?php if($this->escape($this->author)) : ?>
+                    <div class="label-right">
+                        <a id="delete-document-link-<?php echo $this->escape($this->document->id).'-show'; ?>"
+                           title="Supprimer"
+                           href="<?php echo $this->url(array(
+                                                    'id'=> $this->escape($this->document->id),
+                                                    'action' => 'delete'
+                                                ), 'actionDocument', true); ?>"><i class="icon-trash"></i>
+                        </a>
+                    </div>
+                    <div class="label-right">
+                        <a title="Editer" href="<?php echo $this->url(array(
+                                                    'id'=> $this->escape($this->document->id),
+                                                    'action' => 'edit'
+                                                ), 'actionDocument', true); ?>"><i class="icon-pencil"></i>
+                        </a>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </td>
         </tr>
@@ -91,28 +110,6 @@
             </td>
         </tr>
     </table>
-    
-    <?php if($this->escape($this->author)) : ?>
-    <div class="document-show-menu">
-        <div class="btn-left">
-            
-            <a class="btn btn-small" href="<?php echo $this->url(array(
-                                                    'id'=> $this->escape($this->document->id),
-                                                    'action' => 'edit'
-                                            ), 'actionDocument', true); ?>">Editer
-            </a>
-        </div>
-        <div class="btn-right">
-            <a id="delete-document-link-<?php echo $this->escape($this->document->id).'-show'; ?>" 
-               class="btn btn-danger btn-small" 
-               href="<?php echo $this->url(array(
-                                            'id'=> $this->escape($this->document->id),
-                                            'action' => 'delete'
-                                            ), 'actionDocument', true); ?>">Supprimer
-            </a>
-        </div>
-    </div>
-    <?php endif; ?>
     
     <div class="document-comments">
         <?php if($this->comments->count() > 0): ?>

@@ -61,7 +61,7 @@ img{
 }
 
 .logo {
-    padding-bottom: 7px;
+    padding-bottom: 14px;
     margin:0 auto;
     width:370px;
     float:left;
@@ -150,7 +150,6 @@ a.rm, a.com {
 .header {
     margin:0 auto;
     padding:3px 0 0 0;
-    width: 970px;
 }
 
 #bg-header-top
@@ -326,7 +325,7 @@ input, textarea, select
 {
     float: right;
     margin: 0 auto;
-    width: 600px;
+    width: 540px;
 }
 
 #user-top input
@@ -1205,6 +1204,7 @@ input, textarea, select
 
 ul#favlist li.favorited-style 
 {
+    font-size: 12px;
     border-radius:5px 5px 5px 5px;
     -moz-border-radius:5px 5px 5px 5px;
     background-color: #3E6D8E;
@@ -1444,16 +1444,9 @@ ul#favlist li.favorited-style a.close2
     padding-left: 15px;
 }
 
-.document-menu a
+.document-menu a, .document-show-date a
 {
     margin-right: 7px;
-}
-
-.document-show-menu
-{
-    clear: both;
-    margin-top: 30px;
-    padding-top: 10px;
 }
 
 .document-comments

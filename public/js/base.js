@@ -212,13 +212,19 @@ function checkSuccess(response)
 // Navigation submenu
 function navigationSubmenu()
 {
-    $('#nav li.nav-index-2').hover(
-        function () {
-            $('ul', this).stop(true, true).slideDown(200);
-        },
-        function () {
-            $('ul', this).stop(true, true).slideUp(200);            
-        });
+    $('#nav li.nav-index-2').hover(function() {
+        $('ul', this).stop(true, true).slideDown(200);
+    },
+    function() {
+        $('ul', this).stop(true, true).slideUp(200);            
+    });
+        
+    $('.subnav > li').hover(function(){
+        $(this).find('i').removeClass('icon-white');
+    },
+    function() {
+        $(this).find('i').addClass('icon-white'); 
+    });
 }
 
 // Fonction de vote
