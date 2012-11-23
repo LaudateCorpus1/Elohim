@@ -80,6 +80,15 @@ class UserController extends Zend_Controller_Action
                           
                           $model_user = new Model_User();
                           $model_user->add($data);
+                          
+                          $this->_helper->alertMail->send('Inscription Islamine', 'Bonjour,
+
+Merci de vous être inscrit sur Islamine !
+Nous espérons que le site vous sera utile.
+
+Cordialement,
+L\'équipe d\'Islamine', $data['email']);
+                          
                           $this->view->success = 'Inscription réussie.';
                       }
                   }
@@ -115,7 +124,7 @@ class UserController extends Zend_Controller_Action
                 if ($this->_process($form->getValues())) 
                 {
                     // We're authenticated! Redirect to the home page
-                    if(isset($formData['uri']))
+                    if(isset($formData['uri']) && strpos($formData['uri'], 'user/register') === false)
                         $this->_redirect($formData['uri']);
                     else {
                         $this->_redirect('/');

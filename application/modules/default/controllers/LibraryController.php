@@ -342,6 +342,7 @@ class LibraryController extends Zend_Controller_Action
             $form->populate(array(
                             'form_document_library_header' => $document->title,
                             'form_document_library_description' => $document->content,
+                            'form_document_library_category' => $document->categoryId,
                             'form_document_library_public' => $document->public,
                             'form_document_library_source' => $document->source,
                             'tagsValues' => $tags_string
