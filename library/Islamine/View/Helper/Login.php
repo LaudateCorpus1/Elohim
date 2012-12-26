@@ -47,7 +47,7 @@ class Islamine_View_Helper_Login extends Zend_View_Helper_Abstract
                             <div>
                                 <a href="'.$this->view->url(array(
                                                         'username' => $auth->getIdentity()->login
-                                    ), 'userLibrary', true).'"><i class="icon-book icon-white"></i><span class="shift">Ma bibliothèque</span></a>
+                                    ), 'userLibrary', true).'"><i class="icon-book icon-white"></i><span class="shift">Mes documents</span></a>
                             </div>
                         </div>
                         <div class="user-logout-link">

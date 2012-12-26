@@ -232,7 +232,6 @@ function rate(action, object)
 {
     var url;
     var topicId = '';
-    //var val = object.parent().attr('class');
     var val = object.closest('div[class^="vote-"]').attr('class');
     var element;
     if(val == 'vote-d') 
@@ -255,6 +254,10 @@ function rate(action, object)
 
     if(typeof auth != "undefined" && auth)
     {
+        var voteValue = object.parent().parent().find('.vote-value');
+        voteValue.hide();
+        voteValue.parent().prepend('<img src="/images/ui-anim_basic_16x16.gif" />');
+    
         $.post(url, { 'topic': topicId }, function(response)
         {
             try
@@ -322,9 +325,16 @@ function rate(action, object)
             {
 
             }
+            voteValue.parent().find('img').remove();
+            voteValue.show();
 
         }, "json")
-        .error(function() { alert("Une erreur est survenue"); });
+        .error(function() 
+        {
+            voteValue.parent().remove('img');
+            voteValue.show();
+            alert("Une erreur est survenue"); 
+        });
     }
     else
         alert("Vous devez vous identifier");
