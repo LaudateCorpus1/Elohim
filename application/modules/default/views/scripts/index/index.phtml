@@ -13,35 +13,15 @@
     </div>
 </div>
 
-<!--<div id="carousel" class="carousel slide">
-    <div class="carousel-inner">
-        <div class="active item">
-            <img src="images/allahsunset.jpg" />
-            <div class="carousel-caption">
-                <p>
-                    Un peu de science éloigne de Dieu, beaucoup de science y ramène - 
-                    <span class="carousel-caption-author">Louis Pasteur</span>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="images/ciel-rouge.jpg" />
-            <div class="carousel-caption">
-                <p>
-                  Un honnête homme armé de tout le savoir dont nous disposons actuellement ne 
-                  pourrait pas aboutir à une autre conclusion : dans un sens, l'origine de la 
-                  vie apparaît presque aujourd'hui comme un miracle -
-                  <span class="carousel-caption-author">Francis Crick</span>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-
-        </div>
-    </div>
-    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-</div>-->
+<?php if(!$this->escape($this->isUserConnected)) : ?>
+<div class="index-register">
+    <a class="btn btn-large btn-success" 
+       href="<?php echo $this->url(array(
+                                    'controller' => 'user',
+                                    'action' => 'register'
+                                ), 'default', true) ?>">S'inscrire</a>
+</div>
+<?php endif; ?>
 
 <div class="carousel-container">
   <div id="carousel">
@@ -95,56 +75,3 @@
   <div id="carousel-left"><img src="images/arrow-left.png" /></div>
   <div id="carousel-right"><img src="images/arrow-right.png" /></div>
 </div>
-
-<!--<div id="index-icons">
-    <table>
-        <tr>
-            <td>
-                <a href="<?php echo $this->url(array(
-                                    ), 'docList', true) ?>">
-                    <p>
-                        Documents publiés
-                        <br />
-                        <span class="detail">(<?php echo $this->escape($this->documentsAmount); ?>)</span>
-                    </p>
-                </a>
-            </td>
-            <td>
-                <a href="<?php echo $this->url(array(
-                                        'controller' => 'event',
-                                        'action' => 'index'
-                                    ), 'default', true) ?>">
-                <p>
-                    Evènements
-                    <br />
-                    <span class="detail">(<?php echo $this->escape($this->eventsAmount); ?> ce mois-ci)</span>
-                </p>
-                </a>
-            </td>
-            <td>
-                <a href="<?php echo $this->url(array(
-                                        'controller' => 'user',
-                                        'action' => 'list'
-                                    ), 'default', true) ?>">
-                
-                    <p>
-                        Membres
-                        <br />
-                        <span class="detail">(<?php echo $this->escape($this->usersAmount); ?>)</span>
-                    </p>
-                </a>
-            </td>
-        </tr>
-    </table>
-</div>-->
-
-<?php if(!$this->escape($this->isUserConnected)) : ?>
-<div class="index-register">
-    <a class="btn btn-large btn-success" 
-       href="<?php echo $this->url(array(
-                                    'controller' => 'user',
-                                    'action' => 'register'
-                                ), 'default', true) ?>">S'inscrire</a>
-</div>
-<?php endif; ?>
-
