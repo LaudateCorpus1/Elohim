@@ -1,3 +1,4 @@
+SetEnv PHP_VER 5_3
 SetEnv APPLICATION_ENV development
 
 RewriteEngine On
