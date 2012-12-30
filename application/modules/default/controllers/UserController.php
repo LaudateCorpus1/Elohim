@@ -33,6 +33,7 @@ class UserController extends Zend_Controller_Action
             if($auth->getIdentity()->role == 'admin')
                 $this->view->isAdmin = true;
         }
+        $this->view->edit = $edit;
     }
 
    public function registerAction()
@@ -310,7 +311,6 @@ L\'équipe d\'Islamine', $data['email']);
                             {
                                 unset($data['oldPassword']);
                                 unset($data['passwordAgain']);
-                                $data['password'] = md5($data['password']);
                             }
                             unset($data['Default_Form_UserEdit_csrf']);
                             

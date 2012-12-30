@@ -21,14 +21,14 @@ class Islamine_Mail
     public function __construct($username, $password)
     {
         $this->_config = array(
-                        'ssl' => 'tls',
-                        'port' => 587,
+                        'ssl' => 'ssl',
+                        'port' => 465,
                         'auth' => 'login',
                         'username' => $username,
                         'password' => $password
                     );
         
-        $this->_transport = new Zend_Mail_Transport_Smtp('smtp.gmail.com', $this->_config);
+        $this->_transport = new Zend_Mail_Transport_Smtp('ssl0.ovh.net', $this->_config);
         Zend_Mail::setDefaultTransport($this->_transport);
         $this->_mail = new Zend_Mail('utf-8'); 
     }

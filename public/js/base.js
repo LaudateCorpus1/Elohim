@@ -357,7 +357,8 @@ function dialogForgotPassword()
                 else
                 {
                     var data = $('#form_forgot_password').serializeArray();
-
+                    email.parent().append('<img src="/images/ui-anim_basic_16x16.gif" />');
+                    
                     $.ajax({
                         type: "POST",
                         url: "/user/forgotpassword",
@@ -367,11 +368,14 @@ function dialogForgotPassword()
                         {
                             if(checkSuccess(response))
                             {
+                                $('#dialog-forgot-password').dialog('close');
                                 alert(response.message);
                             }
+                            email.parent().find('img').remove();
                         },
                         error: function(a, b, c)
                         {
+                            email.parent().find('img').remove();
                             alert('Une erreur est survenue');
                         }
                     });
