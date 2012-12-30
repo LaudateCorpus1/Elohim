@@ -43,7 +43,8 @@ class Model_News extends Zend_Db_Table_Abstract
         $data = array(
             'author' => $author,
             'title' => $title,
-            'content' => $content
+            'content' => $content,
+            'date_posted' => gmdate('Y-m-d H:i:s', time())
         );
         return $this->insert($data);
     }

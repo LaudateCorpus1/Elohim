@@ -15,7 +15,11 @@ class Forum_Model_Karma extends Zend_Db_Table_Abstract
 
    public function addKarmaAction(array $data)
    {
-       $this->insert($data);
+        if(!isset($data['date']))
+        {
+            $data['date'] = gmdate('Y-m-d H:i:s', time());
+        }
+        $this->insert($data);
    }
    
    /*

@@ -102,7 +102,8 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
             'public' => $public,
             'source' => $source,
             'vote' => '0',
-            'categoryId' => $categoryId
+            'categoryId' => $categoryId,
+            'date' => gmdate('Y-m-d H:i:s', time())
         );
         $id = $this->insert($data);
         

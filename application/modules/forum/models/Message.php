@@ -35,15 +35,20 @@ class Forum_Model_Message extends Zend_Db_Table_Abstract
 
     public function addMessage($userId, $topicId, $content, $ipAddress = null, $date = null, $vote = 0)
     {
-            $data = array(
-                'userId' => $userId,
-                'topicId' => $topicId,
-                'content' => $content,
-                'date' => $date,
-                'vote' => $vote,
-                'ipAddress' => $ipAddress
-            );
-            return $this->insert($data);
+        if($date == null)
+        {
+            $date = gmdate('Y-m-d H:i:s', time());
+        }
+        $data = array(
+            'userId' => $userId,
+            'topicId' => $topicId,
+            'content' => $content,
+            'date' => $date,
+            'vote' => $vote,
+            'ipAddress' => $ipAddress,
+            'lastActivity' => $date
+        );
+        return $this->insert($data);
     }
 
     public function deleteMessage($id)

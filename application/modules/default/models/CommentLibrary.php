@@ -20,6 +20,10 @@ class Default_Model_CommentLibrary extends Zend_Db_Table_Abstract
 
     public function addComment(array $data)
     {
+        if(!isset($data['date']))
+        {
+            $data['date'] = gmdate('Y-m-d H:i:s', time());
+        }
         return $this->insert($data);
     }
 

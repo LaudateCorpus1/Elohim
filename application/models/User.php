@@ -166,6 +166,10 @@ class Model_User extends Zend_Db_Table_Abstract
     
     public function add(array $data)
     {
+        if(!isset($data['date_created']))
+        {
+            $data['date_created'] = gmdate('Y-m-d H:i:s', time());
+        }
         $data['password'] = md5($data['password']);
         return $this->insert($data);
     }

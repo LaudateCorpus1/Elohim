@@ -2,8 +2,8 @@
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
-    protected function _initAutoload() {
-        
+    protected function _initAutoload() 
+    {
         $moduleLoader = new Zend_Application_Module_Autoloader(array(
                     'namespace' => '',
                     'basePath' => APPLICATION_PATH));
@@ -76,9 +76,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     public function _initSearchListeners()
     {
-            $search = new Islamine_SearchIndexer(APPLICATION_PATH . '/indexer/index-documents');
-            Islamine_Model_SearchableRow::register($search);
-            Zend_Registry::set('search', $search);
+        $search = new Islamine_SearchIndexer(APPLICATION_PATH . '/indexer/index-documents');
+        Islamine_Model_SearchableRow::register($search);
+        Zend_Registry::set('search', $search);
     }
 }
 

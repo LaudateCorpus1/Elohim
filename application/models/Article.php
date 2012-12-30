@@ -51,7 +51,7 @@ class Model_Article extends Zend_Db_Table_Abstract
             'title' => $title,
             'content' => $content,
             'id_category' => $category_id,
-            'date_posted' => time()
+            'date_posted' => gmdate('Y-m-d H:i:s', time())
         );
         return $this->insert($data);
     }

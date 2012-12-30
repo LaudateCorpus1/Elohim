@@ -86,13 +86,18 @@ class Forum_Model_Topic extends Zend_Db_Table_Abstract
 
     public function addTopic($userId, $title, $message, $ipAddress = null, $date = null, $vote = 0)
     {
+        if($date == null)
+        {
+            $date = gmdate('Y-m-d H:i:s', time());
+        }
         $data = array(
             'userId' => $userId,
             'title' => $title,
             'message' => $message,
             'date' => $date,
             'vote' => $vote,
-            'ipAddress' => $ipAddress
+            'ipAddress' => $ipAddress,
+            'lastActivity' => $date
         );
         return $this->insert($data);
     }
