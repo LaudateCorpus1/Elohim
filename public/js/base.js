@@ -83,40 +83,29 @@ $(function()
                 {
                     var html = '<li class="favorited-style"><a href="/tag/'+response.tagname+'" class="favorited-'+response.tagid+'">'+response.tagname+'</a>\n\
                                 <a class="close2">x</a></li>';
-
+                    
+                    var favCount = $('#favlist li').length;
                     if(response.action == "add")
                     {
+                        if(favCount == 0)
+                            $('#favtags').prepend('<h4>Sujets favoris</h4>');
+                            
                         $('#favlist').append(html);
                         $('.fav-'+response.tagid).each(function()
                         {
                             $(this).html('<a class="fav-'+response.tagid+'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>');
                         });
-                        
-                        /*$('.tag-name > a').each(function()
-                        {
-                            if($(this).text() == response.tagname)
-                            {
-                                $(this).parent().parent().parent().parent().parent().attr('class', 'topic interest');
-                                return;
-                            }
-                        });*/
                     }
                     else if(response.action == "remove")
                     {
+                        if(favCount == 1)
+                            $('#favtags').find('h4').remove();
+                        
                         $('.favorited-'+response.tagid).parent().remove();
                         $('.fav-'+response.tagid).each(function()
                         {
                             $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
                         });
-                        
-                        /*$('.tag-name > a').each(function()
-                        {
-                            if($(this).text() == response.tagname)
-                            {
-                                $(this).parent().parent().parent().parent().parent().attr('class', 'topic');
-                                return;
-                            }
-                        });*/
                     }
                 }
             }, 'json')
