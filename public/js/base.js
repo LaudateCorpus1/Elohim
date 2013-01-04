@@ -129,20 +129,15 @@ $(function()
             {
                 if(checkSuccess(response))
                 {
+                    var favCount = $('#favlist li').length;
+                    if(favCount == 1)
+                            $('#favtags').find('h4').remove();
+                        
                     $('.favorited-'+response.tagid).parent().remove();
                     $('.fav-'+response.tagid).each(function()
                     {
                         $(this).html('<a class="fav-'+response.tagid+'" title="Ajouter aux favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>');
                     });
-                    
-                    /*$('.tag-name > a').each(function()
-                    {
-                        if($(this).text() == response.tagname)
-                        {
-                            $(this).parent().parent().parent().parent().parent().attr('class', 'topic');
-                            return;
-                        }
-                    });*/
                 }
             },'json')
             .error(function() { alert("Une erreur est survenue"); });
