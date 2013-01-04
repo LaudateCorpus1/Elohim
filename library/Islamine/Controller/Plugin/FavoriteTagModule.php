@@ -28,12 +28,12 @@ class Islamine_Controller_Plugin_FavoriteTagModule extends Zend_Controller_Plugi
             {
                 $fav_tags = Zend_Registry::get('user')->favtags;
 
-                $html .= '<div id="favtags">
-                                <h4>Sujets favoris</h4>
-                                <ul id="favlist">';
-
                 if(count($fav_tags) > 0)
                 {
+                    $html .= '<div id="favtags">
+                                    <h4>Sujets favoris</h4>
+                                    <ul id="favlist">';
+                    
                     foreach($fav_tags as $fav_tag)
                     {
                         $html .='<li class="favorited-style">

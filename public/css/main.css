@@ -418,8 +418,7 @@ input, textarea, select
 
 .user-top-notifications
 {
-    margin-left: 10px;
-    float: right;
+    margin-left: 100px;
 }
 
 .user-top-notifications a, .user-top-notifications a:hover

@@ -125,7 +125,7 @@ L\'équipe d\'Islamine', $data['email']);
                 if ($this->_process($form->getValues())) 
                 {
                     // We're authenticated! Redirect to the home page
-                    if(isset($formData['uri']) && strpos($formData['uri'], 'user/register') === false)
+                    if(isset($formData['uri']) && strpos($formData['uri'], 'user/register') === false && strpos($formData['uri'], 'user/login') === false)
                         $this->_redirect($formData['uri']);
                     else {
                         $this->_redirect('/');
