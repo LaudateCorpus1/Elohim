@@ -41,7 +41,7 @@ class Model_Category extends Zend_Db_Table_Abstract
                       ->from($this->_name, 'name');
         
         $rows = $this->fetchAll($query);
-        $names = array('' => '-------');
+        $names = array('' => 'Choisissez');
         foreach($rows as $index => $row)
         {
             $names[$index+1] = $row->name;

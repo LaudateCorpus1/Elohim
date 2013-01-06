@@ -46,6 +46,16 @@ class Default_Form_CompleteLibrary extends Zend_Form {
              ->addMultiOptions($categories)
              ->setDecorators($this->elementDecorators);
         
+        $publishButton = new Zend_Form_Element_Submit('publish');
+        $publishButton->setLabel('Publier')
+                      ->setDecorators($this->buttonDecorators)
+                      ->setAttrib('class', 'btn btn-large btn-primary btn-left2');
+        
+        $saveButton = new Zend_Form_Element_Submit('save');
+        $saveButton->setLabel('Sauvegarder')
+                      ->setDecorators($this->buttonDecorators)
+                      ->setAttrib('class', 'btn btn-large btn-right2');
+        
         $this->addElements(array(
             $this->createElement('text', 'form_document_library_header', array('size' => '88'))->setRequired(true)->setLabel('Titre / Adresse d\'un site')->setDecorators($this->elementDecorators),
             $this->createElement('textarea', 'form_document_library_description', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Texte / Description de l\'adresse')->setDecorators($this->elementDecorators),
@@ -53,9 +63,9 @@ class Default_Form_CompleteLibrary extends Zend_Form {
             $categoriesSelect,
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots-clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
-            $this->createElement('checkbox', 'form_document_library_public')->setLabel('Publier')->setDecorators($this->checkboxDecorators),
             $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique'))->setDecorators($this->elementDecorators),
-            $this->createElement('submit', 'post')->setLabel('Envoyer')->setDecorators($this->buttonDecorators)->setAttrib('class', 'btn btn-primary')
+            $publishButton,
+            $saveButton
         ));
     }
     

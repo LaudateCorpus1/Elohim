@@ -193,12 +193,16 @@ class LibraryController extends Zend_Controller_Action
                 $tagArray = array();
                 $title = $form->getValue('form_document_library_header');
                 $description = $form->getValue('form_document_library_description');
-                $public = $form->getValue('form_document_library_public');
                 $source = $form->getValue('form_document_library_source');
                 $categoryId = $form->getValue('form_document_library_category');
                 $tags = $form->getValue('tagsValues');
                 $tags = strtolower($tags);
                 $tagArray = explode(" ", $tags);
+                if(isset($formData['publish']))
+                    $public = true;
+                else
+                    $public = false;
+                
                 $modelLibrary = new Default_Model_Library();
                 $tag = new Forum_Model_Tag();
                 $modelLibraryTag = new Default_Model_LibraryTag();
@@ -304,10 +308,14 @@ class LibraryController extends Zend_Controller_Action
                     
                     $title = $form->getValue('form_document_library_header');
                     $description = $form->getValue('form_document_library_description');
-                    $public = $form->getValue('form_document_library_public');
                     $source = $form->getValue('form_document_library_source');
                     $categoryId = $form->getValue('form_document_library_category');
                     $newTags = $form->getValue('tagsValues');
+                    if(isset($formData['publish']))
+                        $public = true;
+                    else
+                        $public = false;
+                
                     if($this->_helper->updateTags($id, $newTags, 'library'))
                     {
                         $date = gmdate('Y-m-d H:i:s', time());
@@ -364,6 +372,18 @@ class LibraryController extends Zend_Controller_Action
                || $auth->getIdentity()->role == $adminRole)
         {
             $modelLibrary = new Default_Model_Library();
+            $modelLibraryTag = new Default_Model_LibraryTag();
+            $modelTag = new Forum_Model_Tag();
+            $tags = $modelLibrary->getTags($id);
+            foreach ($tags as $tag) 
+            {
+                if (($tagId = $modelTag->doesExist($tag->name)) !== false)
+                {
+                    $modelLibraryTag->deleteRow ($id, $tagId);
+                    $modelTag->decrementTag($tag->name, 'libraryAmount');
+                }
+            }
+            
             $modelLibrary->deleteDocument($id);
             
             if($this->_request->isXmlHttpRequest())

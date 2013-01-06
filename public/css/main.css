@@ -30,7 +30,7 @@
 body {
     margin:0;
     padding:0;
-    width:100%;
+    min-width: 1040px;
     color:/*#9a9a9a*/ #333333;
     font:normal 85%/1.6em "Helvetica Nueue", Arial, Helvetica, sans-serif;
 }
@@ -160,7 +160,7 @@ a.rm, a.com {
 #bg-header-top
 {
     /*background-color: #201414;*/
-    background: url(../images/bandeau.jpg) repeat-y scroll center top black;
+    background: url(../images/bandeau.jpg) repeat-x scroll center top black;
     height: 76px;
 }
 
@@ -234,6 +234,20 @@ input, textarea, select
 .label-right, .btn-right
 {
     float: right;
+}
+
+.label-left2, .btn-left2
+{
+    float: left;
+    margin-left: 200px;
+    margin-top: 15px;
+}
+
+.label-right2, .btn-right2
+{
+    float: right;
+    margin-right: 200px;
+    margin-top: 15px;
 }
 
 /******************************************/
@@ -1306,6 +1320,11 @@ ul#favlist li.favorited-style a.close2
 {
     background-color: #E9322D;
     color: #fff;
+}
+
+.add-document-link
+{
+    text-align: center;
 }
 
 .add-document

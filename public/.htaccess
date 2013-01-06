@@ -1,13 +1,18 @@
 SetEnv PHP_VER 5_3
+SetEnv MAGIC_QUOTES 0 
 SetEnv APPLICATION_ENV development
 
 RewriteEngine On
-#RewriteBase /public
+RewriteRule ^css/$ - [R=404,L]
+RewriteRule ^js/$ - [R=404,L]
+ErrorDocument 404 /error
+
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
 RewriteRule ^.*$ index.php [NC,L]
+
 
 RewriteCond %{HTTP_HOST} ^islamine\.com$ [NC]
 RewriteRule ^(.*)$ http://www.islamine.com/$1 [L,R=301]
