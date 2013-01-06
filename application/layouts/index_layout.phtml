@@ -28,6 +28,11 @@ echo $this->doctype() . PHP_EOL;
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
         ?>
+        <!--[if IE 8]>
+            <?php 
+                echo $this->headLink()->appendStylesheet('/css/ie8.css');
+            ?>
+        <![endif]-->
         <script type="text/javascript">
             $(document).ready(function() {
                 var carousel = $("#carousel").featureCarousel({
