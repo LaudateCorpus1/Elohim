@@ -178,6 +178,11 @@ class LibraryController extends Zend_Controller_Action
             $this->view->library = null;
         }
         
+        if($category != 'all')
+            $this->view->category = $category.'s';
+        else
+            $this->view->category = '';
+            
         $this->view->title .= $titleCategory.$titleSort.$titleTag;
         $this->view->sortForm = $sortForm;
         $this->view->headScript()->appendScript("var auth = $autho;");

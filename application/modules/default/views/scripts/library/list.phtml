@@ -3,7 +3,7 @@ $purifyHelper = $this->getHelper('Purify');
 ?>
 
 
-<h2>Derniers documents publiés</h2>
+<h2>Derniers documents <?php echo $this->escape($this->category); ?> publiés</h2>
 
 <div class="library">
     <?php if($this->library == null || $this->library->count() == 0)  : ?>

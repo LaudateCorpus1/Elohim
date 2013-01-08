@@ -15,7 +15,7 @@ echo $this->doctype() . PHP_EOL;
         <meta name="robots" content="index,follow" />
 
         <?php
-          echo $this->headTitle()->toString('		') . PHP_EOL;
+          echo $this->headTitle()->setPostfix('Islamine')->toString('		') . PHP_EOL;
           echo $this->headLink()
                     ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
                     ->appendStylesheet('/css/bootstrap.css')
