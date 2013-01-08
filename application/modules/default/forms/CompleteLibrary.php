@@ -63,7 +63,7 @@ class Default_Form_CompleteLibrary extends Zend_Form {
             $categoriesSelect,
             $this->createElement('text', 'tagsValues')->setRequired(true)->setLabel('Mots-clés')->setDecorators($this->elementDecorators)->addValidator(new Islamine_Validate_Tags()),
             $auto->setDecorators($this->elementDecorators),
-            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique'))->setDecorators($this->elementDecorators),
+            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique', 'timeout' => 3600))->setDecorators($this->elementDecorators),
             $publishButton,
             $saveButton
         ));

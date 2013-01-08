@@ -210,7 +210,7 @@ return array(
 
     // Zend_Validate_Identical
     "The two given tokens do not match" => "Les deux jetons passés ne correspondent pas",
-    "No token was provided to match against" => "Aucun jeton de correspondance n'a été donné",
+    "No token was provided to match against" => "Le formulaire a expiré",
 
     // Zend_Validate_InArray
     "'%value%' was not found in the haystack" => "'%value%' ne fait pas partie des valeurs attendues",

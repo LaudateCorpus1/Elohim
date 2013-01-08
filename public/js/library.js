@@ -11,7 +11,7 @@ $(function()
      * Mise en favoris des documents
      */
     $('a[class^="favdoc-"]').removeAttr('href');
-    $('a[class^="favdoc-"]').click(function()
+    $('a[class^="favdoc-"]').live('click', function()
     {
         var attr = $(this).attr('class');
         var docId = attr.split("-");
@@ -20,23 +20,32 @@ $(function()
         
         if(typeof auth != "undefined" && auth)
         {
+            $(this).hide();
+            $(this).parent().prepend('<img src="/images/ui-anim_basic_16x16.gif" />');
             $.post(url, {}, function(response)
             {
                 if(checkSuccess(response))
                 {
                     if(response.action == "add")
                     {
-                        $('.favdoc-'+response.documentId).
+                        $('.favdoc-'+response.documentId).parent().
                             html('<a class="favdoc-'+response.documentId+'" title="Retirer des favoris"><img class="remove" src="/images/favorite.png" alt="retirerfavoris"/></a>'); 
                     }
                     else if(response.action == "remove")
                     {
-                        $('.favdoc-'+response.documentId).
+                        $('.favdoc-'+response.documentId).parent().
                             html('<a class="favdoc-'+response.documentId+'" title="Ajouter aux favoris"><img class="add" src="/images/favorite_grey.png" alt="ajouterfavoris"/></a>');
                     }
                 }
+                $(this).parent().remove('img');
+                
             }, 'json')
-            .error(function() { alert("Une erreur est survenue"); });
+            .error(function() 
+            {
+                $(this).show();
+                $(this).parent().remove('img');
+                alert("Une erreur est survenue"); 
+            });
         }
         else
             alert("Vous devez vous identifier");
