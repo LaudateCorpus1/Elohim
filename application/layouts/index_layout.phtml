@@ -15,7 +15,7 @@ echo $this->doctype() . PHP_EOL;
         <meta name="robots" content="index,follow" />
 
         <?php
-          echo $this->headTitle()->setPostfix('Islamine')->toString('		') . PHP_EOL;
+          echo $this->headTitle()->toString('		') . PHP_EOL;
           echo $this->headLink()
                     ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
                     ->appendStylesheet('/css/bootstrap.css')
@@ -44,6 +44,16 @@ echo $this->doctype() . PHP_EOL;
                     trackerSummation: false
                 });
             });
+            
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37498192-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
         </script>
     </head>
     <body <?php echo $this->layout()->class; ?>>
