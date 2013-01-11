@@ -148,7 +148,7 @@ class LibraryController extends Zend_Controller_Action
             $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($documents));
         }
         
-        if($category != 'all')
+        if($category != 'all' && !$this->_getParam('search') && !$this->_getParam('name'))
         {
             $titleCategory = $category. 's ';
             $sortForm->populate(array('form_sort_category' => $category));
@@ -177,11 +177,6 @@ class LibraryController extends Zend_Controller_Action
         else {
             $this->view->library = null;
         }
-        
-        if($category != 'all')
-            $this->view->category = $category.'s';
-        else
-            $this->view->category = '';
             
         $this->view->title .= $titleCategory.$titleSort.$titleTag;
         $this->view->sortForm = $sortForm;

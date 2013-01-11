@@ -50,13 +50,13 @@ class Islamine_SearchIndexer implements Islamine_Interface_IObserver
             $doc->addField(Zend_Search_Lucene_Field::Keyword('docRef', $fields['class'].':'.$fields['id']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('class', $fields['class']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('key', $fields['id']));
-            $doc->addField(Zend_Search_Lucene_Field::text('title', $fields['title']));
+            $doc->addField(Zend_Search_Lucene_Field::text('title', $fields['title'], 'utf-8'));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('vote', $fields['vote']));
-            $doc->addField(Zend_Search_Lucene_Field::text('content', $fields['content']));
+            $doc->addField(Zend_Search_Lucene_Field::text('content', $fields['content'], 'utf-8'));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('date', $fields['date']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('userId', $fields['userId']));
             $doc->addField(Zend_Search_Lucene_Field::UnIndexed('categoryId', $fields['categoryId']));
-            $doc->addField(Zend_Search_Lucene_Field::UnIndexed('login', $fields['login']));
+            $doc->addField(Zend_Search_Lucene_Field::UnIndexed('login', $fields['login'], 'utf-8'));
         }
         $this->_modifyIndex($flag, $doc);
     }

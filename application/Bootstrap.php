@@ -77,6 +77,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     public function _initSearchListeners()
     {
         $search = new Islamine_SearchIndexer(APPLICATION_PATH . '/indexer/index-documents');
+        Zend_Search_Lucene_Search_QueryParser::setDefaultEncoding('utf-8');
+        Zend_Search_Lucene_Analysis_Analyzer::setDefault(
+            new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_CaseInsensitive ()
+        );
         Islamine_Model_SearchableRow::register($search);
         Zend_Registry::set('search', $search);
     }
