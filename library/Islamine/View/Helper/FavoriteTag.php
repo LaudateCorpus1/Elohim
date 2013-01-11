@@ -20,16 +20,16 @@ class Islamine_View_Helper_FavoriteTag extends Zend_View_Helper_Abstract
             $tags = new Forum_Model_Tag();
             if(in_array(array('tagId' => $tagId, 'name' => $tagName), Zend_Registry::get('user')->favtags))
             {
-                return '<a href="tag/removefavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>';
+                return '<a href="/tag/removefavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Retirer des favoris"><img class="remove" src="/images/moins.png" alt="retirerfavoris"/></a>';
             }
             else
             {
-                return '<a href="tag/addfavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+                return '<a href="/tag/addfavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
             }
         }
         else
         {
-            return '<a href="tag/addfavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
+            return '<a href="/tag/addfavorited/'.$tagId.'" class="fav-'.$tagId.'" title="Ajouter en favoris"><img class="add" src="/images/plus2.png" alt="ajouterfavoris"/></a>';
         }
     }
 }
