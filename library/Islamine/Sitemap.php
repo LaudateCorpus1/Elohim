@@ -135,7 +135,7 @@ class Islamine_Sitemap
                'changefreq' => 'weekly'
             );
         }
-        return Zend_JSON::encode($response);
+        return Zend_Json::encode($response);
     }
 }
 

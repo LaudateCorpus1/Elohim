@@ -1,4 +1,4 @@
-#!/usr/local/bin/php
+#!/usr/local/bin/php5
 
 <?php
 $response = file_get_contents('http://www.islamine.com/index/sitemap');
