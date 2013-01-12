@@ -53,6 +53,21 @@ class Default_Model_Library extends Zend_Db_Table_Abstract
         return $query;
     }
     
+    public function getWithLimit($limit = 10, $order = 'library.date DESC')
+    {
+        $query = $this->select();
+        $query->from($this->_name, array(
+                  'key' => 'id',
+                  'title',
+                  ))
+              ->where('public = 1')
+              ->order($order)
+              ->order($this->_name.'.date DESC')
+              ->limit($limit);
+        
+        return $this->fetchAll($query);
+    }
+    
     public function getDocumentsByCategory($categoryId, $order = 'library.date DESC')
     {
         $query = $this->select();
