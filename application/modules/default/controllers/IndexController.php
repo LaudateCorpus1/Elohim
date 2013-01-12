@@ -98,5 +98,11 @@ class IndexController extends Zend_Controller_Action
         $this->_helper->json(array_values($res));
     }
     
+    public function sitemapAction()
+    {
+        $sitemap = new Islamine_Sitemap();
+        echo $sitemap->getJSONSitemap(); 
+        exit;
+    }
 }
 

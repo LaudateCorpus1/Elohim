@@ -9,7 +9,7 @@
  *
  * @author jeremie
  */
-class Zend_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
+class Islamine_View_Helper_DocumentTitle extends Zend_View_Helper_Abstract
 {
     public function documentTitle($document)
     {

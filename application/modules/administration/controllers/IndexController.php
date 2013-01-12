@@ -17,6 +17,12 @@ class Administration_IndexController extends Zend_Controller_Action
         $auth = Zend_Auth::getInstance();
         $this->view->username = $auth->getIdentity()->login;
     }
+    
+    public function generatesitemapAction()
+    {
+        $sitemap = new Islamine_Sitemap();
+        $sitemap->buildSitemap();
+    }
 }
 
 

@@ -16,6 +16,8 @@ class Islamine_Sitemap
     
     private $_staticURL;
     
+    private $_path;
+    
     public function __construct()	
     {
        $this->_doc = new DOMDocument('1.0', 'UTF-8');
@@ -24,13 +26,13 @@ class Islamine_Sitemap
        $this->_staticURL = array();
        $this->_staticURL[] = array(
            'loc' => 'http://www.islamine.com',
-           'priority' => '0.8',
+           'priority' => '0.5',
            'changefreq' => 'monthly'
        );
        
        $this->_staticURL[] = array(
            'loc' => 'http://www.islamine.com/news',
-           'priority' => '0.8',
+           'priority' => '0.6',
            'changefreq' => 'weekly'
        );
        
@@ -47,8 +49,10 @@ class Islamine_Sitemap
        );
     }
 	
-    public function buildSitemap()	
+    public function buildSitemap($path)	
     {
+        $this->_path = $path;
+        
         $root = $this->_doc->createElement('urlset');
         $this->_doc->appendChild($root);
         $this->_doc->createAttributeNS("http://www.sitemaps.org/schemas/sitemap/0.9", 'xmlns');
@@ -81,7 +85,7 @@ class Islamine_Sitemap
         
         $this->addLastDocuments($root);
         
-        $res = $this->_doc->save('/var/www/elohim/public/images/users/sitemap.xml');
+        $res = $this->_doc->save($this->_path);
     }
     
     protected function addLastDocuments($root)
@@ -102,7 +106,7 @@ class Islamine_Sitemap
             $url->appendChild($loc);
 
             $priority = $this->_doc->createElement('priority');
-            $priority->appendChild($this->_doc->createTextNode('0.5'));
+            $priority->appendChild($this->_doc->createTextNode('0.7'));
             $url->appendChild($priority);
 
             $freq = $this->_doc->createElement('changefreq');
@@ -111,7 +115,27 @@ class Islamine_Sitemap
 
             $root->appendChild($url);
         }
+    }
+    
+    public function getJSONSitemap()
+    {
+        $response = $this->_staticURL;
         
+        $modelLibrary = new Default_Model_Library();
+        $documents = $modelLibrary->getWithLimit();
+        $view = Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
+        $titleHelper = $view->getHelper('DocumentTitle');
+        
+        foreach($documents as $document)
+        {
+            $location = 'http://www.islamine.com'.$titleHelper->documentTitleRaw($document);
+            $response[] = array(
+               'loc' => $location,
+               'priority' => '0.7',
+               'changefreq' => 'weekly'
+            );
+        }
+        return Zend_JSON::encode($response);
     }
 }
 
