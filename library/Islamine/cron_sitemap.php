@@ -3,6 +3,9 @@
 <?php
 $response = file_get_contents('http://www.islamine.com/index/sitemap');
 
+if($response === false)
+	exit;
+
 $_doc = new DOMDocument('1.0', 'UTF-8');
 $_doc->formatOutput = true;
 
