@@ -14,9 +14,7 @@ class ServicesController extends Zend_Controller_Action
     public function prayertimesAction()
     {
         mb_internal_encoding('UTF-8');
-        
-        echo gmdate('D, d M Y H:i:s \G\M\T', strtotime('Europe/Paris')); exit;
-        
+                
         if(isset($_GET['city']))
                 $city = $_GET['city'];
         else
