@@ -14,7 +14,9 @@ class ServicesController extends Zend_Controller_Action
     public function prayertimesAction()
     {
         mb_internal_encoding('UTF-8');
-
+        
+        echo gmdate('D, d M Y H:i:s \G\M\T', strtotime('Europe/Paris')); exit;
+        
         if(isset($_GET['city']))
                 $city = $_GET['city'];
         else
@@ -25,10 +27,10 @@ class ServicesController extends Zend_Controller_Action
         else
                 $date = date('Y-m-d', time());
 
-        if(isset($_GET['expires']))
-                $expires = date('D, d M Y H:i:s \G\M\T', strtotime($_GET['expires']));
+        if(isset($_GET['timezonename']))
+                $expires = gmdate('D, d M Y H:i:s \G\M\T', strtotime($_GET['timezonename']));
         else
-                $expires = date('D, d M Y H:i:s \G\M\T', mktime(23, 59, 59));
+                $expires = gmdate('D, d M Y H:i:s \G\M\T', strtotime('Europe/Paris'));
 
         if(isset($_GET['latitude']))
                 $latitude = $_GET['latitude'];
@@ -58,6 +60,8 @@ class ServicesController extends Zend_Controller_Action
         $p = new PrayerTime($method);
         $prayerTimes = $p->GetTimes($date, $latitude, $longitude, $timezone, $dst);
 
+        $this->getResponse()->setHeader('X-WNS-Expires', $expires);
+        
         $xml = '<?xml version="1.0" encoding="utf-8"?><tile><visual><binding template="TileWideText02"><text id="1">'.$city.'</text><text id="2">Fajr '.$prayerTimes['Fajr'].'</text><text id="3">Asr '.$prayerTimes['Asr'].'</text><text id="4">Sunrise '.$prayerTimes['Sunrise'].'</text><text id="5">Maghrib '.$prayerTimes['Maghrib'].'</text><text id="6">Dhur '.$prayerTimes['Dhuhr'].'</text><text id="7">Isha '.$prayerTimes['Isha'].'</text></binding></visual></tile>';
         echo $xml;
     }
