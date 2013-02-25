@@ -14,16 +14,11 @@ class ServicesController extends Zend_Controller_Action
     public function prayertimesAction()
     {
         mb_internal_encoding('UTF-8');
-               
+      
         if(isset($_GET['city']))
                 $city = $_GET['city'];
         else
                 $city = '';
-
-        if(isset($_GET['date']))
-                $date = $_GET['date'];
-        else
-                $date = date('Y-m-d', time());
 
         if(isset($_GET['timezonename']))
         {
@@ -39,10 +34,15 @@ class ServicesController extends Zend_Controller_Action
 //            $dateTimeZone = new DateTimeZone($_GET['timezonename']);
 //            $dateTime = new DateTime('now');
             $expires = date('D, d M Y H:i:s \G\M\T', mktime(23 - $hourOffset, 59 - $minutesOffset, 59, intval($month), intval($day), intval($year)));
+            
+            $date = $dateT->format('Y-m-d');
         }
         else
+        {
             $expires = gmdate('D, d M Y H:i:s \G\M\T', strtotime('Europe/Paris'));
-        
+            $date = date('Y-m-d', time());
+        }
+            
         if(isset($_GET['latitude']))
                 $latitude = $_GET['latitude'];
         else
