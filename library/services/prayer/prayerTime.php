@@ -73,7 +73,7 @@ class PrayerTime
 	
 	public function __construct($method)
 	{
-		if ($method == null)
+		if ($method === null)
 			throw new Exception("Method must be specified");
 		else
 			$this->_currentMethod = $method;
@@ -152,18 +152,18 @@ class PrayerTime
 		else
 			$this->_latitude = $latitude;
 
-		if ($longitude != null)
+		if ($longitude !== null)
 			$this->_longitude = $longitude;
 
 		$this->_elv = $elv;
 
 		$this->_timeFormat = $timeFormat;
 
-		if($timeZone == null)
-			$timeZone = GetTimeZone($date);
+		if($timeZone === null)
+			$timeZone = $this->GetTimeZone($date);
 
-		if ($dst == null)
-			$dst = GetDst($date);
+		if ($dst === null)
+			$dst = $this->GetDst($date);
 
 		$this->_timeZone = intval($timeZone) + intval($dst);
 		$this->_julianDate = Utils::GregorianDateToJulianDay($date);
@@ -374,7 +374,7 @@ class PrayerTime
 		$localDate = new DateTime($year.'-'.$month.'-'.$day);
 		$localDate->setTime(12, 0, 0);
 		$format = 'Y-m-d H:i:s';
-		$GMTDate = DateTime::createFromFormat($format, gmdate('Y-m-d H:i:s', strtotime($date)));
+		$GMTDate = DateTime::createFromFormat($format, gmdate($format, strtotime($localDate->format($format))));
 		$timeSpan = $localDate->diff($GMTDate);
 		return $timeSpan->h;
 	}
