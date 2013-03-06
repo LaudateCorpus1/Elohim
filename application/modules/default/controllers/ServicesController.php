@@ -65,9 +65,14 @@ class ServicesController extends Zend_Controller_Action
                 $dst = 0;
 
         if(isset($_GET['method']))
-                $method = new $_GET['method'];
+                $method = $_GET['method'];
         else
                 $method = new MethodUOIF();
+        
+        if(isset($_GET['lang']))
+                $lang = new $_GET['lang'];
+        else
+                $lang = 'en';
         
         $dateToCompare = $_GET['date'];
         $f = new DateTime($dateToCompare, new DateTimeZone($timezoneName));
@@ -83,8 +88,12 @@ class ServicesController extends Zend_Controller_Action
                 $dst = 0;
         }
         
+        $format = TimeFormat::Format24h;
+        if($lang == 'en')
+            $format = TimeFormat::Format12h;
+        
         $p = new PrayerTime($method);
-        $prayerTimes = $p->GetTimes($date, $latitude, $longitude, $timezone, $dst);
+        $prayerTimes = $p->GetTimes($date, $latitude, $longitude, $timezone, $dst, $format);
 
         $this->getResponse()->setHeader('X-WNS-Expires', $expires);
         
