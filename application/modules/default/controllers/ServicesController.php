@@ -65,27 +65,30 @@ class ServicesController extends Zend_Controller_Action
                 $dst = 0;
 
         if(isset($_GET['method']))
-                $method = $_GET['method'];
+                $method = new $_GET['method'];
         else
                 $method = new MethodUOIF();
         
         if(isset($_GET['lang']))
-                $lang = new $_GET['lang'];
+                $lang = $_GET['lang'];
         else
                 $lang = 'en';
         
-        $dateToCompare = $_GET['date'];
-        $f = new DateTime($dateToCompare, new DateTimeZone($timezoneName));
-        $offset = intval($f->format('P'));
-        $f2 = new DateTime('now', new DateTimeZone($timezoneName));
-        $offset2 = intval($f2->format('P'));
-        $diff = abs($offset - $offset2);
-        if($diff > 0)
+        if(isset($_GET['date']))
         {
-            if($dst == 0)
-                $dst = 1;
-            else if($dst == 1)
-                $dst = 0;
+            $dateToCompare = $_GET['date'];
+            $f = new DateTime($dateToCompare, new DateTimeZone($timezoneName));
+            $offset = intval($f->format('P'));
+            $f2 = new DateTime('now', new DateTimeZone($timezoneName));
+            $offset2 = intval($f2->format('P'));
+            $diff = abs($offset - $offset2);
+            if($diff > 0)
+            {
+                if($dst == 0)
+                    $dst = 1;
+                else if($dst == 1)
+                    $dst = 0;
+            }
         }
         
         $format = TimeFormat::Format24h;
