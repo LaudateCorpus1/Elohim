@@ -11,12 +11,14 @@ class DegreeMath
 	// degree cos
 	public static function Cos($d)
 	{
+            //echo "Cos : ".cos(deg2rad(doubleval($d)))."<br>";
 		return cos(deg2rad(doubleval($d)));
 	}
 
 	// degree tan
 	public static function Tan($d)
 	{
+            //echo "Tan : ".tan(deg2rad(doubleval($d)))."<br>";
 		return tan(deg2rad(doubleval($d)));
 	}
 
@@ -47,6 +49,7 @@ class DegreeMath
 	// degree arccot
 	public static function Acot($x)
 	{
+            //echo "Acot : ".rad2deg(atan(1 / doubleval($x)))."<br>";
 		return rad2deg(atan(1 / doubleval($x)));
 	}
 }

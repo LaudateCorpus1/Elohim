@@ -13,14 +13,19 @@ class SunPosition
 	{
 		$julianDate = doubleval($julianDate);
 		$D = $julianDate - 2451545.0;
+                //echo "SunPosition D : ".$D."<br>";
 		$g = Utils::FixAngle(357.529 + 0.98560028 * $D);
+                //echo "SunPosition g : ".$g."<br>";
 		$q = Utils::FixAngle(280.459 + 0.98564736 * $D);
+                //echo "SunPosition q : ".$q."<br>";
 		$L = Utils::FixAngle($q + 1.915 * DegreeMath::Sin($g) + 0.020 * DegreeMath::Sin(2 * $g));
-
+                //echo "SunPosition L : ".$L."<br>";
 		$R = 1.00014 - 0.01671 * DegreeMath::Cos($g) - 0.00014 * DegreeMath::Cos(2 * $g);
-		$e = 23.439 - 0.00000036 * $D;
+                //echo "SunPosition R : ".$R."<br>";
+                $e = 23.439 - 0.00000036 * $D;
 
 		$RA = DegreeMath::Atan2(DegreeMath::Cos($e) * DegreeMath::Sin($L), DegreeMath::Cos($L)) / 15;
+                //echo "SunPosition RA : ".$RA."<br>";
 		$this->setEquation($q / 15 - Utils::FixHour($RA));
 		$this->setDeclinaison(DegreeMath::Asin(DegreeMath::Sin($e) * DegreeMath::Sin($L)));
 	}

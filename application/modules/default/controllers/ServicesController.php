@@ -14,7 +14,6 @@ class ServicesController extends Zend_Controller_Action
     public function prayertimesAction()
     {
         mb_internal_encoding('UTF-8');
-              
         if(isset($_GET['city']))
                 $city = $_GET['city'];
         else
@@ -40,6 +39,7 @@ class ServicesController extends Zend_Controller_Action
         }
         else
         {
+            $timezoneName = 'Europe/Paris';
             $expires = gmdate('D, d M Y H:i:s \G\M\T', strtotime('Europe/Paris'));
             $date = date('Y-m-d', time());
         }
@@ -47,12 +47,12 @@ class ServicesController extends Zend_Controller_Action
         if(isset($_GET['latitude']))
                 $latitude = $_GET['latitude'];
         else
-                $latitude = 48.8667;
+                $latitude = 48.85693;
 
         if(isset($_GET['longitude']))
                 $longitude = $_GET['longitude'];
         else
-                $longitude = 2.3333;
+                $longitude = 2.3412;
 
         if(isset($_GET['timezone']))
                 $timezone = $_GET['timezone'];
@@ -68,6 +68,16 @@ class ServicesController extends Zend_Controller_Action
                 $method = new $_GET['method'];
         else
                 $method = new MethodUOIF();
+        
+        if(isset($_GET['asr']))
+                $asrMethod = $_GET['asr'] == 'Standard' ? AsrMethod::Standard : AsrMethod::Hanafi;
+        else
+                $asrMethod = AsrMethod::Standard;
+        
+        if(isset($_GET['midnight']))
+                $midnightMethod = $_GET['midnight'] == 'Standard' ? MidnightMethod::Standard : MidnightMethod::Jafari;
+        else
+                $midnightMethod = MidnightMethod::Standard;
         
         if(isset($_GET['lang']))
                 $lang = $_GET['lang'];
@@ -95,7 +105,7 @@ class ServicesController extends Zend_Controller_Action
         if($lang == 'en')
             $format = TimeFormat::Format12h;
         
-        $p = new PrayerTime($method);
+        $p = new PrayerTime($method, $asrMethod, $midnightMethod);
         $prayerTimes = $p->GetTimes($date, $latitude, $longitude, $timezone, $dst, $format);
 
         if($lang == 'en')
@@ -109,7 +119,7 @@ class ServicesController extends Zend_Controller_Action
         }
         
         $this->getResponse()->setHeader('X-WNS-Expires', $expires);
-        
+        //exit;
         $xml = '<?xml version="1.0" encoding="utf-8"?><tile><visual><binding template="TileWideText02"><text id="1">'.$city.'</text><text id="2">Fajr '.$prayerTimes['Fajr'].'</text><text id="3">Asr '.$prayerTimes['Asr'].'</text><text id="4">Shuruq '.$prayerTimes['Sunrise'].'</text><text id="5">Maghrib '.$prayerTimes['Maghrib'].'</text><text id="6">Dhur '.$prayerTimes['Dhuhr'].'</text><text id="7">Isha '.$prayerTimes['Isha'].'</text></binding></visual></tile>';
         echo $xml;
     }

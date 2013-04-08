@@ -71,7 +71,7 @@ class PrayerTime
 	}*/
 
 	
-	public function __construct($method)
+	public function __construct($method, $asrMethod = AsrMethod::Standard, $midnightMethod = MidnightMethod::Standard)
 	{
 		if ($method === null)
 			throw new Exception("Method must be specified");
@@ -83,7 +83,7 @@ class PrayerTime
 		// Do not change anything here; use adjust method instead
 		$this->_settings[TimeNames::Imsak] = "10 min";
 		$this->_settings[TimeNames::Dhuhr] = "0 min";
-		$this->_settings[TimeNames::Asr] = AsrMethod::Standard;
+		$this->_settings[TimeNames::Asr] = $asrMethod;
 		$this->_settings["HighLats"] = HighLatitudeMethod::AngleBased;
 
 		//timeSuffixes = ['am', 'pm'],
@@ -93,7 +93,7 @@ class PrayerTime
 
 		// Default Parameters in Calculation Methods
 		$this->_defaultParams[TimeNames::Maghrib] = "0 min";
-		$this->_defaultParams[TimeNames::Midnight] = MidnightMethod::Standard;
+		$this->_defaultParams[TimeNames::Midnight] = $midnightMethod;
 
 		$parameters = $this->_currentMethod->getParameters();
 		foreach ($this->_defaultParams as $key => $item)
@@ -137,7 +137,7 @@ class PrayerTime
 			return $time;
 
 		$time = doubleval($time);
-		$time = Utils::FixHour($time + 1.5 / 60); // add 0.5 minutes to round
+		$time = Utils::FixHour($time + 0.5 / 60); // add 0.5 minutes to round
 		$hours = floor($time); 
 		$minutes = floor(($time - $hours) * 60);
 		$hour = ($format == TimeFormat::Format24h) ? Utils::TwoDigitsFormat($hours) : (($hours + 12 -1) % 12 + 1);
@@ -165,7 +165,7 @@ class PrayerTime
 		if ($dst === null)
 			$dst = $this->GetDst($date);
 
-		$this->_timeZone = intval($timeZone) + intval($dst);
+		$this->_timeZone = doubleval($timeZone) + intval($dst);
 		$this->_julianDate = Utils::GregorianDateToJulianDay($date);
 
 		return $this->ComputeTimes();
@@ -185,9 +185,15 @@ class PrayerTime
 		$sunPosition = new SunPosition(doubleval($this->_julianDate) + $time);
 		$decl = $sunPosition->getDeclinaison();
 		$noon = $this->MidDay($time);
-		$t = 1/15.0 * DegreeMath::Acos((-DegreeMath::Sin($angle) - DegreeMath::Sin($decl)* DegreeMath::Sin($this->_latitude))/ 
-				(DegreeMath::Cos($decl) * DegreeMath::Cos($this->_latitude)));
-		return $noon + ($direction == "ccw" ? $t * -1 : $t);
+                $acos = (-DegreeMath::Sin($angle) - DegreeMath::Sin($decl)* DegreeMath::Sin($this->_latitude))/ 
+				(DegreeMath::Cos($decl) * DegreeMath::Cos($this->_latitude));
+                
+                if($acos > 1)
+                    $acos = 1;
+                
+		$t = 1/15.0 * DegreeMath::Acos($acos);
+            
+                return $noon + ($direction == "ccw" ? $t * -1 : $t);
 	}
 
 	// Compute asr time 
@@ -237,7 +243,7 @@ class PrayerTime
 		}
 
 		$times = $this->AdjustTimes($times);
-
+                
 		// add midnight time
 		$times[TimeNames::Midnight] = ($this->_settings[TimeNames::Midnight] == MidnightMethod::Jafari) ?
 				doubleval($times[TimeNames::Sunset]) + Utils::TimeDiff(doubleval($times[TimeNames::Sunset]), doubleval($times[TimeNames::Fajr])) / 2 :
@@ -274,7 +280,7 @@ class PrayerTime
 		$tmp = array();
 		foreach ($times as $key => $item)
 		{
-			$value = $value = doubleval($item) + intval($this->_timeZone) - doubleval($this->_longitude) / 15;
+			$value = doubleval($item) + doubleval($this->_timeZone) - doubleval($this->_longitude) / 15;
 			$tmp[$key] = $value;
 		}
 
