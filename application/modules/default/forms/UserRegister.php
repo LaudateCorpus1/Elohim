@@ -56,6 +56,7 @@ class Default_Form_UserRegister extends Zend_Form {
                         'StringTrim'
                     ),
                     'validators' => array(
+                        array('Alnum'),
                         array('StringLength', false, array(3, 50))
                     )
                 ));
