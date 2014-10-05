@@ -35,3 +35,4 @@ INSTALL
 DROITS
 public/users => drwxr-xr-x 3 www-data www-data   4096 2011-12-23 02:13 users
 supprimer le dossier index
+changer le nom du dossier des captchas (public => www) dans le formulaire UserRegister.php)

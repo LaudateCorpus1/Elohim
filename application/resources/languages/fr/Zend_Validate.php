@@ -263,4 +263,9 @@ return array(
     "Invalid type given, value should be a string" => "Type de donnée non valide : chaîne de caractères attendue",
     "'%value%' is less than %min% characters long" => "La taille de '%value%' est inférieure à %min% caractères",
     "'%value%' is more than %max% characters long" => "La taille de '%value%' est supérieure à %max% caractères",
+    
+    // Zend_Validate_Captcha
+    "Empty captcha value" => "Le captcha est vide",
+    "Captcha ID field is missing" => "L'ID du captcha est manquant",
+    "Captcha value is wrong" => "La valeur du captcha est incorrecte",
 );
