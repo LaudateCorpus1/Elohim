@@ -115,31 +115,32 @@ class Default_Form_UserRegister extends Zend_Form {
             array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
             ));
         
+         $captcha = new Zend_Form_Element_Captcha('captcha', array(
+            'label' => 'Entrez le texte',
+            'captcha' => array(
+                'captcha' => 'Image',
+                'wordLen' => 6,
+                'width' => 150,
+                'font' => APPLICATION_PATH.'/../public/fonts/Verdana.ttf',
+                'imgDir'    => APPLICATION_PATH.'/../public/images/captcha',
+                'timeout'   => 120,
+                'expiration'=> 300
+             )
+        ));
+        
+        $captcha->setDecorators(array(
+            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
+            array('Label', array('tag' => 'td')),
+            array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
+            array(array('tr' => 'HtmlTag'), array('tag' => 'tr')),
+            ));
+                
         $submit = new Zend_Form_Element_Submit('registerbtn', array(
                     'decorators' => $this->buttonDecorators,
                     'label' => 'S\'inscrire',
                     'class' => 'btn btn-primary'
                 ));
-        
-        
-        $captcha = new Zend_Form_Element_Captcha('foo', array(
-                'label' => "Please verify you're a human",
-                'captcha' => 'Figlet',
-                'captchaOptions' => array(
-                    'captcha' => 'Figlet',
-                    'wordLen' => 6,
-                    'timeout' => 300,
-                )
-            ));
-        
-        $captcha->setDecorators(array(
-            'ViewHelper',
-            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
-            array('Label', array('tag' => 'td')),
-            array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
-            array(array('tr' => 'HtmlTag'), array('tag' => 'tr'))
-            ));
-
+           
         $csrf = new Zend_Form_Element_Hash(get_class().'_csrf', array('salt' => 'unique'));
         $csrf->setDecorators(array(
             'ViewHelper',
@@ -152,7 +153,7 @@ class Default_Form_UserRegister extends Zend_Form {
             $username,
             $password,
             $passwordAgain,
-            //$captcha,
+            $captcha,
             $csrf,
             $submit
         ));
