@@ -5,6 +5,9 @@ SetEnv APPLICATION_ENV development
 RewriteEngine On
 RewriteRule ^css/$ - [R=404,L]
 RewriteRule ^js/$ - [R=404,L]
+RewriteRule ^images/$ - [R=404,L]
+RewriteRule ^images/users/$ - [R=404,L]
+RewriteRule ^images/captcha/$ - [R=404,L]
 ErrorDocument 404 /error
 
 RewriteCond %{REQUEST_FILENAME} -s [OR]
