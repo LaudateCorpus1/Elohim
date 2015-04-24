@@ -135,12 +135,15 @@ class ServicesController extends Zend_Controller_Action
         $response = '';
         if($format == 'json')
         {
-            $jArray = array('Fajr' => $prayerTimes['Fajr'],
+            $jArray = array('prayertimes' =>
+                            array('Fajr' => $prayerTimes['Fajr'],
                             'Shuruq' => $prayerTimes['Sunrise'],
                             'Asr' => $prayerTimes['Asr'],
                             'Maghrib' => $prayerTimes['Maghrib'],
                             'Dhur' => $prayerTimes['Dhuhr'],
-                            'Isha'=> $prayerTimes['Isha']);
+                            'Isha'=> $prayerTimes['Isha']
+                            )
+                      );
             $response = json_encode($jArray);
         }
         else
