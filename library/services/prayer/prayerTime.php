@@ -12,6 +12,8 @@ require_once 'Methods/methodKarachi.php';
 require_once 'Methods/methodMakkah.php';
 require_once 'Methods/methodMWL.php';
 require_once 'Methods/methodTehran.php';
+require_once 'Methods/methodParisMosque.php';
+require_once 'Methods/methodMorocco.php';
 
 
 class AsrMethod

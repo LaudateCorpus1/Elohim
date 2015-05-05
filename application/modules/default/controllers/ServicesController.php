@@ -25,6 +25,25 @@ class ServicesController extends Zend_Controller_Action
         else
                 $city = '';
 
+        // Timezone is used because in some cases the client date
+        // does not correspond to the requested city date.
+        // ex : client is in Los Angeles and requests current prayer times in Paris
+        //      Los Angeles : 24/10/2015 10pm
+        //      Paris 25/10/2015 7am
+        //      Client date requested is 24/10/2015, but the prayer times
+        //      must be calculated for the 25/10/2015 (in this case the dst is changed it is even more important)
+        // ex :
+        //      $d1 = new DateTime(null, new DateTimeZone('Europe/Paris'));
+        //      $d2 = new DateTime(null, new DateTimeZone('Pacific/Auckland'));
+        //echo  $d1->format('Y-m-d H:i:s').'<br>';
+        //echo  $d1->format('P').'<br>';
+        //echo  $d2->format('Y-m-d H:i:s').'<br>'; 
+        //echo  $d2->format('P');
+        //Result :
+        //      2015-04-26 15:47:15
+        //      +02:00
+        //      2015-04-27 01:47:15
+        //      +12:00
         $timezoneName = '';
         if(isset($_GET['timezonename']))
         {
@@ -37,10 +56,9 @@ class ServicesController extends Zend_Controller_Action
             $offsets = explode(':', $offset);
             $hourOffset = intval($offsets[0]);
             $minutesOffset = intval($offsets[1]);
-//            $dateTimeZone = new DateTimeZone($_GET['timezonename']);
-//            $dateTime = new DateTime('now');
             $expires = date('D, d M Y H:i:s \G\M\T', mktime(23 - $hourOffset, 59 - $minutesOffset, 59, intval($month), intval($day), intval($year)));
             
+            // Current time in the specified TimeZone name
             $date = $dateT->format('Y-m-d');
         }
         else
@@ -49,7 +67,7 @@ class ServicesController extends Zend_Controller_Action
             $expires = gmdate('D, d M Y H:i:s \G\M\T', strtotime('Europe/Paris'));
             $date = date('Y-m-d', time());
         }
-            
+                    
         if(isset($_GET['latitude']))
                 $latitude = $_GET['latitude'];
         else
@@ -90,6 +108,9 @@ class ServicesController extends Zend_Controller_Action
         else
                 $lang = 'en';
         
+        // Used for limit cases when dst sent by client
+        // is not the same as dst in the requested city
+        // see example above
         if(isset($_GET['date']))
         {
             $dateToCompare = $_GET['date'];
