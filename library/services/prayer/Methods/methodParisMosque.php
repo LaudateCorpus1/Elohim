@@ -9,9 +9,9 @@ class MethodParisMosque extends MethodBase
 	{
 		parent::__construct("Grande mosquée de Paris");
 		$this->_parameters = array();
-		$this->_parameters[TimeNames::Fajr] = 18;
+		$this->_parameters[TimeNames::Fajr] = 15;
 		$this->_parameters[TimeNames::Dhuhr] = "5 min";
 		$this->_parameters[TimeNames::Maghrib] = "4 min";
-		$this->_parameters[TimeNames::Isha] = 17;
+		$this->_parameters[TimeNames::Isha] = 13;
 	}
 }
