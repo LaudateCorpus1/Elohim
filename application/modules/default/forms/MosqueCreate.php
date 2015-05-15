@@ -1,0 +1,113 @@
+<?php
+
+class Default_Form_MosqueCreate extends Zend_Form {
+
+    private $elementDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'element')),
+        array('Errors', array('class' => 'help-error')),
+        array('Label', array('requiredSuffix' => ' *')),
+        array(array('row' => 'HtmlTag'), array('tag' => 'li'))
+    );
+    
+    private $radioDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div')),
+        array('Errors', array('class' => 'help-error')),
+        'Label',
+        array(array('row' => 'HtmlTag'), array('tag' => 'li', 'class' => 'radio-btn'))
+    );
+    
+    private $checkboxDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div')),
+        array('Errors', array('class' => 'help-error')),
+        array('Label', array('class' => 'label-left')),
+        array(array('row' => 'HtmlTag'), array('tag' => 'li', 'class' => 'chkbx'))
+    );
+    
+    private $buttonDecorators = array(
+        'ViewHelper',
+        array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'button')),
+        array(array('row' => 'HtmlTag'), array('tag' => 'li')),
+    );
+    
+    public function init() {
+        $this->setAttrib('id', 'form_create_mosque')
+                ->setMethod('POST')
+                ->setName('form_create_mosque');
+
+        $this->addElementsForm();
+    }
+
+    public function addElementsForm() {
+        
+        $saveButton = new Zend_Form_Element_Submit('create');
+        $saveButton->setLabel('Ajouter')
+                      ->setDecorators($this->buttonDecorators)
+                      ->setAttrib('class', 'btn btn-primary');
+        
+        $categoriesSelect = new Zend_Form_Element_Select('form_mosque_type');
+        $categoriesSelect->setRequired(true)
+             ->setLabel('Type')
+             ->addMultiOptions(array(
+                    '' => '---',
+                    'mosque' => 'Mosquée',
+                    'prayer' => 'Salle de prière'
+                 ))
+             ->setDecorators($this->elementDecorators);   
+        
+        $yesNoArray = array(
+            'y' => 'Oui',
+            'n' => 'Non',
+        );
+        
+        $uniqueValidator = new Zend_Validate_Db_NoRecordExists(array(
+                                                    'table' => 'address',
+                                                    'field' => 'formatted'
+                                                    ));
+        
+        $sameValidator = new Zend_Validate_Identical('form_mosque_address');
+      
+        $this->addElements(array(
+            $this->createElement('text', 'mosque_name', array('size' => '60'))->setLabel('Nom')->setRequired(true)->setDecorators($this->elementDecorators),
+            $categoriesSelect,
+            $this->createElement('text', 'form_mosque_address', array('id' => 'geocomplete', 'size' => '60'))->setRequired(true)->setLabel('Entrer une adresse')->setDecorators($this->elementDecorators),
+            $this->createElement('textarea', 'formatted_address', array('rows' => '2', 'cols' => '30', 'attribs' => array('readonly' => 'true')))->setRequired(true)->setDecorators($this->elementDecorators)->addValidator($uniqueValidator),
+            $this->createElement('hidden', 'route')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'street_number')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'postal_code')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'locality')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'sublocality')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'country')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'administrative_area_level_1')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'lat')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'lng')->setDecorators($this->elementDecorators),
+            $this->createElement('text', 'website', array('size' => '60'))->setLabel('Site internet')->setDecorators($this->elementDecorators),
+            $this->createElement('text', 'nbMenRooms', array('size' => '3'))->setLabel('Nb salles hommes')->setDecorators($this->elementDecorators)->addValidator('Digits'),
+            $this->createElement('text', 'nbWomenRooms', array('size' => '3'))->setLabel('Nb salles femmes')->setDecorators($this->elementDecorators)->addValidator('Digits'),
+            $this->createElement('radio', 'menAblutions', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Salle ablutions hommes')->setDecorators($this->radioDecorators),
+            $this->createElement('radio', 'womenAblutions', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Salle ablutions femmes')->setDecorators($this->radioDecorators),
+            $this->createElement('radio', 'jumua', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Jumu\'a')->setDecorators($this->radioDecorators),
+            $this->createElement('text', 'jumuaLanguage')->setLabel('Langue du prêche')->setDecorators($this->elementDecorators),
+            $this->createElement('radio', 'islamLesson', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Cours islam')->setDecorators($this->radioDecorators),
+            $this->createElement('radio', 'arabLesson', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Cours d\'arabe')->setDecorators($this->radioDecorators),
+            $this->createElement('radio', 'janaza', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Prière du mort')->setDecorators($this->radioDecorators),
+            $this->createElement('radio', 'tarawih', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Tarawih')->setDecorators($this->radioDecorators),
+            $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique', 'timeout' => 3600))->setDecorators($this->elementDecorators),
+            $saveButton,
+        ));
+    }
+    
+    public function loadDefaultDecorators() {
+
+        $this->setDecorators(array(
+            'FormElements',
+            array('HtmlTag', array('tag' => 'ul')),
+            'Form'
+        ));
+    }
+
+}
+
+?>

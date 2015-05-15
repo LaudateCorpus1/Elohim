@@ -1,0 +1,11 @@
+<?php $this->headTitle('Find a mosque'); ?>
+    
+<div id="mosque-list">
+    <?php echo $this->form; ?>
+    <div class="map_canvas" style="display:none;" ></div>
+    
+    <div class="mosque-add-btn">
+        <a class="btn btn-large btn-success" 
+           href="<?php echo $this->url(array('controller' => 'mosque', 'action' => 'add'), 'default', true) ?>">Ajouter une mosquée</a>
+    </div>
+</div>

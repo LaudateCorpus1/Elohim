@@ -1,0 +1,92 @@
+<?php $this->headTitle('Find a mosque'); ?>
+    
+<div id="mosque-list">
+    <?php 
+    if(isset($this->address)) 
+        $this->form->setDefaultValue($this->escape($this->address));
+    echo $this->form; 
+    ?>
+    
+    <div class="map_canvas"></div>
+
+    <?php 
+
+    if(isset($this->mosques)) : 
+        foreach($this->mosques as $mosque) :
+            $mosque = Islamine_Array::array_to_object($mosque);
+        ?>
+            <div class="mosque">
+                <h3><?php echo $this->escape($mosque->name); ?></h3>
+                <?php echo $this->escape($mosque->formatted); ?>
+                <br>
+                <a href="<?php echo $this->escape($mosque->website); ?>" alt="<?php echo $this->escape($mosque->name); ?>" target="_blank"><?php echo $this->escape($mosque->website); ?></a>
+                  
+                <div class="more-info">
+                    <span class="btn label more-info-btn">Plus d'infos <i class="icon-chevron-down"></i></span>
+                    <span class="btn label less-info-btn" style="display: none;">Moins d'infos <i class="icon-chevron-up"></i></span>
+                </div>
+                
+                <div class="mosque-more-info" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Salles de prière</td>
+                                <td>Salles d'ablutions</td>
+                                <td>Al-Jumu'a</td>
+                                <td>Cours</td>
+                                <td>Ramadan</td>
+                                <td>Décès</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="/images/male.png" alt="male"/>
+                                    <img src="/images/female.png" alt="female"/>
+                                </td>
+                                <td>
+                                    <img src="/images/male.png" alt="male"/>
+                                    <img src="/images/female.png" alt="female"/>
+                                </td>
+                                <td>Non renseigné</td>
+                                <td>Cours d'islam<br>Cours d'arabe</td>
+                                <td>Tarawih</td>
+                                <td>Non renseigné</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mosque-date">
+                    Créée le <?php echo $this->escape($mosque->creationDate); ?>
+                </div>
+            </div>
+        <?php 
+        endforeach;
+
+        echo $this->paginationControl($this->mosques, 'Sliding', '/partials/pagination.phtml'); 
+    endif;
+    ?>
+
+</div>
+
+<script>
+    $(function(){
+        /*var href = window.location.pathname;
+        var loc = href.substr(href.lastIndexOf('/') + 1).replace('+', ' ');
+        $("#geocomplete").val(loc);*/
+        $("#geocomplete").trigger("geocode");
+        
+        $('.more-info-btn').click(function(){
+           $(this).parent().nextAll('.mosque-more-info').slideDown();
+           $(this).hide();
+           $(this).parent().find('.less-info-btn').show();
+        });
+        
+        $('.less-info-btn').click(function(){
+           $(this).parent().nextAll('.mosque-more-info').slideUp();
+           $(this).hide();
+           $(this).parent().find('.more-info-btn').show();
+        });
+    });
+</script>

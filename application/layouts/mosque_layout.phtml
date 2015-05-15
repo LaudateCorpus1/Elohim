@@ -1,0 +1,179 @@
+<?php
+/**
+ * Default Layout
+ *
+ * @author
+ * @version
+ */
+echo $this->doctype() . PHP_EOL;
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
+        <meta name="robots" content="index,follow" />
+
+        <?php
+        echo $this->headTitle()->toString('		') . PHP_EOL;
+        echo $this->headLink()
+                    ->appendStylesheet('/css/bootstrap.css')
+                    ->appendStylesheet('/css/main.css');
+        
+            $this->headScript()->prependFile($this->baseUrl().'/js/jquery.geocomplete.min.js');
+            $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
+            echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
+        ?>
+        <script src="http://maps.googleapis.com/maps/api/js?language=en&sensor=false&libraries=places"></script>
+        <script>
+          $(function(){
+              var options = {
+                map: ".map_canvas",
+                details: "form",
+                types: ["geocode", "establishment"]
+                  
+              };
+              
+            $("#geocomplete").geocomplete(options);
+
+            $("#find").click(function(){
+              $("#geocomplete").trigger("geocode");
+            });
+          });
+        </script>
+        
+        <style type="text/css" media="screen">
+            body {
+                font-size: 14px;
+            }
+              
+        #geocomplete { /*width: 200px*/ }
+
+        .map_canvas { 
+            width: 500px; 
+            height: 400px; 
+            /*margin: 10px 20px 10px 0;*/
+            margin: 30px auto;
+        }
+        
+        #form_create_mosque { float: left; }
+        
+        #mosque-form { 
+            width: 85%;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+        
+        #mosque-list { 
+            width: 95%;
+            margin: 0 auto;
+            margin-top: 50px;
+            display:block;
+            text-align:center
+        }
+      
+        .table-top{ width: 800px; }
+
+        .event-top {
+            background: url(../images/bandeau.jpg) repeat-y scroll center top black;
+            width: 100%;
+        }
+        
+        .mosque {
+            text-align: left;
+            padding-left: 15px;
+            background-color: #EEE;
+            width: 700px;
+            padding-bottom : 6px;
+            border-bottom: solid #AAA 1px;
+            float: left;
+            margin-bottom: 15px;
+            -moz-box-shadow: 0 0 1px #888;
+            -webkit-box-shadow: 0 0 1px #888;
+            box-shadow: 0 0 1px #888;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+        }
+        
+        .mosque-date {
+            font-size: 0.9em;
+            padding: 5px 10px 5px 0;
+        }
+        
+        [id$="-y"], [id$="-n"] {
+            float: left;
+            margin-right: 3px !important;
+        }
+        
+        label[for$="-y"] {
+            float: left;
+            margin-right: 20px;
+        }
+
+        .radio-btn {
+            padding-bottom: 15px;
+        }
+        
+        .input-lg {
+            height: 35px;
+            padding: 3px 7px;
+            font-size: 16px;
+            line-height: 1.33333;
+            border-radius: 6px;
+        }
+        
+        .label-large {
+            padding: 3px 0;
+            font-size: 18px;
+            line-height: 1.33333;
+        }
+        
+        .mosque table td {
+            padding: 7px;
+            border: solid #888 1px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .mosque thead {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    </head>
+    <body>
+        <noscript>
+            <div id="noscript-padding">
+            </div>
+        </noscript>
+        <div class="event-top">
+            <table class="table-top">
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="<?php
+                                echo $this->url(array(
+                                    'module' => 'default',
+                                    'controller' => 'index',
+                                    'action' => 'index'
+                                ), 'default', true);
+                                ?>"><img src="/images/logo.gif" height="50"/>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+                
+        <?php
+            echo $this->layout()->content . PHP_EOL;
+        ?>
+                
+        <noscript>
+            <div id="notify-message-script">
+                <span>Islamine fonctionne mieux avec JavaScript activé</span>
+            </div>
+        </noscript>
+    </body>
+</html>
