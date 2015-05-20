@@ -7,13 +7,22 @@
     echo $this->form; 
     ?>
     
-    <div class="map_canvas"></div>
+    <div id="map_canvas"></div>
 
+    <?php// echo $this->mosques->count(); ?> mosquées trouvées.
     <?php 
-
+    
     if(isset($this->mosques)) : 
+        $mosquesLocation = array();
         foreach($this->mosques as $mosque) :
             $mosque = Islamine_Array::array_to_object($mosque);
+        
+            array_push($mosquesLocation, array(
+                                                'name' => $mosque->name, 
+                                                'address' => $mosque->formatted, 
+                                                'latitude' => $mosque->latitude, 
+                                                'longitude' => $mosque->longitude
+                ));
         ?>
             <div class="mosque">
                 <h3><?php echo $this->escape($mosque->name); ?></h3>
@@ -41,29 +50,116 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <img src="/images/male.png" alt="male"/>
-                                    <img src="/images/female.png" alt="female"/>
+                                    <table class="mosque-td-info">
+                                        <tr>
+                                            <td>
+                                                <img src="/images/male.png" alt="male"/>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                if($this->escape($mosque->nbMenRooms) != null)
+                                                    echo $this->escape($mosque->nbMenRooms);
+                                                else
+                                                    echo '<img src="/images/question.png" alt="unknown"/>';
+                                                ?> 
+                                            </td>
+                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <img src="/images/female.png" alt="female"/>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                if($this->escape($mosque->nbWomenRooms) != null)
+                                                    echo $this->escape($mosque->nbWomenRooms);
+                                                else
+                                                    echo '<img src="/images/question.png" alt="unknown"/>';
+                                                ?> 
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    
                                 </td>
                                 <td>
-                                    <img src="/images/male.png" alt="male"/>
-                                    <img src="/images/female.png" alt="female"/>
+                                    <table class="mosque-td-info">
+                                        <tr>
+                                            <td>
+                                                <img src="/images/male.png" alt="male"/>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                if($this->escape($mosque->menAblutions) == null)
+                                                    echo '<img src="/images/question.png" alt="unknown"/>';
+                                                else if ($this->escape($mosque->menAblutions) == '1')
+                                                    echo '<img src="/images/yes.png" alt="yes"/>';
+                                                else
+                                                    echo '<img src="/images/no.png" alt="no"/>';
+                                                ?> 
+                                            </td>
+                                        
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <img src="/images/female.png" alt="female"/>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                if($this->escape($mosque->womenAblutions) == null)
+                                                    echo '<img src="/images/question.png" alt="unknown"/>';
+                                                else if ($this->escape($mosque->womenAblutions) == '1')
+                                                    echo '<img src="/images/yes.png" alt="yes"/>';
+                                                else
+                                                    echo '<img src="/images/no.png" alt="no"/>';
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
-                                <td>Non renseigné</td>
-                                <td>Cours d'islam<br>Cours d'arabe</td>
-                                <td>Tarawih</td>
-                                <td>Non renseigné</td>
+                                <td>
+                                    <?php 
+                                    if($this->escape($mosque->jumua) == null)
+                                        echo '<img src="/images/question.png" alt="unknown"/>';
+                                    else if ($this->escape($mosque->jumua) == '1')
+                                    {
+                                        echo '<img src="/images/yes.png" alt="yes"/>';
+                                        if (!empty($mosque->jumuaLanguage))
+                                            echo '<br>'.$this->escape($mosque->jumuaLanguage);
+                                    }
+                                    else
+                                        echo '<img src="/images/no.png" alt="no"/>';
+                                    ?> 
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($this->escape($mosque->islamLesson) == '1')
+                                        echo "Cours d'islam";
+                                    if ($this->escape($mosque->arabLesson) == '1')
+                                        echo "<br>Cours d'arabe";
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($this->escape($mosque->tarawih) == '1')
+                                        echo "Tarawih";
+                                    ?>
+                                    
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($this->escape($mosque->janaza) == '1')
+                                        echo "Janaza";
+                                    ?>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                
-                <div class="mosque-date">
-                    Créée le <?php echo $this->escape($mosque->creationDate); ?>
-                </div>
             </div>
         <?php 
         endforeach;
-
+        $jsonMosques = Zend_Json::encode($mosquesLocation);
+        $this->headScript()->appendScript("var mosques = $jsonMosques;");
         echo $this->paginationControl($this->mosques, 'Sliding', '/partials/pagination.phtml'); 
     endif;
     ?>
@@ -72,11 +168,53 @@
 
 <script>
     $(function(){
-        /*var href = window.location.pathname;
-        var loc = href.substr(href.lastIndexOf('/') + 1).replace('+', ' ');
-        $("#geocomplete").val(loc);*/
-        $("#geocomplete").trigger("geocode");
+        mapAppli = new google.maps.Map(document.getElementById('map_canvas'),
+                {zoom: 14,
+                scrollwheel: false,
+                mapTypeId: "roadmap"}
+                );
+              
+              var options = {
+                map: mapAppli, //".map_canvas",
+                details: "form",
+                markerOptions: { disabled: true },
+                types: ["geocode", "establishment"]
+                  
+              };
+              
+            $("#geocomplete").geocomplete(options);
+            
+            
+            
         
+        $("#geocomplete").trigger("geocode");
+                
+        if(typeof mosques != "undefined")
+        {
+            var markers = [];
+            var infowindow = new google.maps.InfoWindow();
+            var marker, i;
+            
+            for (i = 0; i < mosques.length; i++) { 
+                marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(mosques[i].latitude, mosques[i].longitude),
+                  map: mapAppli
+                  //icon: '../images/yes.png'
+                });
+                                
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                  return function() {
+                    infowindow.setContent(mosques[i].name + " " + mosques[i].address);
+                    infowindow.open(mapAppli, marker);
+                  }
+                })(marker, i));
+
+                markers.push(marker);
+            }
+            
+            var markerCluster = new MarkerClusterer(mapAppli, markers);
+        }
+
         $('.more-info-btn').click(function(){
            $(this).parent().nextAll('.mosque-more-info').slideDown();
            $(this).hide();

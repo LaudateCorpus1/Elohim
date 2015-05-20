@@ -33,6 +33,8 @@ class Default_Form_MosqueCreate extends Zend_Form {
     );
     
     public function init() {
+        $this->addPrefixPath('Islamine_Form_Decorator', 'Islamine/Form/Decorator/', 'decorator'); 
+        
         $this->setAttrib('id', 'form_create_mosque')
                 ->setMethod('POST')
                 ->setName('form_create_mosque');
@@ -58,8 +60,8 @@ class Default_Form_MosqueCreate extends Zend_Form {
              ->setDecorators($this->elementDecorators);   
         
         $yesNoArray = array(
-            'y' => 'Oui',
-            'n' => 'Non',
+            '1' => 'Oui',
+            '0' => 'Non',
         );
         
         $uniqueValidator = new Zend_Validate_Db_NoRecordExists(array(
@@ -68,12 +70,34 @@ class Default_Form_MosqueCreate extends Zend_Form {
                                                     ));
         
         $sameValidator = new Zend_Validate_Identical('form_mosque_address');
+        
+        $captcha = new Zend_Form_Element_Captcha('captcha', array(
+            'label' => 'Entrez le texte',
+            'captcha' => array(
+                'captcha' => 'Image',
+                'wordLen' => 4,
+                'width' => 150,
+                'font' => APPLICATION_PATH.'/../public/fonts/Verdana.ttf',
+                'imgDir'    => APPLICATION_PATH.'/../public/images/captcha',
+                'timeout'   => 120,
+                'expiration'=> 300
+             )
+        ));
+        
+        //$captcha->setDecorators($this->elementDecorators);
+        
+        $captcha->setDecorators(array(
+            array(array('td' => 'HtmlTag'), array('tag' => 'td')),
+            array('Label', array('tag' => 'td')),
+            array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
+            array(array('tr' => 'HtmlTag'), array('tag' => 'tr')),
+            ));
       
         $this->addElements(array(
             $this->createElement('text', 'mosque_name', array('size' => '60'))->setLabel('Nom')->setRequired(true)->setDecorators($this->elementDecorators),
             $categoriesSelect,
             $this->createElement('text', 'form_mosque_address', array('id' => 'geocomplete', 'size' => '60'))->setRequired(true)->setLabel('Entrer une adresse')->setDecorators($this->elementDecorators),
-            $this->createElement('textarea', 'formatted_address', array('rows' => '2', 'cols' => '30', 'attribs' => array('readonly' => 'true')))->setRequired(true)->setDecorators($this->elementDecorators)->addValidator($uniqueValidator),
+            $this->createElement('hidden', 'formatted_address'/*, array('rows' => '2', 'cols' => '30', 'attribs' => array('readonly' => 'true'))*/)->setDecorators($this->elementDecorators)->addValidator($uniqueValidator),
             $this->createElement('hidden', 'route')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'street_number')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'postal_code')->setDecorators($this->elementDecorators),
@@ -94,6 +118,8 @@ class Default_Form_MosqueCreate extends Zend_Form {
             $this->createElement('radio', 'arabLesson', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Cours d\'arabe')->setDecorators($this->radioDecorators),
             $this->createElement('radio', 'janaza', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Prière du mort')->setDecorators($this->radioDecorators),
             $this->createElement('radio', 'tarawih', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Tarawih')->setDecorators($this->radioDecorators),
+            
+            $captcha,
             $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique', 'timeout' => 3600))->setDecorators($this->elementDecorators),
             $saveButton,
         ));

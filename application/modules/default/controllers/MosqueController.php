@@ -34,9 +34,20 @@ class MosqueController extends Zend_Controller_Action
         {
             $modelMosque = new Default_Model_Mosque();
             $formData = $sessionNamespace->data;
-            $this->view->address = $formData['formatted_address'];
             unset($sessionNamespace->data);
-            $mosques = $modelMosque->getByLocation($formData['country'], $formData['locality'], $formData['route'], $formData['street_number']);
+            //Zend_Debug::dump($formData); exit;
+            // The Islamic Cultural Centre and The London Central Mosque
+            $address = $formData['formatted_address'];
+            if(empty($formData['formatted_address'])) 
+            {
+                $address = $formData['search_content'];
+                $mosques = $modelMosque->getByFormattedAddress($formData['search_content']);
+            }
+            else 
+            {
+                $mosques = $modelMosque->getByLocation($formData['country'], $formData['locality'], $formData['route'], $formData['street_number']);
+            }
+            
             if($mosques != null)
             {
                 $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($mosques));
@@ -44,7 +55,10 @@ class MosqueController extends Zend_Controller_Action
                 $page->setCurrentPageNumber($this->_getParam('page', 1));
                 $page->setItemCountPerPage(100);
                 $this->view->mosques = $page;
+                //$this->view->headScript()->appendScript("var mosques = 'ok';");
             }
+            
+            $this->view->address = $address;
         }
     }
     

@@ -16,24 +16,36 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
         return $row;
     }
     
+    public function getByFormattedAddress($formattedAddress)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name)
+              ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
+              ->where($this->getAdapter()->quoteInto('formatted LIKE ?', '%'.$formattedAddress.'%'))
+              ->order($this->_name.'.creationDate ASC');
+        
+        return $query;
+    }
+    
     public function getByLocation($country, $locality = null, $route = null, $streetNo = null)
     {
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from($this->_name)
-              ->join('address', $this->_name.'.addressId = address.id', 'formatted')
+              ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
               ->order($this->_name.'.creationDate ASC');
         
-        if($route != null)
+        if($route != null && !empty($route))
             $query->where($this->getAdapter()->quoteInto('route = ?', $route));
         
-        if($streetNo != null)
+        if($streetNo != null && !empty($streetNo))
             $query->where($this->getAdapter()->quoteInto('streetNo = ?', $streetNo));
         
-        if($locality != null)
+        if($locality != null && !empty($locality))
             $query->where($this->getAdapter()->quoteInto('locality = ?', $locality));
         
-        if($country != null)
+        if($country != null && !empty($country))
             $query->where($this->getAdapter()->quoteInto('country = ?', $country));
         
         return $query;

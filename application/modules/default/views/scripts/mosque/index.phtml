@@ -2,10 +2,31 @@
     
 <div id="mosque-list">
     <?php echo $this->form; ?>
-    <div class="map_canvas" style="display:none;" ></div>
+    <div id="map_canvas" style="display:none;" ></div>
     
     <div class="mosque-add-btn">
         <a class="btn btn-large btn-success" 
            href="<?php echo $this->url(array('controller' => 'mosque', 'action' => 'add'), 'default', true) ?>">Ajouter une mosquée</a>
     </div>
 </div>
+
+
+<script>
+    $(function(){
+        mapAppli = new google.maps.Map(document.getElementById('map_canvas'),
+                {zoom: 14,
+                scrollwheel: false,
+                mapTypeId: "roadmap"}
+                );
+              
+              var options = {
+                map: mapAppli, //".map_canvas",
+                details: "form",
+                markerOptions: { disabled: true },
+                types: ["geocode", "establishment"]
+                  
+              };
+              
+            $("#geocomplete").geocomplete(options);
+    });
+</script>

@@ -20,6 +20,7 @@ echo $this->doctype() . PHP_EOL;
                     ->appendStylesheet('/css/bootstrap.css')
                     ->appendStylesheet('/css/main.css');
         
+            $this->headScript()->prependFile($this->baseUrl().'/js/markerclusterer.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery.geocomplete.min.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery-ui-1.8.16.custom.min.js'); 
             echo $this->headScript()->prependFile($this->baseUrl().'/js/jquery-1.7.1.min.js');
@@ -27,18 +28,21 @@ echo $this->doctype() . PHP_EOL;
         <script src="http://maps.googleapis.com/maps/api/js?language=en&sensor=false&libraries=places"></script>
         <script>
           $(function(){
-              var options = {
-                map: ".map_canvas",
-                details: "form",
-                types: ["geocode", "establishment"]
-                  
-              };
-              
-            $("#geocomplete").geocomplete(options);
 
             $("#find").click(function(){
               $("#geocomplete").trigger("geocode");
             });
+            
+            $("#captcha-input").focus(function () {
+                var map = $('#geocomplete').map;
+                $("#geocomplete").trigger("geocode");
+            });
+            
+            $('#geocomplete').on('input propertychange paste', function() {
+                if($('#captcha-input').val() != '')
+                    $('#captcha-input').val('');
+            });
+            
           });
         </script>
         
@@ -49,7 +53,7 @@ echo $this->doctype() . PHP_EOL;
               
         #geocomplete { /*width: 200px*/ }
 
-        .map_canvas { 
+        #map_canvas { 
             width: 500px; 
             height: 400px; 
             /*margin: 10px 20px 10px 0;*/
@@ -101,12 +105,12 @@ echo $this->doctype() . PHP_EOL;
             padding: 5px 10px 5px 0;
         }
         
-        [id$="-y"], [id$="-n"] {
+        input[id$="-1"], input[id$="-0"] {
             float: left;
             margin-right: 3px !important;
         }
         
-        label[for$="-y"] {
+        label[for$="-1"] {
             float: left;
             margin-right: 20px;
         }
@@ -139,6 +143,17 @@ echo $this->doctype() . PHP_EOL;
         .mosque thead {
             font-weight: bold;
             text-align: center;
+        }
+        
+        .mosque table.mosque-td-info td {
+            padding: 3px 5px;
+            border: 0;
+            border-radius: 0;
+            text-align: center;
+        }
+        
+        .mosque table.mosque-td-info {
+            margin: 0 auto;
         }
     </style>
     </head>

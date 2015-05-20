@@ -25,9 +25,9 @@ class Default_Form_SearchMosque extends Zend_Form {
                    ->setAttrib('size', '70');
         
         $this->text->setDecorators(array(
+            'Errors',
             'ViewHelper',
             'Description',
-            'Errors',
             array(array('data' => 'HtmlTag'), array('tag' => 'td')),
             array('Label', array('tag' => 'td', 'class' => 'label-large')),
             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'openOnly' => true))
@@ -40,9 +40,9 @@ class Default_Form_SearchMosque extends Zend_Form {
         $submit->setDecorators(array(
             'ViewHelper',
             'Description',
-            'Errors', array(array('data' => 'HtmlTag'), array('tag' => 'td',
-                    'align' => 'center')),
-            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => 'true'))
+            'Errors', 
+            array(array('data' => 'HtmlTag'), array('tag' => 'td', 'align' => 'center')),
+            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'closeOnly' => true))
         ));
         
         $this->addElements(array(
