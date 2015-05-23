@@ -35,7 +35,7 @@ class MosqueController extends Zend_Controller_Action
             $modelMosque = new Default_Model_Mosque();
             $formData = $sessionNamespace->data;
             unset($sessionNamespace->data);
-//            Zend_Debug::dump($formData); exit;
+//            67 bis Avenue Albert Petit, 92220 Bagneux
             $address = $formData['formatted_address'];
             if(empty($formData['formatted_address'])) 
             {
@@ -88,9 +88,18 @@ class MosqueController extends Zend_Controller_Action
         
         if($this->_request->isPost()) 
         {
+            //Zend_Debug::dump($formData); exit;
             $formData = $this->_request->getPost();
-            if ($form->isValid($formData))
+            if(empty($formData['formatted_address'])
+               || empty($formData['route'])
+               || empty($formData['locality'])
+               || empty($formData['country']))
             {
+                $this->view->error = "L'adresse n'est pas valide";
+            }
+            else if ($form->isValid($formData))
+            {
+                $this->view->error = null;
                 $modelAddress = new Default_Model_Address();
                 $addressId = $modelAddress->addAddress($formData);
                 if($addressId != null)

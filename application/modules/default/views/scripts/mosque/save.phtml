@@ -1,11 +1,18 @@
 <?php $this->headTitle('Enregistrer une mosquée'); ?>
 <div id="mosque-form">
      
-    <?php 
+    <?php
+    if($this->error != null)
+        echo '<div class="help-error">'.$this->error.'</div>';
+    
     echo $this->form;
     ?>
 
     <div id="map-canvas"></div>
+    
+    <div id="error-dialog" title="Erreur" style="display:none;">
+        L'adresse n'est pas valide.
+    </div>
 </div>
 <script>
 $(function(){       
@@ -14,6 +21,23 @@ $(function(){
         details: "form",
         types: ["geocode", "establishment"]
     };
+    
+    $('#error-dialog').dialog({
+                autoOpen: false,
+                height: 100,
+                width: 200,
+                modal: true
+            });
+    
+    $('#form_create_mosque').submit(function() {
+        if($('#formatted_address').val() == ''
+          || $('#route').val() == ''
+          || $('#locality').val() == ''
+          || $('#country').val() == '') {
+            $( "#error-dialog" ).dialog('open');
+            return false;
+        }
+    });
 
     $("#geocomplete").geocomplete(options);
 

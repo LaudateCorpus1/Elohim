@@ -81,8 +81,8 @@ class Default_Form_MosqueCreate extends Zend_Form {
                 // Niveau de bruit horizontale (par défaut 5)
                 'lineNoiseLevel' => 5,
                 'width' => 150,
-                'font' => APPLICATION_PATH.'/../public/fonts/Verdana.ttf',
-                'imgDir'    => APPLICATION_PATH.'/../public/images/captcha',
+                'font' => APPLICATION_PATH.'/../www/fonts/Verdana.ttf',
+                'imgDir'    => APPLICATION_PATH.'/../www/images/captcha',
                 'timeout'   => 120,
                 'expiration'=> 300
              )
@@ -99,7 +99,7 @@ class Default_Form_MosqueCreate extends Zend_Form {
             $this->createElement('text', 'mosque_name', array('size' => '60'))->setLabel('Nom')->setRequired(true)->setDecorators($this->elementDecorators),
             $categoriesSelect,
             $this->createElement('text', 'form_mosque_address', array('id' => 'geocomplete', 'size' => '60'))->setRequired(true)->setLabel('Entrer une adresse')->setDecorators($this->elementDecorators),
-            $this->createElement('hidden', 'formatted_address'/*, array('rows' => '2', 'cols' => '30', 'attribs' => array('readonly' => 'true'))*/)->setDecorators($this->elementDecorators)->addValidator($uniqueValidator),
+            $this->createElement('hidden', 'formatted_address')->setDecorators($this->elementDecorators)->addValidator($uniqueValidator),
             $this->createElement('hidden', 'route')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'street_number')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'postal_code')->setDecorators($this->elementDecorators),
@@ -124,7 +124,7 @@ class Default_Form_MosqueCreate extends Zend_Form {
             $this->createElement('radio', 'janaza', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Prière du mort')->setDecorators($this->radioDecorators),
             $this->createElement('radio', 'tarawih', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Tarawih')->setDecorators($this->radioDecorators),
             
-            //$captcha,
+            $captcha,
             $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique', 'timeout' => 3600))->setDecorators($this->elementDecorators),
             $saveButton,
         ));
