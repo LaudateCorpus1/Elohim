@@ -29,6 +29,7 @@ echo $this->doctype() . PHP_EOL;
         <script src="http://maps.googleapis.com/maps/api/js?language=en&sensor=false&libraries=places"></script>
         <script>
           $(function(){
+            $("#geocomplete").attr('placeholder', 'Indiquez un lieu');
 
             $("#find").click(function(){
               $("#geocomplete").trigger("geocode");

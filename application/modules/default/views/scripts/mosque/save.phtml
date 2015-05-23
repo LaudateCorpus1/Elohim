@@ -1,4 +1,4 @@
-<?php $this->headTitle('Sauvegarder une mosquée'); ?>
+<?php $this->headTitle('Enregistrer une mosquée'); ?>
 <div id="mosque-form">
      
     <?php 
@@ -12,9 +12,7 @@ $(function(){
     var options = {
         map: "#map-canvas",
         details: "form",
-        markerOptions: { disabled: true },
         types: ["geocode", "establishment"]
-
     };
 
     $("#geocomplete").geocomplete(options);
