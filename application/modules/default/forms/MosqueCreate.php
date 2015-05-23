@@ -77,12 +77,12 @@ class Default_Form_MosqueCreate extends Zend_Form {
                 'captcha' => 'Image',
                 'wordLen' => 4,
                 // Niveau de bruit verticale (par défaut 100)
-                'dotNoiseLevel' => 70,
+                'dotNoiseLevel' => 77,
                 // Niveau de bruit horizontale (par défaut 5)
                 'lineNoiseLevel' => 5,
                 'width' => 150,
-                'font' => APPLICATION_PATH.'/../www/fonts/Verdana.ttf',
-                'imgDir'    => APPLICATION_PATH.'/../www/images/captcha',
+                'font' => APPLICATION_PATH.'/../public/fonts/Verdana.ttf',
+                'imgDir'    => APPLICATION_PATH.'/../public/images/captcha',
                 'timeout'   => 120,
                 'expiration'=> 300
              )
