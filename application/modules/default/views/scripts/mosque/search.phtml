@@ -1,4 +1,4 @@
-<?php $this->headTitle('Find a mosque'); ?>
+<?php $this->headTitle('Trouver une mosquée'); ?>
     
 <div id="mosque-list">
     <?php 
@@ -6,33 +6,48 @@
         $this->form->setDefaultValue($this->escape($this->address));
     echo $this->form; 
     ?>
-    
-    <div id="map_canvas"></div>
+    <div id="map-canvas"></div>
 
-    <?php// echo $this->mosques->count(); ?> mosquées trouvées.
     <?php 
     
     if(isset($this->mosques)) : 
+        $mText = $this->count == 1 ? 'mosquée trouvée': 'mosquées trouvées';
+        echo '<div class="mosque-results">'. $this->count.' '.$mText.'</div>';
         $mosquesLocation = array();
         foreach($this->mosques as $mosque) :
             $mosque = Islamine_Array::array_to_object($mosque);
         
             array_push($mosquesLocation, array(
                                                 'name' => $mosque->name, 
+                                                'id' => $mosque->id,
                                                 'address' => $mosque->formatted, 
                                                 'latitude' => $mosque->latitude, 
                                                 'longitude' => $mosque->longitude
                 ));
         ?>
             <div class="mosque">
-                <h3><?php echo $this->escape($mosque->name); ?></h3>
-                <?php echo $this->escape($mosque->formatted); ?>
-                <br>
-                <a href="<?php echo $this->escape($mosque->website); ?>" alt="<?php echo $this->escape($mosque->name); ?>" target="_blank"><?php echo $this->escape($mosque->website); ?></a>
-                  
-                <div class="more-info">
-                    <span class="btn label more-info-btn">Plus d'infos <i class="icon-chevron-down"></i></span>
-                    <span class="btn label less-info-btn" style="display: none;">Moins d'infos <i class="icon-chevron-up"></i></span>
+                <div class="mosque-header">
+                    <?php $titleImg = $mosque->type == 'mosque' ? 'Mosquée' : "Salle de prière"; ?>
+                    <img class="mosque-type-img" src="/images/<?php echo $this->escape($mosque->type); ?>.png" height="30" title="<?php echo $titleImg; ?>" alt="<?php echo $this->escape($mosque->type); ?>"/>
+                    <h3>
+                        <a href="javascript:void(0)" title="Voir sur la carte" id="mosque-<?php echo $this->escape($mosque->id); ?>"><?php echo $this->escape($mosque->name); ?></a>
+                    </h3>
+               
+                    <!--<a class="mosque-edit" title="Editer" href="<?php echo $this->url(array(
+                                                'id'=> $this->escape($mosque->id)
+                                            ), 'mosqueSave', true); ?>"><i class="icon-pencil"></i>
+                    </a>-->
+                </div>
+                
+                <div class="mosque-body">
+                    <?php echo $this->escape($mosque->formatted); ?>
+                    <br>
+                    <a href="<?php echo $this->escape($mosque->website); ?>" alt="<?php echo $this->escape($mosque->name); ?>" target="_blank"><?php echo $this->escape($mosque->website); ?></a>
+
+                    <div class="more-info">
+                        <span class="btn label more-info-btn">Plus d'infos <i class="icon-chevron-down"></i></span>
+                        <span class="btn label less-info-btn" style="display: none;">Moins d'infos <i class="icon-chevron-up"></i></span>
+                    </div>
                 </div>
                 
                 <div class="mosque-more-info" style="display: none;">
@@ -168,43 +183,42 @@
 
 <script>
     $(function(){
-        mapAppli = new google.maps.Map(document.getElementById('map_canvas'),
-                {zoom: 14,
-                scrollwheel: false,
-                mapTypeId: "roadmap"}
-                );
-              
-              var options = {
-                map: mapAppli, //".map_canvas",
-                details: "form",
-                markerOptions: { disabled: true },
-                types: ["geocode", "establishment"]
-                  
-              };
-              
-            $("#geocomplete").geocomplete(options);
+        mapAppli = new google.maps.Map(document.getElementById('map-canvas'),
+        {
+            zoom: 14,
+            scrollwheel: false,
+            mapTypeId: "roadmap"
+        });
+
+        var options = {
+          map: mapAppli,
+          details: "form",
+          markerOptions: { disabled: true },
+          types: ["geocode", "establishment"]
+
+        };
+
+        $("#geocomplete").geocomplete(options);
             
-            
-            
-        
         $("#geocomplete").trigger("geocode");
                 
+        var markers = [];
         if(typeof mosques != "undefined")
         {
-            var markers = [];
             var infowindow = new google.maps.InfoWindow();
             var marker, i;
             
             for (i = 0; i < mosques.length; i++) { 
                 marker = new google.maps.Marker({
                   position: new google.maps.LatLng(mosques[i].latitude, mosques[i].longitude),
-                  map: mapAppli
+                  map: mapAppli,
+                  id: mosques[i].id
                   //icon: '../images/yes.png'
                 });
                                 
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                   return function() {
-                    infowindow.setContent(mosques[i].name + " " + mosques[i].address);
+                    infowindow.setContent(mosques[i].address);
                     infowindow.open(mapAppli, marker);
                   }
                 })(marker, i));
@@ -214,17 +228,52 @@
             
             var markerCluster = new MarkerClusterer(mapAppli, markers);
         }
+        
+        $('.mosque a').click(function(){
+           var id = $(this).attr('id').split('-')[1];
+           setMarker(markers, id);
+        });
 
         $('.more-info-btn').click(function(){
-           $(this).parent().nextAll('.mosque-more-info').slideDown();
+           $(this).parent().parent().nextAll('.mosque-more-info').slideDown();
            $(this).hide();
            $(this).parent().find('.less-info-btn').show();
         });
         
         $('.less-info-btn').click(function(){
-           $(this).parent().nextAll('.mosque-more-info').slideUp();
+           $(this).parent().parent().nextAll('.mosque-more-info').slideUp();
            $(this).hide();
            $(this).parent().find('.more-info-btn').show();
         });
     });
+    
+    function isScrolledIntoView(elem)
+    {
+        var $elem = $(elem);
+        var $window = $(window);
+
+        var docViewTop = $window.scrollTop();
+        var docViewBottom = docViewTop + $window.height();
+
+        var elemTop = $elem.offset().top;
+        var elemBottom = elemTop + $elem.height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+    
+    function setMarker(markers, mosqueId) {
+        for(var i in markers) {
+            if(markers[i].id == mosqueId) {
+                if(!isScrolledIntoView('#map-canvas')) {
+                    $('html,body').animate({
+                        scrollTop: $('#mosque-list').offset().top
+                    });
+                }
+        
+                mapAppli.setCenter(markers[i].getPosition());
+                mapAppli.setZoom(16);
+                break;
+            }
+        }
+    }
 </script>

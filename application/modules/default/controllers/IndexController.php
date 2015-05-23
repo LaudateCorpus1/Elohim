@@ -84,8 +84,9 @@ class IndexController extends Zend_Controller_Action
             if($form->isValid($formData)) 
             {
                 $subject = $form->getValue('form_contact_subject');
-                $body = $form->getValue('form_contact_email').'...'.$form->getValue('form_contact_content');
-                $this->_helper->alertMail($subject, $body);
+                $from = $form->getValue('form_contact_email');
+                $body = $form->getValue('form_contact_content');
+                $this->_helper->alertMail($from, $subject, $body);
                 $this->view->message = 'Votre message a bien été envoyé.';
             }
         }

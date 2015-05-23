@@ -1,0 +1,141 @@
+body {
+    font-size: 14px;
+}
+
+#map-canvas { 
+    width: 500px; 
+    height: 400px;
+    margin: 30px auto;
+}
+
+#form_create_mosque { float: left; }
+
+#mosque-form { 
+    width: 85%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+#mosque-list { 
+    width: 85%;
+    margin: 0 auto;
+    margin-top: 50px;
+    display:block;
+    text-align:center
+}
+
+.table-top{ width: 800px; }
+
+.event-top {
+    background: url(../images/bandeau.jpg) repeat-y scroll center top black;
+    width: 100%;
+}
+
+.mosque {
+    text-align: left;
+    padding-left: 15px;
+    background-color: #EEE;
+    width: 700px;
+    padding-bottom : 6px;
+    border-bottom: solid #AAA 1px;
+    float: left;
+    margin-bottom: 15px;
+    -moz-box-shadow: 0 0 1px #888;
+    -webkit-box-shadow: 0 0 1px #888;
+    box-shadow: 0 0 1px #888;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.mosque-date {
+    font-size: 0.9em;
+    padding: 5px 10px 5px 0;
+}
+
+.mosque-type-img {
+    float: left;
+    margin: 6px 5px 0 0;
+}
+
+.mosque-header, .mosque-header h3 {
+    display: inline-block;
+}
+
+.mosque-edit {
+    margin-left: 10px;
+}
+
+input[id$="-1"], input[id$="-0"] {
+    float: left;
+    margin-right: 3px !important;
+}
+
+label[for$="-1"] {
+    float: left;
+    margin-right: 20px;
+}
+
+.radio-btn {
+    padding-bottom: 15px;
+}
+
+.input-lg {
+    height: 35px;
+    padding: 3px 7px;
+    font-size: 16px;
+    line-height: 1.33333;
+    border-radius: 6px;
+}
+
+.label-large {
+    padding: 3px 0;
+    font-size: 18px;
+    line-height: 1.33333;
+}
+
+.mosque table td {
+    padding: 7px;
+    border: solid #888 1px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.mosque thead {
+    font-weight: bold;
+    text-align: center;
+}
+
+.more-info {
+    margin: 10px 0;
+}
+
+.mosque table.mosque-td-info td {
+    padding: 3px 5px;
+    border: 0;
+    border-radius: 0;
+    text-align: center;
+}
+
+.mosque table.mosque-td-info {
+    margin: 0 auto;
+}
+
+.mosque-results {
+    text-align: left;
+    margin: 20px 0;
+    color: #666;
+    font-style: italic;
+}
+
+.contact-link {
+    padding-top: 50px;
+    color: #0000FF;
+    margin-bottom: 20px;
+    text-align: center;
+    clear: both;
+}
+
+.contact-link a {
+    color: #666;
+}

@@ -18,7 +18,8 @@ echo $this->doctype() . PHP_EOL;
         echo $this->headTitle()->toString('		') . PHP_EOL;
         echo $this->headLink()
                     ->appendStylesheet('/css/bootstrap.css')
-                    ->appendStylesheet('/css/main.css');
+                    ->appendStylesheet('/css/main.css')
+                    ->appendStylesheet('/css/mosque.css');
         
             $this->headScript()->prependFile($this->baseUrl().'/js/markerclusterer.js');
             $this->headScript()->prependFile($this->baseUrl().'/js/jquery.geocomplete.min.js');
@@ -33,129 +34,8 @@ echo $this->doctype() . PHP_EOL;
               $("#geocomplete").trigger("geocode");
             });
             
-            $("#captcha-input").focus(function () {
-                var map = $('#geocomplete').map;
-                $("#geocomplete").trigger("geocode");
-            });
-            
-            $('#geocomplete').on('input propertychange paste', function() {
-                if($('#captcha-input').val() != '')
-                    $('#captcha-input').val('');
-            });
-            
           });
         </script>
-        
-        <style type="text/css" media="screen">
-            body {
-                font-size: 14px;
-            }
-              
-        #geocomplete { /*width: 200px*/ }
-
-        #map_canvas { 
-            width: 500px; 
-            height: 400px; 
-            /*margin: 10px 20px 10px 0;*/
-            margin: 30px auto;
-        }
-        
-        #form_create_mosque { float: left; }
-        
-        #mosque-form { 
-            width: 85%;
-            margin: 0 auto;
-            margin-top: 50px;
-        }
-        
-        #mosque-list { 
-            width: 95%;
-            margin: 0 auto;
-            margin-top: 50px;
-            display:block;
-            text-align:center
-        }
-      
-        .table-top{ width: 800px; }
-
-        .event-top {
-            background: url(../images/bandeau.jpg) repeat-y scroll center top black;
-            width: 100%;
-        }
-        
-        .mosque {
-            text-align: left;
-            padding-left: 15px;
-            background-color: #EEE;
-            width: 700px;
-            padding-bottom : 6px;
-            border-bottom: solid #AAA 1px;
-            float: left;
-            margin-bottom: 15px;
-            -moz-box-shadow: 0 0 1px #888;
-            -webkit-box-shadow: 0 0 1px #888;
-            box-shadow: 0 0 1px #888;
-            border-radius: 5px;
-            -moz-border-radius: 5px;
-            -webkit-border-radius: 5px;
-        }
-        
-        .mosque-date {
-            font-size: 0.9em;
-            padding: 5px 10px 5px 0;
-        }
-        
-        input[id$="-1"], input[id$="-0"] {
-            float: left;
-            margin-right: 3px !important;
-        }
-        
-        label[for$="-1"] {
-            float: left;
-            margin-right: 20px;
-        }
-
-        .radio-btn {
-            padding-bottom: 15px;
-        }
-        
-        .input-lg {
-            height: 35px;
-            padding: 3px 7px;
-            font-size: 16px;
-            line-height: 1.33333;
-            border-radius: 6px;
-        }
-        
-        .label-large {
-            padding: 3px 0;
-            font-size: 18px;
-            line-height: 1.33333;
-        }
-        
-        .mosque table td {
-            padding: 7px;
-            border: solid #888 1px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        
-        .mosque thead {
-            font-weight: bold;
-            text-align: center;
-        }
-        
-        .mosque table.mosque-td-info td {
-            padding: 3px 5px;
-            border: 0;
-            border-radius: 0;
-            text-align: center;
-        }
-        
-        .mosque table.mosque-td-info {
-            margin: 0 auto;
-        }
-    </style>
     </head>
     <body>
         <noscript>
@@ -180,11 +60,15 @@ echo $this->doctype() . PHP_EOL;
                 </tbody>
             </table>
         </div>
-                
+              
+        <div id="mosque-content">
         <?php
             echo $this->layout()->content . PHP_EOL;
         ?>
-                
+        </div>
+         <div class="contact-link">
+            <a href="<?php echo $this->url(array('controller' => 'index', 'action' => 'contact'), 'default', true) ?>">Reporter un bug - Contact</a>
+         </div>       
         <noscript>
             <div id="notify-message-script">
                 <span>Islamine fonctionne mieux avec JavaScript activé</span>

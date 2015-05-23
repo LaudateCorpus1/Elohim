@@ -49,13 +49,13 @@ class Default_Form_MosqueCreate extends Zend_Form {
                       ->setDecorators($this->buttonDecorators)
                       ->setAttrib('class', 'btn btn-primary');
         
-        $categoriesSelect = new Zend_Form_Element_Select('form_mosque_type');
+        $categoriesSelect = new Zend_Form_Element_Select('mosque_type');
         $categoriesSelect->setRequired(true)
              ->setLabel('Type')
              ->addMultiOptions(array(
                     '' => '---',
                     'mosque' => 'Mosquée',
-                    'prayer' => 'Salle de prière'
+                    'prayer_room' => 'Salle de prière'
                  ))
              ->setDecorators($this->elementDecorators);   
         
@@ -105,9 +105,12 @@ class Default_Form_MosqueCreate extends Zend_Form {
             $this->createElement('hidden', 'sublocality')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'country')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'administrative_area_level_1')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'administrative_area_level_2')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'administrative_area_level_3')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'lat')->setDecorators($this->elementDecorators),
             $this->createElement('hidden', 'lng')->setDecorators($this->elementDecorators),
-            $this->createElement('text', 'website', array('size' => '60'))->setLabel('Site internet')->setDecorators($this->elementDecorators),
+            $this->createElement('hidden', 'website')->setDecorators($this->elementDecorators),
+            $this->createElement('text', 'mosqueWebsite', array('size' => '60'))->setLabel('Site internet')->setDecorators($this->elementDecorators),
             $this->createElement('text', 'nbMenRooms', array('size' => '3'))->setLabel('Nb salles hommes')->setDecorators($this->elementDecorators)->addValidator('Digits'),
             $this->createElement('text', 'nbWomenRooms', array('size' => '3'))->setLabel('Nb salles femmes')->setDecorators($this->elementDecorators)->addValidator('Digits'),
             $this->createElement('radio', 'menAblutions', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Salle ablutions hommes')->setDecorators($this->radioDecorators),

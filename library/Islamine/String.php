@@ -83,8 +83,6 @@ class Islamine_String
         }
         return $return;
     }
-
-   
 }
 
 ?>

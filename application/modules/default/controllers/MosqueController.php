@@ -35,8 +35,7 @@ class MosqueController extends Zend_Controller_Action
             $modelMosque = new Default_Model_Mosque();
             $formData = $sessionNamespace->data;
             unset($sessionNamespace->data);
-            //Zend_Debug::dump($formData); exit;
-            // The Islamic Cultural Centre and The London Central Mosque
+//            Zend_Debug::dump($formData); exit;
             $address = $formData['formatted_address'];
             if(empty($formData['formatted_address'])) 
             {
@@ -45,32 +44,53 @@ class MosqueController extends Zend_Controller_Action
             }
             else 
             {
-                $mosques = $modelMosque->getByLocation($formData['country'], $formData['locality'], $formData['route'], $formData['street_number']);
+                $mosques = $modelMosque->getByLocation(
+                                        $formData['country'],
+                                        $formData['route'],
+                                        $formData['street_number'],
+                                        $formData['locality'],
+                                        $formData['sublocality'],
+                                        $formData['administrative_area_level_1'],
+                                        $formData['administrative_area_level_2'],
+                                        $formData['administrative_area_level_3']);
             }
             
             if($mosques != null)
             {
+                $this->view->count = count($modelMosque->fetchAll($mosques));
                 $page = new Islamine_Paginator(new Zend_Paginator_Adapter_DbSelect($mosques));
                 $page->setPageRange(5);
                 $page->setCurrentPageNumber($this->_getParam('page', 1));
                 $page->setItemCountPerPage(100);
                 $this->view->mosques = $page;
-                //$this->view->headScript()->appendScript("var mosques = 'ok';");
             }
             
             $this->view->address = $address;
         }
     }
     
-    public function addAction()
+    public function saveAction()
     {
+        $id = $this->_getParam('id');
+        $modelMosque = new Default_Model_Mosque();
         $form = new Default_Form_MosqueCreate();
+        
+        /*if(isset($id) && $id != null)
+        {
+            $mosque = $modelMosque->get($id);
+            if($mosque != null)
+            {
+                $form->populate(array(
+                    'mosque_name' => $mosque->name
+               ));
+            }
+        }*/
+        
         if($this->_request->isPost()) 
         {
             $formData = $this->_request->getPost();
             if ($form->isValid($formData))
             {
-                $modelMosque = new Default_Model_Mosque();
                 $modelAddress = new Default_Model_Address();
                 $addressId = $modelAddress->addAddress($formData);
                 if($addressId != null)
