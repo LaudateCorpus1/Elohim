@@ -95,7 +95,7 @@ class MosqueController extends Zend_Controller_Action
                || empty($formData['locality'])
                || empty($formData['country']))
             {
-                $this->view->error = "L'adresse n'est pas valide";
+                $this->view->error = "L'adresse n'est pas valide ou n'a pas été reconnue sur la carte";
             }
             else if ($form->isValid($formData))
             {

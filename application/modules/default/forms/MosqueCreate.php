@@ -6,7 +6,7 @@ class Default_Form_MosqueCreate extends Zend_Form {
         'ViewHelper',
         array(array('data' => 'HtmlTag'), array('tag' => 'div', 'class' => 'element')),
         array('Errors', array('class' => 'help-error')),
-        array('Label', array('requiredSuffix' => ' *')),
+        array('Label', array('requiredSuffix' => ' *', 'optionalSuffix' => ' (optionnel)')),
         array(array('row' => 'HtmlTag'), array('tag' => 'li'))
     );
     
@@ -14,7 +14,7 @@ class Default_Form_MosqueCreate extends Zend_Form {
         'ViewHelper',
         array(array('data' => 'HtmlTag'), array('tag' => 'div')),
         array('Errors', array('class' => 'help-error')),
-        'Label',
+        array('Label', array('requiredSuffix' => ' *', 'optionalSuffix' => ' (optionnel)')),
         array(array('row' => 'HtmlTag'), array('tag' => 'li', 'class' => 'radio-btn'))
     );
     
@@ -121,7 +121,7 @@ class Default_Form_MosqueCreate extends Zend_Form {
             $this->createElement('text', 'jumuaLanguage')->setLabel('Langue du prêche')->setDecorators($this->elementDecorators),
             $this->createElement('radio', 'islamLesson', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Cours islam')->setDecorators($this->radioDecorators),
             $this->createElement('radio', 'arabLesson', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Cours d\'arabe')->setDecorators($this->radioDecorators),
-            $this->createElement('radio', 'janaza', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Prière du mort')->setDecorators($this->radioDecorators),
+            //$this->createElement('radio', 'janaza', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Prière du mort')->setDecorators($this->radioDecorators),
             $this->createElement('radio', 'tarawih', array('separator' => '', 'multiOptions' => $yesNoArray))->setLabel('Tarawih')->setDecorators($this->radioDecorators),
             
             $captcha,
