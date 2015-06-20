@@ -49,15 +49,15 @@ class Default_Form_SearchMosque extends Zend_Form {
             $this->text, 
             $submit,
             
-            $this->createElement('hidden', 'formatted_address')->setDecorators(array('ViewHelper')),
+//            $this->createElement('hidden', 'formatted_address')->setDecorators(array('ViewHelper')),
             $this->createElement('hidden', 'route')->setDecorators(array('ViewHelper')),
             $this->createElement('hidden', 'street_number')->setDecorators(array('ViewHelper')),
-            $this->createElement('hidden', 'postal_code')->setDecorators(array('ViewHelper')),
+//            $this->createElement('hidden', 'postal_code')->setDecorators(array('ViewHelper')),
             $this->createElement('hidden', 'locality')->setDecorators(array('ViewHelper')),
-            $this->createElement('hidden', 'sublocality')->setDecorators(array('ViewHelper')),
-            $this->createElement('hidden', 'administrative_area_level_1')->setDecorators(array('ViewHelper')),
-            $this->createElement('hidden', 'administrative_area_level_2')->setDecorators(array('ViewHelper')),
-            $this->createElement('hidden', 'administrative_area_level_3')->setDecorators(array('ViewHelper')),
+//            $this->createElement('hidden', 'sublocality')->setDecorators(array('ViewHelper')),
+//            $this->createElement('hidden', 'administrative_area_level_1')->setDecorators(array('ViewHelper')),
+//            $this->createElement('hidden', 'administrative_area_level_2')->setDecorators(array('ViewHelper')),
+//            $this->createElement('hidden', 'administrative_area_level_3')->setDecorators(array('ViewHelper')),
             $this->createElement('hidden', 'country')->setDecorators(array('ViewHelper')),
             
         ));

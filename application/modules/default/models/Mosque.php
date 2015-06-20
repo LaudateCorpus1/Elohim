@@ -28,6 +28,98 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
         return $query;
     }
     
+    public function getByLocalizedLocation($streetNo, $route, $locality, $formattedAddress)
+    {
+        $wheres = array();
+        
+        // Most of the time there is only one city of the same name
+        // In this case only use the city name
+        $addressData = Islamine_Geocode::geocode($locality, 'en');
+        if(empty($streetNo) && empty($route) && $addressData['count'] == 1)
+        {
+            $wheres[] = $this->buildWhere(
+                    null,
+                    null,
+                    null,
+                    $addressData['locality'],
+                    null,
+                    $addressData['administrativeArea'],
+                    null,
+                    null,
+                    true
+            );
+
+            if(isset(Islamine_Geocode::$languagesByCountry[$addressData['country']]))
+            {
+                $languages = Islamine_Geocode::$languagesByCountry[$addressData['country']];
+                foreach($languages as $language)
+                {
+                    $addressData = Islamine_Geocode::geocode($locality, $language);
+                    $wheres[] = $this->buildWhere(
+                            null,
+                            null,
+                            null,
+                            $addressData['locality'],
+                            null,
+                            $addressData['administrativeArea'],
+                            null,
+                            null,
+                            true
+                    );
+                }
+            }
+        }
+        else
+        {
+            $addressData = Islamine_Geocode::geocode($formattedAddress, 'en');
+        
+            if($addressData === false)
+                return null;
+
+            $wheres[] = $this->buildWhere(
+                        $addressData['country'],
+                        $addressData['route'],
+                        $addressData['streetNo'],
+                        $addressData['locality'],
+                        $addressData['sublocality'],
+                        $addressData['administrativeArea'],
+                        $addressData['administrativeArea2'],
+                        $addressData['administrativeArea3']
+                );
+            
+            if(isset(Islamine_Geocode::$languagesByCountry[$addressData['country']]))
+            {
+                $languages = Islamine_Geocode::$languagesByCountry[$addressData['country']];
+                foreach($languages as $language)
+                {
+                    $addressData = Islamine_Geocode::geocode($formattedAddress, $language);
+                    $wheres[] = $this->buildWhere(
+                            $addressData['country'],
+                            $addressData['route'],
+                            $addressData['streetNo'],
+                            $addressData['locality'],
+                            $addressData['sublocality'],
+                            $addressData['administrativeArea'],
+                            $addressData['administrativeArea2'],
+                            $addressData['administrativeArea3']
+                    );
+                }
+            }
+        }
+        
+//        Zend_Debug::dump($wheres); exit;
+        $orWhere = implode(' OR ', $wheres);
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name)
+              ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
+              ->where($orWhere)
+              ->order($this->_name.'.creationDate ASC');
+        
+        
+        return $query;
+    }
+    
     public function getByLocation($country, $route = null, $streetNo = null, $locality = null, $sublocality = null, $administrativeArea = null, $administrativeArea2 = null, $administrativeArea3 = null)
     {
         $query = $this->select();
@@ -35,6 +127,18 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
               ->from($this->_name)
               ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
               ->order($this->_name.'.creationDate ASC');
+        
+        $where = $this->buildWhere($country, $route, $streetNo, $locality, $sublocality, $administrativeArea, $administrativeArea2, $administrativeArea3);
+        $query->where($where);
+        
+        return $query;
+    }
+    
+    private function buildWhere($country, $route = null, $streetNo = null, $locality = null, $sublocality = null, $administrativeArea = null, $administrativeArea2 = null, $administrativeArea3 = null, $useLocalityAndCheck = false)
+    {
+        // useLocalityAndCheck used when the locality is empty but not administrativeArea
+        // ex. Sultanahmet camii in Istanbul
+        // Then we need to search : locality = 'Istanbul' OR (locality = '' AND administrativeArea = 'Istanbul')
         
         foreach(Default_Model_Address::$exceptionRules as $exception)
         {
@@ -51,31 +155,49 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
             }
         }
         
-        if($route != null && !empty($route))
-            $query->where($this->getAdapter()->quoteInto('route = ?', $route));
+        $where = '(';
         
-        if($streetNo != null && !empty($streetNo))
-            $query->where($this->getAdapter()->quoteInto('streetNo = ?', $streetNo));
+        if($useLocalityAndCheck && $locality != null && !empty($locality))
+        {
+            $where .= $this->getAdapter()->quoteInto('locality = ?', $locality);
+            
+            if($administrativeArea != null && !empty($administrativeArea))
+            {
+                $where .= " OR ((locality IS NULL OR locality = '') AND ";
+                $where .= $this->getAdapter()->quoteInto('administrativeArea = ?', $administrativeArea).')';
+            }
+        }
+        else
+        {
+            if($route != null && !empty($route))
+                $where .= $this->getAdapter()->quoteInto('route = ?', $route).' AND ';
+
+            if($streetNo != null && !empty($streetNo))
+                $where .= $this->getAdapter()->quoteInto('streetNo = ?', $streetNo).' AND ';
+
+            if($locality != null && !empty($locality))
+                $where .= $this->getAdapter()->quoteInto('locality = ?', $locality).' AND ';
+
+            if($sublocality != null && !empty($sublocality))
+                $where .= $this->getAdapter()->quoteInto('sublocality = ?', $sublocality).' AND ';
+
+            if($administrativeArea != null && !empty($administrativeArea))
+                $where .= $this->getAdapter()->quoteInto('administrativeArea = ?', $administrativeArea).' AND ';
+
+            if($administrativeArea2 != null && !empty($administrativeArea2))
+                $where .= $this->getAdapter()->quoteInto('administrativeArea2 = ?', $administrativeArea2).' AND ';
+
+            if($administrativeArea3 != null && !empty($administrativeArea3))
+                $where .= $this->getAdapter()->quoteInto('administrativeArea3 = ?', $administrativeArea3).' AND ';
+
+            if($country != null && !empty($country))
+                $where .= $this->getAdapter()->quoteInto('country = ?', $country);
+        }
         
-        if($locality != null && !empty($locality))
-            $query->where($this->getAdapter()->quoteInto('locality = ?', $locality));
+        if(substr($where, -5) == ' AND ')
+                $where = substr($where, 0, -5);
                 
-        if($sublocality != null && !empty($sublocality))
-            $query->where($this->getAdapter()->quoteInto('sublocality = ?', $sublocality));
-        
-        if($administrativeArea != null && !empty($administrativeArea))
-            $query->where($this->getAdapter()->quoteInto('administrativeArea = ?', $administrativeArea));
-        
-        if($administrativeArea2 != null && !empty($administrativeArea2))
-            $query->where($this->getAdapter()->quoteInto('administrativeArea2 = ?', $administrativeArea2));
-        
-        if($administrativeArea3 != null && !empty($administrativeArea3))
-            $query->where($this->getAdapter()->quoteInto('administrativeArea3 = ?', $administrativeArea3));
-        
-        if($country != null && !empty($country))
-            $query->where($this->getAdapter()->quoteInto('country = ?', $country));
-        
-        return $query;
+        return $where .= ')';
     }
     
     public function addMosque($data, $addressId)

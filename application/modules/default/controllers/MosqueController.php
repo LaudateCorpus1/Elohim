@@ -35,26 +35,18 @@ class MosqueController extends Zend_Controller_Action
             $modelMosque = new Default_Model_Mosque();
             $formData = $sessionNamespace->data;
             unset($sessionNamespace->data);
-//            67 bis Avenue Albert Petit, 92220 Bagneux
-            $address = $formData['formatted_address'];
-            if(empty($formData['formatted_address'])) 
-            {
-                $address = $formData['search_content'];
-                $mosques = $modelMosque->getByFormattedAddress($formData['search_content']);
-            }
-            else 
-            {
-                $mosques = $modelMosque->getByLocation(
-                                        $formData['country'],
-                                        $formData['route'],
-                                        $formData['street_number'],
-                                        $formData['locality'],
-                                        $formData['sublocality'],
-                                        $formData['administrative_area_level_1'],
-                                        $formData['administrative_area_level_2'],
-                                        $formData['administrative_area_level_3']);
-            }
             
+            if(!isset($formData['street_number']))
+                $formData['street_number'] = '';
+            if(!isset($formData['route']))
+                $formData['route'] = '';
+            
+            $mosques = $modelMosque->getByLocalizedLocation(
+                    $formData['street_number'],
+                    $formData['route'],
+                    $formData['locality'],
+                    $formData['search_content']);
+                
             if($mosques != null)
             {
                 $this->view->count = count($modelMosque->fetchAll($mosques));
@@ -65,7 +57,7 @@ class MosqueController extends Zend_Controller_Action
                 $this->view->mosques = $page;
             }
             
-            $this->view->address = $address;
+            $this->view->address = $formData['search_content'];
         }
     }
     
@@ -88,23 +80,24 @@ class MosqueController extends Zend_Controller_Action
         
         if($this->_request->isPost()) 
         {
-            //Zend_Debug::dump($formData); exit;
             $formData = $this->_request->getPost();
-            if(empty($formData['formatted_address'])
-               || empty($formData['route'])
-               || empty($formData['locality'])
-               || empty($formData['country']))
+            $address = Islamine_Geocode::geocode($formData['form_mosque_address']);
+            //Zend_Debug::dump($address); exit;
+            
+            // Check if address already exists
+            /*if()
             {
                 $this->view->error = "L'adresse n'est pas valide ou n'a pas été reconnue sur la carte";
             }
-            else if ($form->isValid($formData))
+            else*/ if ($form->isValid($formData))
             {
                 $this->view->error = null;
                 $modelAddress = new Default_Model_Address();
-                $addressId = $modelAddress->addAddress($formData);
+                $addressId = $modelAddress->addAddress($address);
                 if($addressId != null)
                 {
                     $sessionNamespace = new Zend_Session_Namespace('Zend_Searchs');
+                    $formData['search_content'] = $address['formatted'];
                     $sessionNamespace->data = $formData;
                     $modelMosque->addMosque($formData, $addressId);
                     $this->_redirect('/mosque/find');

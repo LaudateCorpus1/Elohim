@@ -14,17 +14,17 @@ class Default_Model_Address extends Zend_Db_Table_Abstract
     {
         $dataToInsert = array(
             'route' => $data['route'],
-            'streetNo' => $data['street_number'],
-            'formatted' => $data['formatted_address'],
-            'postalCode' => $data['postal_code'],
+            'streetNo' => $data['streetNo'],
+            'formatted' => $data['formatted'],
+            'postalCode' => $data['postalCode'],
             'locality' => $data['locality'],
             'sublocality' => $data['sublocality'],
-            'administrativeArea' => $data['administrative_area_level_1'],
-            'administrativeArea2' => $data['administrative_area_level_2'],
-            'administrativeArea3' => $data['administrative_area_level_3'],
+            'administrativeArea' => $data['administrativeArea'],
+            'administrativeArea2' => $data['administrativeArea2'],
+            'administrativeArea3' => $data['administrativeArea3'],
             'country' => $data['country'],
-            'latitude' => $data['lat'],
-            'longitude' => $data['lng']
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude']
         );
         
         foreach(self::$exceptionRules as $exception)

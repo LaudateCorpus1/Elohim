@@ -29,33 +29,6 @@ $(function(){
                 modal: true
             });
     
-    $('#form_create_mosque').submit(function() {
-        if($('#formatted_address').val() == ''
-          || $('#route').val() == ''
-          || $('#locality').val() == ''
-          || $('#country').val() == '') {
-            $( "#error-dialog" ).dialog('open');
-            return false;
-        }
-    });
-
     $("#geocomplete").geocomplete(options);
-
-    $("#captcha-input").focus(function () {
-//        if($("#website").val() != '') {
-//            $("#mosqueWebsite").val($("#website").val());
-//        }
-        $("#geocomplete").trigger("geocode");
-    });
-
-    $('#geocomplete').on('input propertychange paste', function() {
-        if($('#captcha-input').val() != '')
-            $('#captcha-input').val('');
-        
-//        if($("#website").val() != '') {
-//            $("#mosqueWebsite").val($("#website").val());
-//        }
-        
-    });
 });
 </script>
