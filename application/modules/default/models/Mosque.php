@@ -37,7 +37,7 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
         $addressData = Islamine_Geocode::geocode($locality, 'en');
         if(empty($streetNo) && empty($route) && $addressData['count'] == 1)
         {
-            $wheres[] = $this->buildWhere(
+            $where = $this->buildWhere(
                     null,
                     null,
                     null,
@@ -48,6 +48,9 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
                     null,
                     true
             );
+            
+            if($where != null)
+                $wheres[] = $where;
 
             if(isset(Islamine_Geocode::$languagesByCountry[$addressData['country']]))
             {
@@ -55,7 +58,7 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
                 foreach($languages as $language)
                 {
                     $addressData = Islamine_Geocode::geocode($locality, $language);
-                    $wheres[] = $this->buildWhere(
+                    $where = $this->buildWhere(
                             null,
                             null,
                             null,
@@ -66,6 +69,9 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
                             null,
                             true
                     );
+                    
+                    if($where != null)
+                        $wheres[] = $where;
                 }
             }
         }
@@ -76,7 +82,7 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
             if($addressData === false)
                 return null;
 
-            $wheres[] = $this->buildWhere(
+            $where = $this->buildWhere(
                         $addressData['country'],
                         $addressData['route'],
                         $addressData['streetNo'],
@@ -87,13 +93,16 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
                         $addressData['administrativeArea3']
                 );
             
+            if($where != null)
+                $wheres[] = $where;
+            
             if(isset(Islamine_Geocode::$languagesByCountry[$addressData['country']]))
             {
                 $languages = Islamine_Geocode::$languagesByCountry[$addressData['country']];
                 foreach($languages as $language)
                 {
                     $addressData = Islamine_Geocode::geocode($formattedAddress, $language);
-                    $wheres[] = $this->buildWhere(
+                    $where = $this->buildWhere(
                             $addressData['country'],
                             $addressData['route'],
                             $addressData['streetNo'],
@@ -103,21 +112,29 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
                             $addressData['administrativeArea2'],
                             $addressData['administrativeArea3']
                     );
+                    
+                    if($where != null)
+                        $wheres[] = $where;
                 }
             }
         }
         
-//        Zend_Debug::dump($wheres); exit;
-        $orWhere = implode(' OR ', $wheres);
-        $query = $this->select();
-        $query->setIntegrityCheck(false)
-              ->from($this->_name)
-              ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
-              ->where($orWhere)
-              ->order($this->_name.'.creationDate ASC');
+        //Zend_Debug::dump($wheres); exit;
         
-        
-        return $query;
+        if(count($wheres) > 0)
+        {
+            $orWhere = implode(' OR ', $wheres);
+            $query = $this->select();
+            $query->setIntegrityCheck(false)
+                  ->from($this->_name)
+                  ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
+                  ->where($orWhere)
+                  ->order($this->_name.'.creationDate ASC');
+
+            return $query;
+        }
+        else
+            return null;
     }
     
     public function getByLocalizedRoute($formattedAddress)
@@ -127,12 +144,15 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
         if($addressData === false)
             return null;
 
-        $wheres[] = $this->buildWhere(
+        $where = $this->buildWhere(
                     $addressData['country'],
                     $addressData['route'],
                     null,
                     $addressData['locality']
             );
+        
+        if($where != null)
+            $wheres[] = $where;
 
         if(isset(Islamine_Geocode::$languagesByCountry[$addressData['country']]))
         {
@@ -140,25 +160,33 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
             foreach($languages as $language)
             {
                 $addressData = Islamine_Geocode::geocode($formattedAddress, $language);
-                $wheres[] = $this->buildWhere(
+                $where = $this->buildWhere(
                         $addressData['country'],
                         $addressData['route'],
                         null,
                         $addressData['locality']
                 );
+                
+                if($where != null)
+                    $wheres[] = $where;
             }
         }
         
-        $orWhere = implode(' OR ', $wheres);
-        $query = $this->select();
-        $query->setIntegrityCheck(false)
-              ->from($this->_name, 'name')
-              ->join('address', $this->_name.'.addressId = address.id', 'formatted')
-              ->where($orWhere)
-              ->limit(5)
-              ->order($this->_name.'.creationDate ASC');
-        
-        return $this->fetchAll($query);
+        if(count($wheres) > 0)
+        {
+            $orWhere = implode(' OR ', $wheres);
+            $query = $this->select();
+            $query->setIntegrityCheck(false)
+                  ->from($this->_name, 'name')
+                  ->join('address', $this->_name.'.addressId = address.id', 'formatted')
+                  ->where($orWhere)
+                  ->limit(5)
+                  ->order($this->_name.'.creationDate ASC');
+
+            return $this->fetchAll($query);
+        }
+        else 
+            return null;
     }
     
     private function buildWhere($country, $route = null, $streetNo = null, $locality = null, $sublocality = null, $administrativeArea = null, $administrativeArea2 = null, $administrativeArea3 = null, $useLocalityAndCheck = false)
@@ -220,10 +248,13 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
             if($country != null && !empty($country))
                 $where .= $this->getAdapter()->quoteInto('country = ?', $country);
         }
-        
+                
         if(substr($where, -5) == ' AND ')
                 $where = substr($where, 0, -5);
-                
+        
+        if($where == '(')
+            return null;
+        
         return $where .= ')';
     }
     

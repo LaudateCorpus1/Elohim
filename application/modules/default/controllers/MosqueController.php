@@ -75,11 +75,14 @@ class MosqueController extends Zend_Controller_Action
         {
             $response = array();
             $mosques = $modelMosque->getByLocalizedRoute($address);
-            foreach($mosques as $mosque)
+            if($mosques != null)
             {
-                $response[] = array('name' => $mosque->name, 'address' => $mosque->formatted);
+                foreach($mosques as $mosque)
+                {
+                    $response[] = array('name' => $mosque->name, 'address' => $mosque->formatted);
+                }
+                echo Zend_Json::encode($response);
             }
-            echo Zend_Json::encode($response);
         }
     }
     
