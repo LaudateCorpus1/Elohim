@@ -65,7 +65,7 @@ class Islamine_Geocode
     public static function geocode($address, $language = 'en')
     {
         $addressclean = str_replace(" ", "+", $address);
-        $url = "http://maps.googleapis.com/maps/api/geocode/json?address=".$addressclean."&sensor=false&language=".$language;
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBQkgT4ArGsST27EW2BESTmZfb9ujngarA&address=".$addressclean."&sensor=false&language=".$language;
 
 //        $client = new Zend_Http_Client();
 //        $client->setUri($url);

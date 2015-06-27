@@ -120,18 +120,45 @@ class Default_Model_Mosque extends Zend_Db_Table_Abstract
         return $query;
     }
     
-    public function getByLocation($country, $route = null, $streetNo = null, $locality = null, $sublocality = null, $administrativeArea = null, $administrativeArea2 = null, $administrativeArea3 = null)
+    public function getByLocalizedRoute($formattedAddress)
     {
+        $wheres = array();
+        $addressData = Islamine_Geocode::geocode($formattedAddress, 'en');
+        if($addressData === false)
+            return null;
+
+        $wheres[] = $this->buildWhere(
+                    $addressData['country'],
+                    $addressData['route'],
+                    null,
+                    $addressData['locality']
+            );
+
+        if(isset(Islamine_Geocode::$languagesByCountry[$addressData['country']]))
+        {
+            $languages = Islamine_Geocode::$languagesByCountry[$addressData['country']];
+            foreach($languages as $language)
+            {
+                $addressData = Islamine_Geocode::geocode($formattedAddress, $language);
+                $wheres[] = $this->buildWhere(
+                        $addressData['country'],
+                        $addressData['route'],
+                        null,
+                        $addressData['locality']
+                );
+            }
+        }
+        
+        $orWhere = implode(' OR ', $wheres);
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from($this->_name)
-              ->join('address', $this->_name.'.addressId = address.id', array('formatted', 'latitude', 'longitude'))
+              ->from($this->_name, 'name')
+              ->join('address', $this->_name.'.addressId = address.id', 'formatted')
+              ->where($orWhere)
+              ->limit(5)
               ->order($this->_name.'.creationDate ASC');
         
-        $where = $this->buildWhere($country, $route, $streetNo, $locality, $sublocality, $administrativeArea, $administrativeArea2, $administrativeArea3);
-        $query->where($where);
-        
-        return $query;
+        return $this->fetchAll($query);
     }
     
     private function buildWhere($country, $route = null, $streetNo = null, $locality = null, $sublocality = null, $administrativeArea = null, $administrativeArea2 = null, $administrativeArea3 = null, $useLocalityAndCheck = false)

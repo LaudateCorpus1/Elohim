@@ -13,11 +13,12 @@ echo $this->doctype() . PHP_EOL;
         <meta http-equiv="pragma" content="no-cache" />
         <?php echo $this->headMeta()->toString('		') . PHP_EOL; ?>
         <meta name="robots" content="index,follow" />
-
+        <meta name="description" content="Trouver mosquée. Find mosque">
+        <meta name="keywords" content="mosque, mosquée, find, trouver, chercher, address, adresse, ville, pays, country, city">
         <?php
         echo $this->headTitle()->toString('		') . PHP_EOL;
         echo $this->headLink()
-                    ->prependStylesheet('/css/excite-bike/jquery-ui-1.8.17.custom.css')
+                    ->prependStylesheet('/css/jquery.ui.autocomplete.custom.css')
                     ->appendStylesheet('/css/bootstrap.css')
                     ->appendStylesheet('/css/main.css')
                     ->appendStylesheet('/css/mosque.css');

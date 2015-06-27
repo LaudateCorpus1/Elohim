@@ -94,11 +94,29 @@ class Default_Form_MosqueCreate extends Zend_Form {
             array('ErrorsHtmlTag', array('tag' => 'td', 'class' => 'help-error')),
             array(array('tr' => 'HtmlTag'), array('tag' => 'tr')),
             ));
+        
+        $div = $this->createElement(
+            'hidden',
+            'existing-mosques',
+            array(
+                'required' => false,
+                'ignore' => true,
+                'autoInsertNotEmptyValidator' => false,
+                'decorators' => array(
+                    array(
+                        'HtmlTag', array(
+                            'tag'  => 'div',
+                            'class' => 'existing-mosques'
+                        )
+                    )
+                )
+        ));
       
         $this->addElements(array(
             $this->createElement('text', 'mosque_name', array('size' => '60'))->setLabel('Nom')->setRequired(true)->setDecorators($this->elementDecorators),
             $categoriesSelect,
             $this->createElement('text', 'form_mosque_address', array('id' => 'geocomplete', 'size' => '60'))->setRequired(true)->setLabel('Entrer une adresse')->setDecorators($this->elementDecorators),
+            $div->clearValidators(),
             $this->createElement('hidden', 'formatted_address')->setDecorators($this->elementDecorators)->addValidator($uniqueValidator),
 //            $this->createElement('hidden', 'route')->setDecorators($this->elementDecorators),
 //            $this->createElement('hidden', 'street_number')->setDecorators($this->elementDecorators),

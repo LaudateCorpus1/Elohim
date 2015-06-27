@@ -128,6 +128,30 @@ label[for$="-1"] {
     font-style: italic;
 }
 
+.existing-mosques {
+    display: none;
+    max-height: 250px;
+    overflow: auto;
+    font-size: 0.95em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #eee;
+    margin-bottom: 30px;
+}
+
+.existing-mosques .title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 3px;
+}
+.existing-mosques .mosque-name {
+    margin-top: 7px;
+    display: block;
+    font-style: italic;
+    border-top: 1px solid #ccc;
+}
+
 .contact-link {
     padding-top: 50px;
     color: #0000FF;

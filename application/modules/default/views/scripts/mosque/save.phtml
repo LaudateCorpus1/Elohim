@@ -9,10 +9,6 @@
     ?>
 
     <div id="map-canvas"></div>
-    
-    <div id="error-dialog" title="Erreur" style="display:none;">
-        L'adresse n'est pas valide ou n'a pas été reconnue sur la carte
-    </div>
 </div>
 <script>
 $(function(){       
@@ -22,13 +18,33 @@ $(function(){
         types: ["geocode", "establishment"]
     };
     
-    $('#error-dialog').dialog({
-                autoOpen: false,
-                height: 110,
-                width: 300,
-                modal: true
-            });
-    
     $("#geocomplete").geocomplete(options);
+    
+    $("input[name='form_mosque_address']").change(function() {
+        var geocomplete = $("#geocomplete");
+        geocomplete.addClass('ui-autocomplete-loading');
+        
+        setTimeout(function(){
+            var address = $("input[name='form_mosque_address']").val();
+            var existing = $(".existing-mosques");
+            if(address != ''){
+                $.get("/mosque/byroute/" + address, function(data) {
+                    geocomplete.removeClass('ui-autocomplete-loading');
+                    var html = '<span class="title">Mosquées déjà existantes aux alentours</span>';
+                    var mosques = JSON.parse(data);
+                    mosques.length > 0 ? existing.show() : existing.hide();
+                    for(var i = 0; i < mosques.length; i++) {
+                        html += '<span class="mosque-name">' + mosques[i].name + '</span>' + mosques[i].address;
+                        html += '<br />';
+                    }
+                    existing.html(html);
+                });
+            }
+            else {
+                geocomplete.removeClass('ui-autocomplete-loading');
+                existing.hide();
+            }
+        }, 200);
+    });
 });
 </script>

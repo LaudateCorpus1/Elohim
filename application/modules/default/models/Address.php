@@ -9,7 +9,17 @@ class Default_Model_Address extends Zend_Db_Table_Abstract
             array('administrativeArea2' => '', 'administrativeArea3' => '')
         )
     );
-       
+    
+    public function doesExist($address)
+    {
+        $where = $this->getAdapter()->quoteInto('formatted = ?', $address);
+        $row = $this->fetchRow($this->select()->where($where));
+        
+        if($row == null)
+            return false;
+        return true;
+    }
+           
     public function addAddress($data)
     {
         $dataToInsert = array(
@@ -26,7 +36,7 @@ class Default_Model_Address extends Zend_Db_Table_Abstract
             'latitude' => $data['latitude'],
             'longitude' => $data['longitude']
         );
-        
+
         foreach(self::$exceptionRules as $exception)
         {
             $key = key($exception);

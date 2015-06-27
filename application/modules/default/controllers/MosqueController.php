@@ -5,6 +5,11 @@ class MosqueController extends Zend_Controller_Action
     public function init()
     {
         $this->_helper->layout->setLayout('mosque_layout');
+        
+        if ($this->_request->isXmlHttpRequest()) {
+            $this->_helper->viewRenderer->setNoRender();
+            $this->_helper->layout->disableLayout();    //disable layout for ajax
+        }
     }
     
     public function indexAction()
@@ -61,6 +66,23 @@ class MosqueController extends Zend_Controller_Action
         }
     }
     
+    public function byrouteAction()
+    {
+        $address = $this->getRequest()->getParam('address');
+        $modelMosque = new Default_Model_Mosque();
+        
+        if ($this->getRequest()->isXmlHttpRequest())
+        {
+            $response = array();
+            $mosques = $modelMosque->getByLocalizedRoute($address);
+            foreach($mosques as $mosque)
+            {
+                $response[] = array('name' => $mosque->name, 'address' => $mosque->formatted);
+            }
+            echo Zend_Json::encode($response);
+        }
+    }
+    
     public function saveAction()
     {
         $id = $this->_getParam('id');
@@ -82,17 +104,17 @@ class MosqueController extends Zend_Controller_Action
         {
             $formData = $this->_request->getPost();
             $address = Islamine_Geocode::geocode($formData['form_mosque_address']);
+            $modelAddress = new Default_Model_Address();
             //Zend_Debug::dump($address); exit;
             
             // Check if address already exists
-            /*if()
+            if($modelAddress->doesExist($address['formatted']))
             {
-                $this->view->error = "L'adresse n'est pas valide ou n'a pas été reconnue sur la carte";
+                $this->view->error = 'Une mosquée avec cette adresse existe déjà';
             }
-            else*/ if ($form->isValid($formData))
+            else if ($form->isValid($formData))
             {
                 $this->view->error = null;
-                $modelAddress = new Default_Model_Address();
                 $addressId = $modelAddress->addAddress($address);
                 if($addressId != null)
                 {
