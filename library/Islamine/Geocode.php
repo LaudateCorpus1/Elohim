@@ -95,27 +95,29 @@ class Islamine_Geocode
                 'latitude' => '',
                 'longitude' => ''
             );
-            
             foreach ($values['address_components'] as $addressComponent) 
             {
-                if($addressComponent['types'][0] == 'street_number')
-                    $returnValues['streetNo'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'route')
-                    $returnValues['route'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'locality')
-                    $returnValues['locality'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'sublocality')
-                    $returnValues['sublocality'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'administrative_area_level_3')
-                    $returnValues['administrativeArea3'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'administrative_area_level_2')
-                    $returnValues['administrativeArea2'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'administrative_area_level_1')
-                    $returnValues['administrativeArea'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'country')
-                    $returnValues['country'] = $addressComponent['long_name'];
-                else if($addressComponent['types'][0] == 'postal_code')
-                    $returnValues['postalCode'] = $addressComponent['long_name'];
+                if(count($addressComponent['types']) > 0)
+                {
+                    if($addressComponent['types'][0] == 'street_number')
+                        $returnValues['streetNo'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'route')
+                        $returnValues['route'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'locality')
+                        $returnValues['locality'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'sublocality')
+                        $returnValues['sublocality'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'administrative_area_level_3')
+                        $returnValues['administrativeArea3'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'administrative_area_level_2')
+                        $returnValues['administrativeArea2'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'administrative_area_level_1')
+                        $returnValues['administrativeArea'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'country')
+                        $returnValues['country'] = $addressComponent['long_name'];
+                    else if($addressComponent['types'][0] == 'postal_code')
+                        $returnValues['postalCode'] = $addressComponent['long_name'];
+                }
             }
             
             $returnValues['formatted'] = $values['formatted_address'];
