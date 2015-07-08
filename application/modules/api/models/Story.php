@@ -42,25 +42,36 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         $query = $this->select();
         $query->from($this->_name, array(
                     'id',
-                    'name'
-                ))
-                ->join('sahaba_story_link', 'sahaba_story.id = sahaba_story_link.story_id'/* , array(
-                          'topicTag_topicId' => 'topicId',
-                          'topicTag_tagId' => 'tagId'
-                          ) */)
-                ->join('sahaba', 'sahaba_story_link.sahaba_id = sahaba.id', array(
-                    'sahabaId' => 'id',
-                    'name'
+                    'text'
                 ))
                 ->order($order)
                 ->limit($limit);
 
         return $this->fetchAll($query);
     }
+    
+    public function getSahabas($storyId)
+    {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from($this->_name, null)
+              ->join('sahaba_story_link', $this->_name.'.id = sahaba_story_link.story_id',array(
+                                'story_id',
+                                'sahaba_id'
+                                ))
+              ->join('sahaba', 'sahaba_story_link.sahaba_id = sahaba.id',array(
+                                'name'
+                                ))
+              ->where($this->getAdapter()->quoteInto($this->_name.'.id = ?', $storyId));
 
-    public function addStory(array $data) {
+        $res = $this->fetchAll($query);
+
+        return $res;
+    }
+
+    public function addStory($text) {
         $story = array(
-            'text' => $data['text'],
+            'text' => $text,
             'creation_date' => gmdate('Y-m-d H:i:s', time())
         );
         return $this->insert($story);

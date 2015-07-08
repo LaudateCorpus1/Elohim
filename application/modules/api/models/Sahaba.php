@@ -33,10 +33,10 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
         return $this->fetchAll($query);
     }
     
-    public function addSahaba(array $data)
+    public function addSahaba($name)
     {
         $sahaba = array(
-            'name' => $data['name']
+            'name' => $name
         );
         return $this->insert($sahaba);
     }
@@ -50,5 +50,39 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
     {
         $this->update($data, array('id = ?' => $id));
     }
+    
+    public function doesExist($sahaba)
+    {
+        $query = $this->select();
+        $query->from($this->_name)
+              ->where('name = ?', $sahaba);
+        $res = $this->fetchRow($query);
+        if($res == null)
+        {
+            return false;
+        }
+        else
+        {
+            return $res->id;
+        }
+    }
+    
+    public function search($term)
+    {
+        $filter = function($sahaba) use ($term)
+        {
+            $sahabas = explode(" ", $term);
+            $finalterm = end($sahabas);
+            if(stristr($sahaba, $finalterm))
+                return true;
+            return false;
+        };
+        $t = array();
+        $sahabalist = $this->fetchAll();
+        foreach($sahabalist as $sahaba)
+        {
+            $t[] = $sahaba->name;
+        }
+        return array_filter($t, $filter);
+    }
 }
-?>

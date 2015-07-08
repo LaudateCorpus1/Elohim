@@ -2,7 +2,6 @@
 
 class Administration_AdminController extends Zend_Controller_Action
 {
-
     public function preDispatch()
     {
         $auth = Zend_Auth::getInstance();

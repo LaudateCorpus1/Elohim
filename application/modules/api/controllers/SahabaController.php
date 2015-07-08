@@ -16,10 +16,15 @@ class Api_SahabaController extends Zend_Rest_Controller {
     }
 
     public function indexAction() {
-        $j = array();
-        $j['name'] = 'jeremie';
+        $response = array();
+        $model = new Api_Model_Story();
+        $stories = $model->getWithLimit();
         
-        $this->_helper->json($j);
+        foreach ($stories as $story) {
+            $response[] = array('id' => $story->id, 'text' => $story->text);
+        }
+        
+        $this->_helper->json($response);
     }
 
     public function getAction() {
