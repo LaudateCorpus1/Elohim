@@ -1,6 +1,6 @@
 <?php
 
-class Administration_SahabaController extends Zend_Controller_Action {
+class Administration_ApiController extends Zend_Controller_Action {
 
     public function preDispatch()
     {
@@ -59,5 +59,23 @@ class Administration_SahabaController extends Zend_Controller_Action {
         $modelSahaba = new Api_Model_Sahaba();
         $res = $modelSahaba->search($this->_getParam('term'));
         $this->_helper->json(array_values($res));
+    }
+    
+    public function addreminderAction() 
+    {
+        $form = new Administration_Form_AddReminder();
+
+        if ($this->getRequest()->isPost()) {
+            $formData = $this->getRequest()->getPost();
+            if ($form->isValid($formData)) {
+                $text = $form->getValue('reminder_text');
+                $categoryId = $form->getValue('reminder_category');
+                
+                $model = new Api_Model_Reminder();
+                $model->add($text, $categoryId);
+                $this->_redirect('/myadmin1337');
+            }
+        }
+        $this->view->form = $form;
     }
 }

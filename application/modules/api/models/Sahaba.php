@@ -9,7 +9,7 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
 {
     protected $_name = 'sahaba';
 
-    public function getSahaba($id)
+    public function getById($id)
     {
             $id = (int)$id;
             $row = $this->fetchRow(array('id = ?' => $id));
@@ -20,7 +20,16 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
             return $row->toArray();
     }
     
-    public function getWithLimit($limit = 10, $order = 'sahaba.name DESC')
+    public function getNames()
+    {
+        $query = $this->select();
+        $query->from($this->_name, 'name')
+              ->order($this->_name.'.name ASC');
+        
+        return $this->fetchAll($query);
+    }
+    
+    public function get($limit = 10, $order = 'sahaba.name DESC')
     {
         $query = $this->select();
         $query->from($this->_name, array(

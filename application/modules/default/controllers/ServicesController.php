@@ -3,18 +3,18 @@ require_once APPLICATION_PATH.'/../library/services/prayer/prayerTime.php';
 
 class ServicesController extends Zend_Controller_Action
 {
-
+    private $format = 'xml';
+    
     public function init()
     {
-        $format = 'xml';
         if(isset($_GET['type']) && $_GET['type'] == 'json')
         {
-            $format = $_GET['type'];
+            $this->format = $_GET['type'];
         }
         
         $contextSwitch = $this->_helper->getHelper('contextSwitch');
-        $contextSwitch->addActionContext('prayertimes', $format)
-                      ->initContext($format);
+        $contextSwitch->addActionContext('prayertimes', $this->format)
+                      ->initContext($this->format);
     }
 
     public function prayertimesAction()
@@ -145,16 +145,10 @@ class ServicesController extends Zend_Controller_Action
             $prayerTimes['Isha'] .= ' PM';
         }
         
-        $this->getResponse()->setHeader('X-WNS-Expires', $expires);
-        
-        $format = 'xml';
-        if(isset($_GET['type']))
-        {
-            $format = $_GET['type'];
-        }
         
         $response = '';
-        if($format == 'json')
+        
+        if($this->format == 'json')
         {
             $jArray = array('prayer_times' =>
                             array('Fajr' => $prayerTimes['Fajr'],
@@ -165,14 +159,14 @@ class ServicesController extends Zend_Controller_Action
                             'Isha'=> $prayerTimes['Isha']
                             )
                       );
-            $response = json_encode($jArray);
+            $this->_helper->json($jArray);
         }
         else
         {
+            $this->getResponse()->setHeader('X-WNS-Expires', $expires);
             $response = '<?xml version="1.0" encoding="utf-8"?><tile><visual><binding template="TileWideText02"><text id="1">'.$city.'</text><text id="2">Fajr '.$prayerTimes['Fajr'].'</text><text id="3">Asr '.$prayerTimes['Asr'].'</text><text id="4">Shuruq '.$prayerTimes['Sunrise'].'</text><text id="5">Maghrib '.$prayerTimes['Maghrib'].'</text><text id="6">Dhur '.$prayerTimes['Dhuhr'].'</text><text id="7">Isha '.$prayerTimes['Isha'].'</text></binding></visual></tile>';
+            echo $response;
         }
-        
-        echo $response;
     }
     
     public function privacypolicyAction()

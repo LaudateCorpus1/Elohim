@@ -34,7 +34,7 @@ $(function()
     $('#sahabas_values').hide();
     
     $("#tags").tagit({
-            tagSource: "/administration/sahaba/autocomplete",
+            tagSource: "/administration/api/autocomplete",
             singleField: true,
             allowSpaces: true,
             singleFieldNode: $('#sahabas_values')
