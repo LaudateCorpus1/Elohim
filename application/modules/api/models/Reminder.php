@@ -26,11 +26,11 @@ class Api_Model_Reminder extends Zend_Db_Table_Abstract {
         return $row;
     }
 
-    public function getReminders($page = 1) {
-        if ($page == null || $page < 1) {
-            $page = 1;
+    public function getReminders($offset = 0) {
+        if ($offset == null || $offset < 0) {
+            $offset = 0;
         }
-        $offset = $this->_pageCount * ($page - 1);
+        //$offset = $this->_pageCount * ($page - 1);
         $order = $this->_name.'.creation_date DESC';
         $query = $this->select();
         $query->from($this->_name)

@@ -27,10 +27,10 @@ class Api_SahabaController extends Zend_Rest_Controller {
         $this->_helper->json($response);
     }
 
-    private function getStories($page, $name) {
+    private function getStories($offset, $name) {
         $response = array();
         $model = new Api_Model_Story();
-        $stories = $model->getStories($page, $name);
+        $stories = $model->getStories($offset, $name);
         $cut = $this->_getParam('cut');
 
         foreach ($stories as $story) {
@@ -50,13 +50,13 @@ class Api_SahabaController extends Zend_Rest_Controller {
 
     public function getAction() {
         $ressource = $this->_getParam('get');
-        $page = $this->_getParam('page');
+        $offset = $this->_getParam('offset');
         $id = $this->_getParam('id');
         $response = array();
 
         if ($ressource == 'stories') {
             if (empty($id)) {
-                $response = $this->getStories($page, $this->_getParam('name'));
+                $response = $this->getStories($offset, $this->_getParam('name'));
             } else {
                 $model = new Api_Model_Story();
                 $story = $model->getById($id);

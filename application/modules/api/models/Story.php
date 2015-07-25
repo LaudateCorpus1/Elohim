@@ -39,11 +39,11 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         return $row;
     }
 
-    public function getStories($page = 1, $name = null) {
-        if ($page == null || $page < 1) {
-            $page = 1;
+    public function getStories($offset = 0, $name = null) {
+        if ($offset == null || $offset < 0) {
+            $offset = 0;
         }
-        $offset = $this->_pageCount * ($page - 1);
+        //$offset = $this->_pageCount * ($page - 1);
         $query = $this->select();
         $query->from($this->_name, array(
                     'id',

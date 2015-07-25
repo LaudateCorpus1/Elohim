@@ -7,9 +7,9 @@ class Api_ReminderController extends Zend_Rest_Controller {
         $this->_helper->layout->disableLayout();
     }
 
-    private function getReminders($page = 1) {
+    private function getReminders($offset = 0) {
         $model = new Api_Model_Reminder();
-        $reminders = $model->getReminders($page);
+        $reminders = $model->getReminders($offset);
         $response = array();
 
         foreach ($reminders as $reminder) {
@@ -29,9 +29,9 @@ class Api_ReminderController extends Zend_Rest_Controller {
     }
 
     public function getAction() {
-        $page = $this->_getParam('page');
+        $offset = $this->_getParam('offset');
         $id = $this->_getParam('id');
-        $this->_helper->json($this->getReminders($page));
+        $this->_helper->json($this->getReminders($offset));
     }
 
     public function postAction() {
