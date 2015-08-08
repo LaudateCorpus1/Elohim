@@ -23,6 +23,7 @@ class Administration_Form_AddReminder extends Zend_Form {
              ->addMultiOptions($categories);
         
         $this->addElements(array(
+            $this->createElement('text', 'reminder_title', array('size' => '88'))->setRequired(true)->setLabel('Titre'),
             $this->createElement('textarea', 'reminder_text', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Texte'),
             $categoriesSelect,
             $this->createElement('hash', get_class().'_csrf', array('salt' => 'unique', 'timeout' => 3600)),

@@ -47,7 +47,23 @@ class Administration_ApiController extends Zend_Controller_Action {
                 }
                 if(!$error) {
                     $modelSahaba->getAdapter()->commit();
-                    $this->_redirect('/myadmin1337');
+                    
+                    $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle histoire !');
+
+                    //------------------------------
+                    // The recipient registration IDs
+                    // that will receive the push
+                    // (Should be stored in your DB)
+                    // 
+                    // Read about it here:
+                    // http://developer.android.com/google/gcm/
+                    //------------------------------
+                    $modelDevice = new Api_Model_Device();
+                    $ids = $modelDevice->getGCMRegistrationIds();
+
+                    Islamine_Api::sendGoogleCloudMessage($data, $ids);
+                    
+                    //$this->_redirect('/myadmin1337');
                 }
             }
         }
@@ -68,11 +84,12 @@ class Administration_ApiController extends Zend_Controller_Action {
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
             if ($form->isValid($formData)) {
+                $title = $form->getValue('reminder_title');
                 $text = $form->getValue('reminder_text');
                 $categoryId = $form->getValue('reminder_category');
                 
                 $model = new Api_Model_Reminder();
-                $model->add($text, $categoryId);
+                $model->add($title, $text, $categoryId);
                 $this->_redirect('/myadmin1337');
             }
         }

@@ -42,8 +42,9 @@ class Api_Model_Reminder extends Zend_Db_Table_Abstract {
         return $this->fetchAll($query);
     }
 
-    public function add($text, $categoryId) {
+    public function add($title, $text, $categoryId) {
         $reminder = array(
+            'title' => $title,
             'text' => $text,
             'category_id' => $categoryId,
             'creation_date' => gmdate('Y-m-d H:i:s', time())

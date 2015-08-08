@@ -13,7 +13,7 @@
 class Islamine_String {
 
     public static function replaceNewLinesWithBr($string) {
-        return str_replace(array('\r\n', '\n'), '', nl2br($string, false));
+        return str_replace(PHP_EOL, '', nl2br($string, false));
     }
     
     public static function textWrap($string, $width) {
