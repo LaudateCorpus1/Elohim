@@ -21,6 +21,7 @@ class Administration_Form_AddSahabaStory extends Zend_Form {
                       ->setAttrib('class', 'btn');
         
         $this->addElements(array(
+            $this->createElement('text', 'sahaba_story_source', array('size' => '88'))->setRequired(true)->setLabel('Source'),
             $this->createElement('textarea', 'sahaba_story', array('rows' => '7', 'cols' => '50'))->setRequired(true)->setLabel('Texte'),
             $this->createElement('text', 'sahabas_values')->setRequired(true)->setLabel('Pieux prédécesseurs')->addValidator(new Islamine_Validate_Tags()),
             $auto,

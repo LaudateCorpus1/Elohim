@@ -18,6 +18,7 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         $query->setIntegrityCheck(false)
                 ->from($this->_name, array(
                     'text',
+                    'source',
                     'creation_date',
                     'storyId' => 'id'
                 ))
@@ -47,7 +48,8 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         $query = $this->select();
         $query->from($this->_name, array(
                     'id',
-                    'text'
+                    'text',
+                    'source'
                 ))
                 ->order($this->_name . '.creation_date DESC')
                 ->limit($this->_pageCount, $offset);
@@ -85,9 +87,10 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         return $sahabasArray;
     }
 
-    public function addStory($text) {
+    public function addStory($text, $source) {
         $story = array(
             'text' => $text,
+            'source' => $source,
             'creation_date' => gmdate('Y-m-d H:i:s', time())
         );
         return $this->insert($story);

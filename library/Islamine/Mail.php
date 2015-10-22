@@ -55,7 +55,7 @@ class Islamine_Mail
     
     public function send()
     {
-        $this->_mail->send($this->_transport);
+        return $this->_mail->send($this->_transport);
     }
 }
 

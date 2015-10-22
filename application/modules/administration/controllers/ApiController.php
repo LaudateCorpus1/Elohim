@@ -24,6 +24,7 @@ class Administration_ApiController extends Zend_Controller_Action {
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
             if ($form->isValid($formData)) {
+                $source = $form->getValue('sahaba_story_source');
                 $story = $form->getValue('sahaba_story');
                 $sahabas = $form->getValue('sahabas_values');
                 $sahabasArray = explode(",", $sahabas);
@@ -34,7 +35,7 @@ class Administration_ApiController extends Zend_Controller_Action {
                 
                 $modelSahaba->getAdapter()->beginTransaction();
                 
-                $storyId = $modelStory->addStory($story);
+                $storyId = $modelStory->addStory($story, $source);
                 $error = false;
                 foreach($sahabasArray as $sahaba) {
                     $sahabaId = $modelSahaba->doesExist($sahaba);
@@ -63,7 +64,7 @@ class Administration_ApiController extends Zend_Controller_Action {
 
                     Islamine_Api::sendGoogleCloudMessage($data, $ids);
                     
-                    //$this->_redirect('/myadmin1337');
+                    $this->_redirect('/myadmin1337');
                 }
             }
         }
@@ -90,6 +91,13 @@ class Administration_ApiController extends Zend_Controller_Action {
                 
                 $model = new Api_Model_Reminder();
                 $model->add($title, $text, $categoryId);
+                
+                $data = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel !');
+                $modelDevice = new Api_Model_Device();
+                $ids = $modelDevice->getGCMRegistrationIds();
+
+                Islamine_Api::sendGoogleCloudMessage($data, $ids);
+                    
                 $this->_redirect('/myadmin1337');
             }
         }

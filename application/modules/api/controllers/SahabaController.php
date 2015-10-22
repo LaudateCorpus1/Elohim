@@ -42,7 +42,7 @@ class Api_SahabaController extends Zend_Rest_Controller {
                 $text = Islamine_String::textWrap($text, $length);
             }
             $text = Islamine_String::replaceNewLinesWithBr($text);
-            $response[] = array('id' => $story->id, 'text' => $text, 'authors' => $sahabas);
+            $response[] = array('id' => $story->id, 'text' => $text, 'source' => $story->source, 'authors' => $sahabas);
         }
 
         return $response;
@@ -62,7 +62,7 @@ class Api_SahabaController extends Zend_Rest_Controller {
                 $story = $model->getById($id);
                 $sahabas = $model->getSahabasArray($id);
                 $text = Islamine_String::replaceNewLinesWithBr($story->text);
-                $response = array('id' => $id, 'text' => $text, 'authors' => $sahabas);
+                $response = array('id' => $id, 'text' => $text, 'source' => $story->source, 'authors' => $sahabas);
             }
         }
 
