@@ -48,8 +48,9 @@ class Administration_ApiController extends Zend_Controller_Action {
                 }
                 if(!$error) {
                     $modelSahaba->getAdapter()->commit();
-                    
-                    $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle histoire !');
+                    $sahabaString = substr_replace($sahabas, ' et ', strrpos($sahabas, ','), 1);
+                    $sahabaString = str_replace(',', ', ', $sahabaString);
+                    $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle histoire sur '.$sahabaString);
 
                     //------------------------------
                     // The recipient registration IDs
@@ -92,7 +93,7 @@ class Administration_ApiController extends Zend_Controller_Action {
                 $model = new Api_Model_Reminder();
                 $model->add($title, $text, $categoryId);
                 
-                $data = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel !');
+                $data = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel : '.$title);
                 $modelDevice = new Api_Model_Device();
                 $ids = $modelDevice->getGCMRegistrationIds();
 
