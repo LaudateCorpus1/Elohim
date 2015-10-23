@@ -48,8 +48,11 @@ class Administration_ApiController extends Zend_Controller_Action {
                 }
                 if(!$error) {
                     $modelSahaba->getAdapter()->commit();
-                    $sahabaString = substr_replace($sahabas, ' et ', strrpos($sahabas, ','), 1);
-                    $sahabaString = str_replace(',', ', ', $sahabaString);
+                    $sahabaString = $sahabas;
+                    if(strrpos($sahabas, ',') != false) {
+                        $sahabaString = substr_replace($sahabas, ' et ', strrpos($sahabas, ','), 1);
+                        $sahabaString = str_replace(',', ', ', $sahabaString);
+                    }
                     $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle histoire sur '.$sahabaString);
 
                     //------------------------------
