@@ -8,6 +8,7 @@
 class Api_Model_Sahaba extends Zend_Db_Table_Abstract
 {
     protected $_name = 'sahaba';
+    private $_pageCount = 10;
 
     public function getById($id)
     {
@@ -29,15 +30,20 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
         return $this->fetchAll($query);
     }
     
-    public function get($limit = 10, $order = 'sahaba.name DESC')
+    public function get($offset = 0, $order = 'sahaba.name DESC')
     {
+        if ($offset == null || $offset < 0) {
+            $offset = 0;
+        }
+        
         $query = $this->select();
         $query->from($this->_name, array(
                   'id',
-                  'name'
+                  'name',
+                  'bio'
                   ))
               ->order($order)
-              ->limit($limit);
+              ->limit($this->_pageCount, $offset);
         
         return $this->fetchAll($query);
     }

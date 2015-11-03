@@ -27,27 +27,6 @@ class Api_SahabaController extends Zend_Rest_Controller {
         $this->_helper->json($response);
     }
 
-    private function getStories($offset, $name) {
-        $response = array();
-        $model = new Api_Model_Story();
-        $stories = $model->getStories($offset, $name);
-        $cut = $this->_getParam('cut');
-
-        foreach ($stories as $story) {
-            $sahabas = $model->getSahabasArray($story->id);
-            $text = $story->text;
-            $length = $this->_getParam('length');
-            if ($cut == true) {
-                $length = empty($length) ? 100 : $length;
-                $text = Islamine_String::textWrap($text, $length);
-            }
-            $text = Islamine_String::replaceNewLinesWithBr($text);
-            $response[] = array('id' => $story->id, 'text' => $text, 'source' => $story->source, 'authors' => $sahabas);
-        }
-
-        return $response;
-    }
-
     public function getAction() {
         $ressource = $this->_getParam('get');
         $offset = $this->_getParam('offset');
@@ -65,6 +44,9 @@ class Api_SahabaController extends Zend_Rest_Controller {
                 $response = array('id' => $id, 'text' => $text, 'source' => $story->source, 'authors' => $sahabas);
             }
         }
+        else {
+            $response = $this->getSahabas($offset);
+        }
 
         $this->_helper->json($response);
     }
@@ -81,4 +63,35 @@ class Api_SahabaController extends Zend_Rest_Controller {
         
     }
 
+    private function getStories($offset, $name) {
+        $response = array();
+        $model = new Api_Model_Story();
+        $stories = $model->getStories($offset, $name);
+        $cut = $this->_getParam('cut');
+
+        foreach ($stories as $story) {
+            $sahabas = $model->getSahabasArray($story->id);
+            $text = $story->text;
+            $length = $this->_getParam('length');
+            if ($cut == true) {
+                $length = empty($length) ? 100 : $length;
+                $text = Islamine_String::textWrap($text, $length);
+            }
+            $text = Islamine_String::replaceNewLinesWithBr($text);
+            $response[] = array('id' => $story->id, 'text' => $text, 'source' => $story->source, 'comment' => $story->comment, 'authors' => $sahabas);
+        }
+
+        return $response;
+    }
+    
+    private function getSahabas($offset) {
+        $response = array();
+        $model = new Api_Model_Sahaba();
+        $sahabas = $model->get($offset);
+
+        foreach ($sahabas as $sahaba) {
+            $response[] = array('id' => $sahaba->id, 'name' => $sahaba->name, 'bio' => $sahaba->bio);
+        }
+        return $response;
+    }
 }

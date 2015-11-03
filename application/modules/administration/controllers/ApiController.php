@@ -26,6 +26,7 @@ class Administration_ApiController extends Zend_Controller_Action {
             if ($form->isValid($formData)) {
                 $source = $form->getValue('sahaba_story_source');
                 $story = $form->getValue('sahaba_story');
+                $comment = $form->getValue('sahaba_comment');
                 $sahabas = $form->getValue('sahabas_values');
                 $sahabasArray = explode(",", $sahabas);
                 
@@ -35,7 +36,7 @@ class Administration_ApiController extends Zend_Controller_Action {
                 
                 $modelSahaba->getAdapter()->beginTransaction();
                 
-                $storyId = $modelStory->addStory($story, $source);
+                $storyId = $modelStory->addStory($story, $source, $comment);
                 $error = false;
                 foreach($sahabasArray as $sahaba) {
                     $sahabaId = $modelSahaba->doesExist($sahaba);
@@ -53,7 +54,7 @@ class Administration_ApiController extends Zend_Controller_Action {
                         $sahabaString = substr_replace($sahabas, ' et ', strrpos($sahabas, ','), 1);
                         $sahabaString = str_replace(',', ', ', $sahabaString);
                     }
-                    $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle histoire sur '.$sahabaString);
+                    $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle anecdote sur '.$sahabaString);
 
                     //------------------------------
                     // The recipient registration IDs

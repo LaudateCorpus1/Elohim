@@ -49,7 +49,8 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         $query->from($this->_name, array(
                     'id',
                     'text',
-                    'source'
+                    'source',
+                    'comment'
                 ))
                 ->order($this->_name . '.creation_date DESC')
                 ->limit($this->_pageCount, $offset);
@@ -87,10 +88,11 @@ class Api_Model_Story extends Zend_Db_Table_Abstract {
         return $sahabasArray;
     }
 
-    public function addStory($text, $source) {
+    public function addStory($text, $source, $comment) {
         $story = array(
             'text' => $text,
             'source' => $source,
+            'comment' => $comment,
             'creation_date' => gmdate('Y-m-d H:i:s', time())
         );
         return $this->insert($story);
