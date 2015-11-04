@@ -30,7 +30,7 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
         return $this->fetchAll($query);
     }
     
-    public function get($offset = 0, $order = 'sahaba.name DESC')
+    public function get($offset = 0)
     {
         if ($offset == null || $offset < 0) {
             $offset = 0;
@@ -42,7 +42,7 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
                   'name',
                   'bio'
                   ))
-              ->order($order)
+              ->order($this->_name.'.name ASC')
               ->limit($this->_pageCount, $offset);
         
         return $this->fetchAll($query);
