@@ -12,6 +12,6 @@ class MethodParisMosque extends MethodBase
 		$this->_parameters[TimeNames::Fajr] = 18;
 		$this->_parameters[TimeNames::Dhuhr] = "5 min";
 		$this->_parameters[TimeNames::Maghrib] = "4 min";
-		$this->_parameters[TimeNames::Isha] = 14;
+		$this->_parameters[TimeNames::Isha] = 16;
 	}
 }

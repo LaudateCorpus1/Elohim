@@ -25,6 +25,11 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
     {
         $query = $this->select();
         $query->from($this->_name, 'name')
+              ->setIntegrityCheck(false)
+              ->joinInner('sahaba_story_link', $this->_name.'.id = sahaba_story_link.sahaba_id', null)
+              ->distinct()
+              //->joinInner('sahaba_story', 'sahaba_story.id = sahaba_story_link.story_id', null)
+              //->where('story_id IS NOT NULL')
               ->order($this->_name.'.name ASC');
         
         return $this->fetchAll($query);
@@ -42,6 +47,9 @@ class Api_Model_Sahaba extends Zend_Db_Table_Abstract
                   'name',
                   'bio'
                   ))
+              ->setIntegrityCheck(false)
+              ->joinInner('sahaba_story_link', $this->_name.'.id = sahaba_story_link.sahaba_id', null)
+              ->distinct()
               ->order($this->_name.'.name ASC')
               ->limit($this->_pageCount, $offset);
         
