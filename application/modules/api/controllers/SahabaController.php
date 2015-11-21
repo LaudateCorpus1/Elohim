@@ -44,6 +44,20 @@ class Api_SahabaController extends Zend_Rest_Controller {
                 $response = array('id' => $id, 'text' => $text, 'source' => $story->source, 'authors' => $sahabas);
             }
         }
+        else if($ressource == 'newstories') {
+            $platform = $this->_getParam('platform');
+            $deviceId = $this->_getParam('device');
+            if(!empty($deviceId) && !empty($platform)) {
+                $model = new Api_Model_DeviceStory();
+                $stories = $model->getUnreadStories($platform, $deviceId);
+                $count = 0;
+                foreach ($stories as $story) {
+                    $response['storiesId'][] = $story->id;
+                    $count++;
+                }
+                $response['count'] = $count;
+            }
+        }
         else {
             $response = $this->getSahabas($offset);
         }

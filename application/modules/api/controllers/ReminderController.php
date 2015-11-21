@@ -30,8 +30,28 @@ class Api_ReminderController extends Zend_Rest_Controller {
 
     public function getAction() {
         $offset = $this->_getParam('offset');
-        $id = $this->_getParam('id');
-        $this->_helper->json($this->getReminders($offset));
+        $ressource = $this->_getParam('get');
+        $response = array();
+
+        if($ressource == 'newreminders') {
+            $platform = $this->_getParam('platform');
+            $deviceId = $this->_getParam('device');
+            if(!empty($deviceId) && !empty($platform)) {
+                $model = new Api_Model_DeviceReminder();
+                $reminders = $model->getUnreadReminders($platform, $deviceId);
+                $count = 0;
+                foreach ($reminders as $reminder) {
+                    $response['remindersId'][] = $reminder->id;
+                    $count++;
+                }
+                $response['count'] = $count;
+            }
+        }
+        else {
+            $response = $this->getReminders($offset);
+        }
+        
+        $this->_helper->json($response);
     }
 
     public function postAction() {

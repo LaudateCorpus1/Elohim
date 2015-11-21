@@ -66,8 +66,15 @@ class Administration_ApiController extends Zend_Controller_Action {
                     //------------------------------
                     $modelDevice = new Api_Model_Device();
                     $ids = $modelDevice->getGCMRegistrationIds();
-
                     Islamine_Api::sendGoogleCloudMessage($data, $ids);
+                    
+                    // Add "is new" row for each device
+                    $devices = $modelDevice->get();
+                    $modelDeviceStory = new Api_Model_DeviceStory();
+                    foreach($devices as $device)
+                    {
+                        $modelDeviceStory->addRow($device->id, $storyId);
+                    }
                     
                     $this->_redirect('/myadmin1337');
                 }
@@ -95,13 +102,20 @@ class Administration_ApiController extends Zend_Controller_Action {
                 $categoryId = $form->getValue('reminder_category');
                 
                 $model = new Api_Model_Reminder();
-                $model->add($title, $text, $categoryId);
+                $reminderId = $model->add($title, $text, $categoryId);
                 
-                $data = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel : '.$title);
+                $data = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel : '.$title, 'id' => $reminderId);
                 $modelDevice = new Api_Model_Device();
                 $ids = $modelDevice->getGCMRegistrationIds();
-
                 Islamine_Api::sendGoogleCloudMessage($data, $ids);
+                
+                // Add "is new" row for each device
+                $devices = $modelDevice->get();
+                $modelDeviceReminder = new Api_Model_DeviceReminder();
+                foreach($devices as $device)
+                {
+                    $modelDeviceReminder->addRow($device->id, $reminderId);
+                }
                     
                 $this->_redirect('/myadmin1337');
             }
