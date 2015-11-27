@@ -48,14 +48,7 @@ class Api_SahabaController extends Zend_Rest_Controller {
             $platform = $this->_getParam('platform');
             $deviceId = $this->_getParam('device');
             if(!empty($deviceId) && !empty($platform)) {
-                $model = new Api_Model_DeviceStory();
-                $stories = $model->getUnreadStories($platform, $deviceId);
-                $count = 0;
-                foreach ($stories as $story) {
-                    $response['storiesId'][] = $story->id;
-                    $count++;
-                }
-                $response['count'] = $count;
+                $response = $this->getNewStories($platform, $deviceId);
             }
         }
         else {
@@ -70,7 +63,20 @@ class Api_SahabaController extends Zend_Rest_Controller {
     }
 
     public function putAction() {
+        $ressource = $this->_getParam('set');
+        $n = 0;
+
+        if($ressource == 'notnew') {
+            $storyId = $this->_getParam('story');
+            $deviceId = $this->_getParam('device');
+            if(!empty($deviceId) && !empty($storyId)) {
+                $model = new Api_Model_DeviceStory();
+                $n = $model->setNotNew($deviceId, $storyId);
+            }
+        }
         
+        $response = array('status' => 200, 'updated' => $n);
+        $this->_helper->json($response);
     }
 
     public function deleteAction() {
@@ -106,6 +112,27 @@ class Api_SahabaController extends Zend_Rest_Controller {
         foreach ($sahabas as $sahaba) {
             $response[] = array('id' => $sahaba->id, 'name' => $sahaba->name, 'bio' => $sahaba->bio);
         }
+        return $response;
+    }
+    
+    private function getNewStories($platform, $deviceId) {
+        $response = array();
+        $model = new Api_Model_DeviceStory();
+        $modelSahabaStory = new Api_Model_SahabaStory();
+        $stories = $model->getUnreadStories($platform, $deviceId);
+        $count = 0;
+        foreach ($stories as $story) {
+            $sahabaIds = $modelSahabaStory->getSahabaIds($story->id);
+            $sahabaIdsArray = array();
+            foreach ($sahabaIds as $sahabaId) {
+                $sahabaIdsArray[] = $sahabaId->sahaba_id;
+            }
+
+            $response['stories'][] = array('id' => $story->id, 'sahabaIds' => $sahabaIdsArray);
+            $count++;
+        }
+        $response['count'] = $count;
+        
         return $response;
     }
 }

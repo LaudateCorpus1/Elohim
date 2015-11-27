@@ -32,10 +32,15 @@ class Api_Model_DeviceReminder extends Zend_Db_Table_Abstract
    }
     public function setNotNew($deviceId, $reminderId)
     {
-        $where = array();
-        $where[] = $this->getAdapter()->quoteInto('reminder_id = ?', $reminderId);
-        $where[] = $this->getAdapter()->quoteInto('device_id = ?', $deviceId);
-        $this->update(array('is_new' => true), $where);
+        $deviceModel = new Api_Model_Device();
+        $id = $deviceModel->getIdFromGCMId($deviceId);
+        if($id != null) {
+            $where = array();
+            $where[] = $this->getAdapter()->quoteInto('reminder_id = ?', $reminderId);
+            $where[] = $this->getAdapter()->quoteInto('device_id = ?', $id);
+            return $this->update(array('is_new' => false),  $where);
+        }
+        return 0;
     }
     
     public function getUnreadReminders($platform, $deviceId)

@@ -54,21 +54,12 @@ class Administration_ApiController extends Zend_Controller_Action {
                         $sahabaString = substr_replace($sahabas, ' et ', strrpos($sahabas, ','), 1);
                         $sahabaString = str_replace(',', ', ', $sahabaString);
                     }
-                    $data = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle anecdote sur '.$sahabaString);
-
-                    //------------------------------
-                    // The recipient registration IDs
-                    // that will receive the push
-                    // (Should be stored in your DB)
-                    // 
-                    // Read about it here:
-                    // http://developer.android.com/google/gcm/
-                    //------------------------------
-                    $modelDevice = new Api_Model_Device();
-                    $ids = $modelDevice->getGCMRegistrationIds();
-                    Islamine_Api::sendGoogleCloudMessage($data, $ids);
                     
+                    $session = new Zend_Session_Namespace('islamine');
+                    $session->storiesToPublishToDevices[] = array('title' => 'Islamic Reminder', 'message' => 'Nouvelle anecdote sur '.$sahabaString);
+                                        
                     // Add "is new" row for each device
+                    $modelDevice = new Api_Model_Device();
                     $devices = $modelDevice->get();
                     $modelDeviceStory = new Api_Model_DeviceStory();
                     foreach($devices as $device)
@@ -104,22 +95,72 @@ class Administration_ApiController extends Zend_Controller_Action {
                 $model = new Api_Model_Reminder();
                 $reminderId = $model->add($title, $text, $categoryId);
                 
-                $data = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel : '.$title, 'id' => $reminderId);
-                $modelDevice = new Api_Model_Device();
-                $ids = $modelDevice->getGCMRegistrationIds();
-                Islamine_Api::sendGoogleCloudMessage($data, $ids);
-                
+                $session = new Zend_Session_Namespace('islamine');
+                $session->remindersToPublishToDevices[] = array('title' => 'Islamic Reminder', 'message' => 'Nouveau rappel : '.$title);
+                                
                 // Add "is new" row for each device
+                $modelDevice = new Api_Model_Device();
                 $devices = $modelDevice->get();
                 $modelDeviceReminder = new Api_Model_DeviceReminder();
                 foreach($devices as $device)
                 {
                     $modelDeviceReminder->addRow($device->id, $reminderId);
                 }
-                    
+                
                 $this->_redirect('/myadmin1337');
             }
         }
         $this->view->form = $form;
+    }
+    
+    function publishAction() {
+        $session = new Zend_Session_Namespace('islamine');
+        $count = 0;
+        $isReminder = false;
+        $isStory = false;
+        $data = null;
+        
+        //------------------------------
+        // The recipient registration IDs
+        // that will receive the push
+        // (Should be stored in your DB)
+        // 
+        // Read about it here:
+        // http://developer.android.com/google/gcm/
+        //------------------------------
+        if(isset($session->remindersToPublishToDevices)) {
+            $count += count($session->remindersToPublishToDevices);
+            $isReminder = true;
+        }
+        if(isset($session->storiesToPublishToDevices)) {
+            $count += count($session->storiesToPublishToDevices);
+            $isStory = true;
+        }
+        
+        if($count == 1) {
+            $data = $isReminder ? $session->remindersToPublishToDevices[0] : $session->storiesToPublishToDevices[0];
+        }
+        else if($count > 1) {
+            $message = '';
+            if($isReminder) {
+                $message .= count($session->remindersToPublishToDevices).' nouveau(x) rappel(s)';
+            }
+            if($isStory) {
+                $message = empty($message) ? $message : $message.' et ';
+                $message .= count($session->storiesToPublishToDevices).' nouvelle(s) anecdote(s)';
+            }
+            $data = array('title' => 'Islamic Reminder', 'message' => ucfirst($message));
+        }
+        
+        if($count > 0 && !empty($data)) {
+            unset($session->remindersToPublishToDevices);
+            unset($session->storiesToPublishToDevices);
+            
+            $modelDevice = new Api_Model_Device();
+            $ids = $modelDevice->getGCMRegistrationIds();
+            Islamine_Api::sendGoogleCloudMessage($data, $ids);
+        }
+        
+        $this->_redirect('/myadmin1337');
     }
 }

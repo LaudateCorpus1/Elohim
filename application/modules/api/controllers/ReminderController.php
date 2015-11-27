@@ -7,6 +7,54 @@ class Api_ReminderController extends Zend_Rest_Controller {
         $this->_helper->layout->disableLayout();
     }
 
+    public function indexAction() {
+        $this->_helper->json($this->getReminders());
+    }
+
+    public function getAction() {
+        $offset = $this->_getParam('offset');
+        $ressource = $this->_getParam('get');
+        $response = array();
+
+        if($ressource == 'newreminders') {
+            $platform = $this->_getParam('platform');
+            $deviceId = $this->_getParam('device');
+            if(!empty($deviceId) && !empty($platform)) {
+                $response = $this->getUndreadReminders($platform, $deviceId);
+            }
+        }
+        else {
+            $response = $this->getReminders($offset);
+        }
+        
+        $this->_helper->json($response);
+    }
+
+    public function postAction() {
+        
+    }
+
+    public function putAction() {
+        $ressource = $this->_getParam('set');
+        $n = 0;
+
+        if($ressource == 'notnew') {
+            $reminderId = $this->_getParam('reminder');
+            $deviceId = $this->_getParam('device');
+            if(!empty($deviceId) && !empty($reminderId)) {
+                $model = new Api_Model_DeviceReminder();
+                $n = $model->setNotNew($deviceId, $reminderId);
+            }
+        }
+        
+        $response = array('status' => 200, 'updated' => $n);
+        $this->_helper->json($response);
+    }
+
+    public function deleteAction() {
+        
+    }
+    
     private function getReminders($offset = 0) {
         $model = new Api_Model_Reminder();
         $reminders = $model->getReminders($offset);
@@ -23,46 +71,19 @@ class Api_ReminderController extends Zend_Rest_Controller {
 
         return $response;
     }
-
-    public function indexAction() {
-        $this->_helper->json($this->getReminders());
-    }
-
-    public function getAction() {
-        $offset = $this->_getParam('offset');
-        $ressource = $this->_getParam('get');
+    
+    private function getUndreadReminders($platform, $deviceId) {
         $response = array();
-
-        if($ressource == 'newreminders') {
-            $platform = $this->_getParam('platform');
-            $deviceId = $this->_getParam('device');
-            if(!empty($deviceId) && !empty($platform)) {
-                $model = new Api_Model_DeviceReminder();
-                $reminders = $model->getUnreadReminders($platform, $deviceId);
-                $count = 0;
-                foreach ($reminders as $reminder) {
-                    $response['remindersId'][] = $reminder->id;
-                    $count++;
-                }
-                $response['count'] = $count;
-            }
+        $model = new Api_Model_DeviceReminder();
+        $reminders = $model->getUnreadReminders($platform, $deviceId);
+        $count = 0;
+        
+        foreach ($reminders as $reminder) {
+            $response['remindersId'][] = $reminder->id;
+            $count++;
         }
-        else {
-            $response = $this->getReminders($offset);
-        }
+        $response['count'] = $count;
         
-        $this->_helper->json($response);
-    }
-
-    public function postAction() {
-        
-    }
-
-    public function putAction() {
-        
-    }
-
-    public function deleteAction() {
-        
+        return $response;
     }
 }

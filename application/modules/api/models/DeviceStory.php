@@ -32,10 +32,15 @@ class Api_Model_DeviceStory extends Zend_Db_Table_Abstract
    }
     public function setNotNew($deviceId, $storyId)
     {
-        $where = array();
-        $where[] = $this->getAdapter()->quoteInto('story_id = ?', $storyId);
-        $where[] = $this->getAdapter()->quoteInto('device_id = ?', $deviceId);
-        $this->update(array('is_new' => true), $where);
+        $deviceModel = new Api_Model_Device();
+        $id = $deviceModel->getIdFromGCMId($deviceId);
+        if($id != null) {
+            $where = array();
+            $where[] = $this->getAdapter()->quoteInto('story_id = ?', $storyId);
+            $where[] = $this->getAdapter()->quoteInto('device_id = ?', $id);
+            return $this->update(array('is_new' => false),  $where);
+        }
+        return 0;
     }
     
     public function getUnreadStories($platform, $deviceId)

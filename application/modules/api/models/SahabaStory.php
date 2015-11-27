@@ -20,6 +20,17 @@ class Api_Model_SahabaStory extends Zend_Db_Table_Abstract
                 'refTableClass' => 'Api_Model_Sahaba',
                 'refColumns'    => array('sahaba_id')
         ));
+    
+    public function getSahabaIds($storyId) 
+    {
+        $query = $this->select();
+        $query->from($this->_name, array(
+                    'sahaba_id'
+                ))
+                ->where($this->getAdapter()->quoteInto('story_id = ?', $storyId));
+        
+        return $this->fetchAll($query);
+    }
 
    public function addRow($storyId, $sahabaId)
    {

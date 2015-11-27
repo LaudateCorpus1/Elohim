@@ -41,6 +41,19 @@ class Api_Model_Device extends Zend_Db_Table_Abstract {
 
         return $this->fetchAll($query);
     }
+    
+    public function getIdFromGCMId($gcmId) {
+        $query = $this->select();
+        $query->from($this->_name)
+              ->where($this->getAdapter()->quoteInto($this->_name.'.gcm_registration_id = ?', $gcmId));
+        
+        $row = $this->fetchRow($query);
+        if($row == null)
+        {
+            return null;
+        }
+        return $row->id;
+    }
 
     public function addGCMRegistrationId($registrationId, $platform, $osVersion) {
         if (!empty($registrationId) && !empty($platform)) {
